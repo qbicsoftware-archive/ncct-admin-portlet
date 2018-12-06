@@ -4,8 +4,9 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.HorizontalLayout;
 
+import com.vaadin.ui.VerticalLayout;
+import life.qbic.portal.presenter.ProjectsPresenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,12 +22,18 @@ public class NCCTPortlet extends QBiCPortletUI {
 
     private static final Logger LOG = LogManager.getLogger(NCCTPortlet.class);
 
+    VerticalLayout layout = new VerticalLayout();
+
     @Override
     protected Layout getPortletContent(final VaadinRequest request) {
         LOG.info("Generating content for {}", NCCTPortlet.class);
         
         // TODO: generate content for your portlet
         //       this method returns any non-null layout to avoid a NullPointerException later on
-        return new HorizontalLayout();
-    }    
+
+        ProjectsPresenter mainPresenter = new ProjectsPresenter();
+        return mainPresenter.getCanvas();
+    }
+
+
 }

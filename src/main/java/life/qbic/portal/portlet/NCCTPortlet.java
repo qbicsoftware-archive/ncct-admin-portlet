@@ -6,12 +6,22 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Layout;
 
 import com.vaadin.ui.VerticalLayout;
+
+import life.qbic.portal.model.DBConfig;
+import life.qbic.portal.model.DBManager;
+import life.qbic.portal.model.Person;
+import life.qbic.portal.model.TableName;
+import life.qbic.portal.model.Vocabulary;
 import life.qbic.portal.presenter.ProjectsPresenter;
+
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which is found in the {@code portal-utils-lib} library.
+ * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
+ * is found in the {@code portal-utils-lib} library.
  * 
  * @see <a href=https://github.com/qbicsoftware/portal-utils-lib>portal-utils-lib</a>
  */
@@ -20,20 +30,36 @@ import org.apache.logging.log4j.Logger;
 @Widgetset("life.qbic.portal.portlet.AppWidgetSet")
 public class NCCTPortlet extends QBiCPortletUI {
 
-    private static final Logger LOG = LogManager.getLogger(NCCTPortlet.class);
+  private static final Logger LOG = LogManager.getLogger(NCCTPortlet.class);
 
-    VerticalLayout layout = new VerticalLayout();
+  VerticalLayout layout = new VerticalLayout();
 
-    @Override
-    protected Layout getPortletContent(final VaadinRequest request) {
-        LOG.info("Generating content for {}", NCCTPortlet.class);
-        
-        // TODO: generate content for your portlet
-        //       this method returns any non-null layout to avoid a NullPointerException later on
+  @Override
+  protected Layout getPortletContent(final VaadinRequest request) {
+    LOG.info("Generating content for {}", NCCTPortlet.class);
 
-        ProjectsPresenter mainPresenter = new ProjectsPresenter();
-        return mainPresenter.getCanvas();
-    }
+    // TODO: generate content for your portlet
+    // this method returns any non-null layout to avoid a NullPointerException later on
+
+    // TODO we might want to move this to model or presenter?
+    DBManager db = new DBManager(readProperties());
+    db.initVocabularies();
+
+    List<Person> existingPersons = db.getAllPersons();
+
+    ProjectsPresenter mainPresenter = new ProjectsPresenter();
+    return mainPresenter.getCanvas();
+  }
+
+  private DBConfig readProperties() {
+    // TODO liferay properties manager
+    String hostname = "";
+    String port = "";
+    String sql_database = "";
+    String username = "";
+    String password = "";
+    return new DBConfig(hostname, port, sql_database, username, password);
+  }
 
 
 }

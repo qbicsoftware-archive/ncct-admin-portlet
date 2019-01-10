@@ -1,7 +1,7 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.ui.Upload;
-import life.qbic.portal.view.FormLayout;
+import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,8 +28,8 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
 
     private void addUploadListener(){
-        this.formLayout.getUploadAttachment().setReceiver(this);
-        this.formLayout.getUploadAttachment().addSucceededListener(this);
+        this.formLayout.getProjectForm().getUploadAttachment().setReceiver(this);
+        this.formLayout.getProjectForm().getUploadAttachment().addSucceededListener(this);
 
     }
 

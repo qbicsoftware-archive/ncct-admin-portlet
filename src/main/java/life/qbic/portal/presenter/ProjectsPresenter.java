@@ -1,7 +1,7 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.ui.VerticalLayout;
-import life.qbic.portal.view.ProjectsLayout;
+import life.qbic.portal.view.Overview.ProjectsLayout;
 
 public class ProjectsPresenter {
 

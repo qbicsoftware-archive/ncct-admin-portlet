@@ -1,4 +1,4 @@
-package life.qbic.portal.view;
+package life.qbic.portal.view.Overview;
 
 import com.vaadin.ui.Grid;
 

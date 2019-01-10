@@ -12990,3 +12990,15 @@ div.v-layout.v-horizontal.v-widget {
 	text-align: right;
 	padding-top: 50px;
 }
+
+.mytheme .v-textfield-corners {
+	border-radius: 0px 0px 0px 0px;
+}
+
+.mytheme .v-textarea-corners {
+	border-radius: 0px 0px 0px 0px;
+}
+
+.mytheme .v-combo-box-corners {
+	border-radius: 0px 0px 0px 0px;
+}

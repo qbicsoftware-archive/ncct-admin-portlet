@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS `ncct_db`.`batch` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `estimated_delivery_date` DATE NOT NULL,
   `number_samples` INT NOT NULL,
-  `experiment_id1` INT UNSIGNED NOT NULL,
+  `experiment_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_batch_experiment2_idx` (`experiment_id1` ASC) VISIBLE,
+  INDEX `fk_batch_experiment2_idx` (`experiment_id` ASC) VISIBLE,
   CONSTRAINT `fk_batch_experiment2`
-    FOREIGN KEY (`experiment_id1`)
+    FOREIGN KEY (`experiment_id`)
     REFERENCES `ncct_db`.`experiment` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);

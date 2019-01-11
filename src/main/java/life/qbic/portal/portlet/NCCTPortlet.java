@@ -10,9 +10,9 @@ import com.vaadin.ui.VerticalLayout;
 import life.qbic.portal.model.DBConfig;
 import life.qbic.portal.model.DBManager;
 import life.qbic.portal.model.Person;
-import life.qbic.portal.model.TableName;
-import life.qbic.portal.model.Vocabulary;
 import life.qbic.portal.presenter.ProjectsPresenter;
+import life.qbic.portal.utils.ConfigurationManager;
+import life.qbic.portal.utils.ConfigurationManagerFactory;
 
 import java.util.List;
 
@@ -40,9 +40,11 @@ public class NCCTPortlet extends QBiCPortletUI {
 
     // TODO: generate content for your portlet
     // this method returns any non-null layout to avoid a NullPointerException later on
+    ConfigurationManager config = ConfigurationManagerFactory.getInstance();
 
     // TODO we might want to move this to model or presenter?
-    DBManager db = new DBManager(readProperties());
+ // read in the configuration file
+    DBManager db = new DBManager(new DBConfig(config.getMsqlHost(), config.getMysqlPort(), config.getMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
     db.initVocabularies();
 
     List<Person> existingPersons = db.getAllPersons();

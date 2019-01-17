@@ -40,11 +40,13 @@ public class NCCTPortlet extends QBiCPortletUI {
 
     // TODO: generate content for your portlet
     // this method returns any non-null layout to avoid a NullPointerException later on
-    ConfigurationManager config = ConfigurationManagerFactory.getInstance();
+
 
     // TODO we might want to move this to model or presenter?
- // read in the configuration file
-    DBManager db = new DBManager(new DBConfig(config.getMsqlHost(), config.getMysqlPort(), config.getMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
+    // read in the configuration file
+    ConfigurationManager config = ConfigurationManagerFactory.getInstance();
+    DBManager db = new DBManager(new DBConfig(config.getMysqlHost(), config.getMysqlPort(),
+        config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
     db.initVocabularies();
 
     List<Person> existingPersons = db.getAllPersons();
@@ -52,16 +54,4 @@ public class NCCTPortlet extends QBiCPortletUI {
     ProjectsPresenter mainPresenter = new ProjectsPresenter();
     return mainPresenter.getCanvas();
   }
-
-  private DBConfig readProperties() {
-    // TODO liferay properties manager
-    String hostname = "";
-    String port = "";
-    String sql_database = "";
-    String username = "";
-    String password = "";
-    return new DBConfig(hostname, port, sql_database, username, password);
-  }
-
-
 }

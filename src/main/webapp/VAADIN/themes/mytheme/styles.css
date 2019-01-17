@@ -12993,6 +12993,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-textfield-corners {
 	border-radius: 0px 0px 0px 0px;
+	color: black;
 }
 
 .mytheme .v-textarea-corners {
@@ -13001,4 +13002,21 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-combo-box-corners {
 	border-radius: 0px 0px 0px 0px;
+}
+
+.mytheme .v-button-corners {
+	border-radius: 0px 0px 0px 0px;
+}
+
+.mytheme .v-tabsheet-framed .v-tabsheet-content > div {
+	background-color: transparent;
+	border: 1px solid grey;
+}
+
+.mytheme .v-tabsheet-framed .v-tabsheet-tabcontainer .v-caption {
+	background-color: transparent;
+}
+
+.mytheme .v-tabsheet-framed .v-tabsheet-tabcontainer .v-tabsheet-tabitem-selected .v-caption {
+	background-color: lightgrey;
 }

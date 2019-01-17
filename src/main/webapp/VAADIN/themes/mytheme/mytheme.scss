@@ -50,6 +50,7 @@
 
   .v-textfield-corners {
     border-radius: 0px 0px 0px 0px;
+    color: black;
   }
 
   .v-textarea-corners {
@@ -58,6 +59,29 @@
 
   .v-combo-box-corners {
     border-radius: 0px 0px 0px 0px;
+  }
+
+  .v-button-corners {
+    border-radius: 0px 0px 0px 0px;
+  }
+
+  .v-tabsheet-framed {
+    .v-tabsheet-content > div {
+      background-color: transparent;
+      border: 1px solid grey;
+    }
+
+    .v-tabsheet-tabcontainer {
+      // Non-selected tabs.
+      .v-caption {
+        background-color: transparent;
+      }
+
+      // Selected tab.
+      .v-tabsheet-tabitem-selected .v-caption {
+        background-color: lightgrey;
+      }
+    }
   }
 
 

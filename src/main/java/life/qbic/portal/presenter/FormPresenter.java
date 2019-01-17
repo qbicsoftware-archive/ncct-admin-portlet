@@ -12,12 +12,17 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private final FormLayout formLayout;
     private final ProjectsPresenter projectsPresenter;
+    private final ExperimentPresenter experimentPresenter;
+    private final PersonFormPresenter personFormPresenter;
     private File tempFile;
 
     public FormPresenter(ProjectsPresenter projectsPresenter){
         this.projectsPresenter = projectsPresenter;
         this.formLayout = new FormLayout();
 
+        this.experimentPresenter = new ExperimentPresenter(this);
+        this.personFormPresenter = new PersonFormPresenter(this);
+        //TODO load data for all drop down menues
         addListener();
     }
 
@@ -28,14 +33,14 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
 
     private void addUploadListener(){
-        this.formLayout.getProjectForm().getUploadAttachment().setReceiver(this);
-        this.formLayout.getProjectForm().getUploadAttachment().addSucceededListener(this);
+        this.formLayout.getUploadAttachment().setReceiver(this);
+        this.formLayout.getUploadAttachment().addSucceededListener(this);
 
     }
 
     private void addSaveEntryListener(){
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
-            //TODO save in DB,
+            //TODO save all data in DB, check that all fields have some content!
             this.projectsPresenter.displayProjects();
         });
     }

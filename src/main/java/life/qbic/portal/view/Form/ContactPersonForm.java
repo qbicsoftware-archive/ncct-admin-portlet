@@ -10,7 +10,6 @@ public class ContactPersonForm extends VerticalLayout {
 
     private final Label title;
 
-    private final HorizontalLayout horizontalLayout;
     private final TextField lastName;
     private final TextField firstName;
     private final TextField institution;
@@ -20,9 +19,9 @@ public class ContactPersonForm extends VerticalLayout {
 
     public ContactPersonForm(){
 
-        this.title = new Label("Contact person", ContentMode.HTML);
+        this.title = new Label("<b><u>Contact person:</u></b>", ContentMode.HTML);
 
-        this.horizontalLayout = new HorizontalLayout();
+        HorizontalLayout layout = new HorizontalLayout();
 
         this.lastName = new TextField("Last Name");
         this.firstName = new TextField("First Name");
@@ -31,31 +30,47 @@ public class ContactPersonForm extends VerticalLayout {
         this.email = new TextField("E-mail address");
         this.phoneNumber = new TextField("Phone number");
 
-        styleFields();
+        styleFields(lastName);
+        styleFields(firstName);
+        styleFields(institution);
+        styleFields(city);
+        styleFields(email);
+        styleFields(phoneNumber);
 
-        this.horizontalLayout.addComponents(lastName, firstName, institution, city, email, phoneNumber);
-        this.horizontalLayout.setSizeFull();
+        layout.addComponents(lastName, firstName, institution, city, email, phoneNumber);
+        layout.setSizeFull();
 
-        this.addComponents(title, horizontalLayout);
+        this.addComponents(title, layout);
         this.setSpacing(true);
     }
 
-    private void styleFields(){
-        this.lastName.addStyleName("corners");
-        this.firstName.addStyleName("corners");
-        this.institution.addStyleName("corners");
-        this.city.addStyleName("corners");
-        this.email.addStyleName("corners");
-        this.phoneNumber.addStyleName("corners");
+    private void styleFields(TextField textField){
+        textField.addStyleName("corners");
+        textField.setSizeFull();
+        textField.setHeight(40, Unit.PIXELS);
+    }
 
-        this.lastName.setSizeFull();
-        this.firstName.setSizeFull();
-        this.institution.setSizeFull();
-        this.city.setSizeFull();
-        this.email.setSizeFull();
-        this.phoneNumber.setSizeFull();
+    public TextField getLastName() {
+        return lastName;
+    }
 
+    public TextField getFirstName() {
+        return firstName;
+    }
 
+    public TextField getInstitution() {
+        return institution;
+    }
 
+    public TextField getCity() {
+        return city;
+    }
+
+    public TextField getEmail() {
+        return email;
+    }
+
+    public TextField getPhoneNumber() {
+        return phoneNumber;
     }
 }

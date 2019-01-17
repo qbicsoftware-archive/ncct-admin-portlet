@@ -1,6 +1,8 @@
 package life.qbic.portal.model;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -347,8 +349,214 @@ public class DBManager {
     return false;
   }
 
+  /**
+   * get project objects from the database, includes all related data like experiments, batches,
+   * persons
+   * 
+   * @return list of project objects
+   */
+  public List<Project> getProjects() {
+    List<Project> res = new ArrayList<>();
+    String sql = "SELECT * from project";
+    Connection conn = login();
+    try {
+
+      PreparedStatement statement = conn.prepareStatement(sql);
+      ResultSet rs = statement.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String qbicID = rs.getString("qbic_id");
+        String dfgID = rs.getString("dfg_id");
+        String title = rs.getString("title");
+        BigDecimal totalCost = rs.getBigDecimal("total_cost");
+        String description = rs.getString("description");
+        String classification = rs.getString("classification");
+        String declarationOfInterest = rs.getString("declaration_of_intent");
+        String keywords = rs.getString("keywords");
+        String sequencingAim = rs.getString("sequencing_aim");
+        int contactID = rs.getInt("contact_person_id");
+        int topicalID = rs.getInt("topical_assignment_id");
+
+        rs.close();
+        statement.close();
+        Person contactPerson = getPersonFromID(contactID);
+        String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
+
+        Project project =
+            new Project(id, qbicID, dfgID, title, totalCost, description, declarationOfInterest,
+                classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+        project.setApplicants(getPeopleForProjectID("project_has_applicants", "applicant_id", id));
+        project.setCooperationPartners(getPeopleForProjectID("project_has_cooperation_partners",
+            "cooperation_partner_id", id));
+        project.setExperiments(getExperimentsWithProjectID(id));
+        res.add(project);
+      }
+    } catch (SQLException e) {
+      // TODO: handle exception
+    }
+    return res;
+  }
+
+  private List<Experiment> getExperimentsWithProjectID(int projectID) {
+    List<Experiment> res = new ArrayList<>();
+    String sql = "SELECT * from experiment WHERE project_id = ";
+    Connection conn = login();
+    try {
+
+      PreparedStatement statement = conn.prepareStatement(sql);
+      statement.setInt(1, projectID);
+      ResultSet rs = statement.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int numOfSamples = rs.getInt("number_of_samples");
+        String coverage = rs.getString("coverage");
+        String genomeSize = rs.getString("genome_size");
+        BigDecimal costs = rs.getBigDecimal("costs");
+
+        int materialID = rs.getInt("material_id");
+        int speciesID = rs.getInt("species_id");
+        int techID = rs.getInt("technology_type_id");
+        int instrumentID = rs.getInt("technology_instument_id");
+        int nucleicAcidID = rs.getInt("nucleic_acid_id");
+        int libraryID = rs.getInt("library_id");
+
+        String material = Vocabulary.getMaterialName(materialID);
+        String species = Vocabulary.getSpeciesName(speciesID);
+        String technology = Vocabulary.getTechnologyTypeName(techID);
+        String instrument = Vocabulary.getTechInstrumentName(instrumentID);
+        String nucleicAcid = Vocabulary.getNucleicAcidName(nucleicAcidID);
+        String library = Vocabulary.getMaterialName(libraryID);
+        rs.close();
+        statement.close();
+
+        Experiment exp = new Experiment(id, numOfSamples, coverage, costs, genomeSize, material,
+            species, technology, instrument, nucleicAcid, library);
+        exp.setBatches(getBatchesForExperimentID(id));
+        res.add(exp);
+      }
+    } catch (SQLException e) {
+      // TODO: handle exception
+    }
+    return res;
+  }
+
+  private List<Batch> getBatchesForExperimentID(int expId) {
+    List<Batch> res = new ArrayList<>();
+    String sql = "SELECT * from batch WHERE experiment_id = ";
+    Connection conn = login();
+    try {
+
+      PreparedStatement statement = conn.prepareStatement(sql);
+      statement.setInt(1, expId);
+      ResultSet rs = statement.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        Date deliveryDate = rs.getDate("estimated_delivery_date");
+        int numberOfSamples = rs.getInt("number_samples");
+        rs.close();
+        statement.close();
+
+        Batch b = new Batch(id, deliveryDate, numberOfSamples);
+        res.add(b);
+      }
+    } catch (SQLException e) {
+      // TODO: handle exception
+    }
+    return res;
+  }
+
+  private List<Person> getPeopleForProjectID(String junctionTable, String junctionPersonID,
+      int id) {
+    String sql = "SELECT * FROM person LEFT JOIN ? ON person.id = ?.? WHERE project_id = ?";
+    Connection conn = login();
+    List<Person> res = new ArrayList<Person>();
+    try {
+      PreparedStatement statement = conn.prepareStatement(sql);
+      statement.setString(1, junctionTable);
+      statement.setString(2, junctionTable);
+      statement.setString(3, junctionPersonID);
+      statement.setInt(4, id);
+      ResultSet rs = statement.executeQuery();
+      while (rs.next()) {
+        res.add(parsePerson(rs));
+      }
+    } catch (SQLException e) {
+
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return res;
+  }
+
+  private String getTopicalAssignmentNameFromID(int topicalID) {
+    String contactSql = "SELECT * from topical_assignment WHERE id = ?";
+    String res = null;
+    Connection conn = login();
+    try {
+      PreparedStatement statement = conn.prepareStatement(contactSql);
+      statement.setInt(1, topicalID);
+      ResultSet rs = statement.executeQuery();
+
+      while (rs.next()) {
+        res = rs.getString("name");
+      }
+      statement.close();
+    } catch (SQLException e) {
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return res;
+  }
+
+  private Person parsePerson(ResultSet rs) throws SQLException {
+    int id = rs.getInt("id");
+    String lastname = rs.getString("lastname");
+    String firstname = rs.getString("firstname");
+    String institution = rs.getString("institution");
+    String city = rs.getString("city");
+    String email = rs.getString("email");
+    String phone = rs.getString("phonenumber");
+    return new Person(id, firstname, lastname, email, city, phone, institution);
+  }
+
+  private Person getPersonFromID(int contactID) {
+    String contactSql = "SELECT * from person WHERE id = ?";
+    Person res = null;
+    Connection conn = login();
+    try {
+      PreparedStatement statement = conn.prepareStatement(contactSql);
+      statement.setInt(1, contactID);
+      ResultSet rs = statement.executeQuery();
+
+      while (rs.next()) {
+        res = parsePerson(rs);
+      }
+      statement.close();
+    } catch (SQLException e) {
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return res;
+  }
+
   public boolean createProjectWithConnections(Project project) throws SQLException {
     Connection connection = login();
+    boolean success = false;
     // We will commit all queries together later
     connection.setAutoCommit(false);
 
@@ -388,12 +596,15 @@ public class DBManager {
       }
       connection.commit();
       logger.error("project has been successfully added to all related tables.");
-      return true;
+      success = true;
     } catch (Exception ex) {
       logger.error("exception occured while adding project. rolling back.");
       connection.rollback();
-      return false;
+    } finally {
+      connection.setAutoCommit(true);
+      connection.close();
     }
+    return success;
   }
 
   private int addProject(Project project, int contactID, Connection connection)

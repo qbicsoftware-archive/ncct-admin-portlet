@@ -138,5 +138,9 @@ public class Experiment {
     this.library = library;
   }
 
+  public void setBatches(List<Batch> batches) {
+    this.batches = batches;
+  }
+
 
 }

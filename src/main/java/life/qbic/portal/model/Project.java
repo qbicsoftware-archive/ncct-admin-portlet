@@ -42,13 +42,17 @@ public class Project {
     this.applicants = new ArrayList<>();
     this.experiments = new ArrayList<>();
   }
-  
+
   public void addExperiment(Experiment experiment) {
     experiments.add(experiment);
   }
-  
+
   public List<Experiment> getExperiments() {
     return experiments;
+  }
+
+  public void setExperiments(List<Experiment> experiments) {
+    this.experiments = experiments;
   }
 
   public void addCooperationPartner(Person partner) {
@@ -163,5 +167,13 @@ public class Project {
     return applicants;
   }
 
-  
+  public void setApplicants(List<Person> applicants) {
+    this.applicants = applicants;
+  }
+
+  public void setCooperationPartners(List<Person> partners) {
+    this.cooperationPartners = partners;
+  }
+
+
 }

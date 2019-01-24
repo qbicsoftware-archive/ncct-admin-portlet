@@ -43,6 +43,11 @@
 			<name>QBiC Releases</name>
 			<url>https://qbic-repo.am10.uni-tuebingen.de/repository/maven-releases</url>
 		</repository>
+
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -56,9 +61,7 @@
 			<artifactId>core-utils-lib</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
-		
-		
+
 		<!-- Access to our custom databases (portlets use direct JDBC to access data for now),
 			 but we will create a client library that portlets will use 
 			 (version  is defined in the parent POM hierarchy (/portal/pom.xml)) -->
@@ -66,7 +69,7 @@
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 		</dependency>
-		
+
 		
 	</dependencies>
 </project>

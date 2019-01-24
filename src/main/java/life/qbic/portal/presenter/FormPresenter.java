@@ -1,7 +1,7 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.ui.Upload;
-import life.qbic.portal.view.FormLayout;
+import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,12 +12,17 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private final FormLayout formLayout;
     private final ProjectsPresenter projectsPresenter;
+    private final ExperimentPresenter experimentPresenter;
+    private final PersonFormPresenter personFormPresenter;
     private File tempFile;
 
     public FormPresenter(ProjectsPresenter projectsPresenter){
         this.projectsPresenter = projectsPresenter;
         this.formLayout = new FormLayout();
 
+        this.experimentPresenter = new ExperimentPresenter(this);
+        this.personFormPresenter = new PersonFormPresenter(this);
+        //TODO load data for all drop down menues
         addListener();
     }
 
@@ -35,7 +40,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private void addSaveEntryListener(){
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
-            //TODO save in DB,
+            //TODO save all data in DB, check that all fields have some content!
             this.projectsPresenter.displayProjects();
         });
     }

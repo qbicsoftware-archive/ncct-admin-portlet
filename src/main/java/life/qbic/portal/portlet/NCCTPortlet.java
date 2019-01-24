@@ -12,6 +12,8 @@ import life.qbic.portal.presenter.MainPresenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+
 /**
  * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
  * is found in the {@code portal-utils-lib} library.

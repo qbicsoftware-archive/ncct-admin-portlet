@@ -12,22 +12,15 @@ public class ExperimentPresenter {
     }
 
     private void addListener(){
-        formPresenter.getFormLayout().getExperimentForm().getAddExperiment().addClickListener(clickEvent -> {
+        formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+            @Override
+            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
 
-            try {
-                formPresenter.getFormLayout().getExperimentForm().addDataToGrid(
-                        (String) formPresenter.getFormLayout().getExperimentForm().getType().getValue(),
-                        (String) formPresenter.getFormLayout().getExperimentForm().getSpecies().getValue(),
-                        (String) formPresenter.getFormLayout().getExperimentForm().getMaterial().getValue(),
-                        (String) formPresenter.getFormLayout().getExperimentForm().getInstrument().getValue(),
-                        (String) formPresenter.getFormLayout().getExperimentForm().getLibrary().getValue(),
-                        Double.valueOf(formPresenter.getFormLayout().getExperimentForm().getGenomeSize().getValue()),
-                        (String) formPresenter.getFormLayout().getExperimentForm().getNucleic_acid().getValue(),
-                        Integer.valueOf(formPresenter.getFormLayout().getExperimentForm().getCoverage().getValue()),
-                        Integer.valueOf(formPresenter.getFormLayout().getExperimentForm().getNumberOfSamples().getValue()),
-                        Double.valueOf(formPresenter.getFormLayout().getExperimentForm().getCosts().getValue()));
-            }catch(IllegalArgumentException e){
-                //TODO tell form layout to add notification
+            }
+
+            @Override
+            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
             }
         });
 

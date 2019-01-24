@@ -52,6 +52,8 @@ public class FormLayout extends VerticalLayout {
 
         this.setComponentAlignment(saveEntries, Alignment.BOTTOM_RIGHT);
 
+        //TODO add explanation for red asterix, somehow it needs to be checked whther all fields are required when pressing save!
+
         this.setSpacing(true);
     }
 

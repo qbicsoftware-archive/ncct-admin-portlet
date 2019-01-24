@@ -1,88 +1,125 @@
 package life.qbic.portal.view.Form;
 
-
-import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.data.util.converter.StringToDoubleConverter;
+import com.vaadin.data.validator.DoubleRangeValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
+import life.qbic.portal.view.utils.CustomStyle;
+
+import java.util.stream.IntStream;
 
 public class ProjectForm extends VerticalLayout {
 
-    private final TextField dfgID;
     private final TextField projectTitle;
-    private final TextField totalCost;
-    private final TextArea projectDescription;
-
+    private final TextField qbicID;
+    private final TextField dfgID;
     private final ComboBox topicalAssignment;
-    //TODO private final ComboBox classification; //S1 or S2 -> this may nee ot be removed
+    private final TextArea projectDescription;
+    private final ComboBox classification;
+    private final HorizontalLayout keyWordLayout;
     private final TextField[] keywords;
     private final TextArea sequencingAim;
-
+    private final TextField totalCost;
 
 
     public ProjectForm(){
 
-        this.projectTitle = new TextField();
-        this.projectTitle.setSizeFull();
-        addTextField("Project Title:", this.projectTitle);
-
-        this.dfgID = new TextField();
-        addTextField("DFG ID:", dfgID);
-
-        Label topicalLabel = new Label("<b><u>Topical assignment (DFG classification):</u></b>", ContentMode.HTML);
-        this.topicalAssignment = new ComboBox();
-        this.topicalAssignment.setSizeFull();
-        this.topicalAssignment.addStyleName("corners");
-        this.topicalAssignment.setFilteringMode(FilteringMode.CONTAINS);
-
-
-        Label descriptionLabel = new Label("<b><u>Short project description:</u></b>", ContentMode.HTML);
-        this.projectDescription = new TextArea( );
-        this.projectDescription.addStyleName("corners");
-        this.projectDescription.setSizeFull();
-        this.projectDescription.setWordwrap(true);
-        this.projectDescription.setRows(5);
-        this.projectDescription.setMaxLength(2000);
-
-        HorizontalLayout keyWordLayout = new HorizontalLayout();
-        keyWordLayout.setSizeFull();
-        Label keywordTitle = new Label("<b><u>Key words (max. 5):</u></b>", ContentMode.HTML);
-        this.keywords = new TextField[5];
-        for(int i = 0; i < 5; i++){
-            keywords[i] = new TextField("#" + (i+1));
-            keywords[i].setSizeFull();
-            keywords[i].addStyleName("corners");
-            keywords[i].setHeight(40, Unit.PIXELS);
-
-            keyWordLayout.addComponent(keywords[i]);
-        }
-
-        Label sequencingLabel = new Label("<b><u>Aim of the planned sequencing analysis:</u></b>", ContentMode.HTML);
-        this.sequencingAim = new TextArea();
-        this.sequencingAim.addStyleName("corners");
-        this.sequencingAim.setSizeFull();
-        this.sequencingAim.setWordwrap(true);
-        this.sequencingAim.setRows(5);
-        this.sequencingAim.setMaxLength(1000);
-
-        this.addComponents(topicalLabel, topicalAssignment,  descriptionLabel,
-                projectDescription,
-                keywordTitle,
-                keyWordLayout, sequencingLabel,
-                sequencingAim);
-
-        this.totalCost = new TextField();
-        addTextField("Total amount for sequencing costs (in EUR; costs should include all services of the NGS-CC,e.g." +
-                " library preparation AND sequencing):", totalCost);
-
         this.setSpacing(true);
+
+        //Init and set project title;
+        this.projectTitle = new TextField();
+        this.dfgID = new TextField();
+        this.qbicID = new TextField();
+        this.topicalAssignment = new ComboBox();
+        this.projectDescription = new TextArea( );
+        this.classification = new ComboBox();
+        this.keyWordLayout = new HorizontalLayout();
+        this.keywords = new TextField[5];
+        this.sequencingAim = new TextArea();
+        this.totalCost = new TextField();
+
+        addTextField("Project Title:",this.projectTitle);
+        addTextField("DFG ID:", dfgID);
+        addTextField("QBiC ID:", qbicID);
+
+        IntStream.range(0,5).forEach(i -> {
+            keywords[i] = new TextField("#" + (i + 1));
+            keyWordLayout.addComponent(keywords[i]);
+        });
+
+        this.addComponents(new Label("<b><u>Topical assignment (DFG classification):</u></b>", ContentMode.HTML), topicalAssignment,
+                new Label("<b><u>Short project description:</u></b>", ContentMode.HTML), projectDescription,
+                new Label("<b><u>Classification</u></b>", ContentMode.HTML), classification,
+                new Label("<b><u>Key words (max. 5):</u></b>", ContentMode.HTML), keyWordLayout,
+                new Label("<b><u>Aim of the planned sequencing analysis:</u></b>", ContentMode.HTML), sequencingAim);
+
+        addTextField("Total amount for sequencing costs (in EUR; costs should include all services of the NGS-CC,e.g." +
+                " library preparation AND sequencing):",  totalCost);
+
+        addStyleElements();
+        addValidations();
 
     }
 
-    private void addTextField(String title, TextField textField){
+    private void addTextField(String title,  TextField textField){
         Label label = new Label("<b><u>" + title +"</u></b>", ContentMode.HTML);
-        textField.addStyleName("corners");
-        textField.setHeight(40, Unit.PIXELS);
+        CustomStyle.styleTextField(textField);
         this.addComponents(label, textField);
+
+    }
+
+    private void addStyleElements(){
+
+        this.projectTitle.setSizeFull();
+
+        CustomStyle.styleComboBox(topicalAssignment);
+        this.topicalAssignment.setSizeFull();
+
+        CustomStyle.styleTextArea(projectDescription);
+        this.projectDescription.setRows(5);
+
+        CustomStyle.styleComboBox(classification);
+
+        IntStream.range(0,5).forEach(i -> {
+            keywords[i].setSizeFull();
+            CustomStyle.styleTextField(keywords[i]);
+        });
+        keyWordLayout.setSizeFull();
+
+        CustomStyle.styleTextArea(sequencingAim);
+        this.sequencingAim.setRows(5);
+
+    }
+
+    private void addValidations(){
+
+        this.projectTitle.setRequired(true);
+        this.projectTitle.setMaxLength(100);
+
+        this.dfgID.setRequired(true);
+
+        this.topicalAssignment.setRequired(true);
+        this.topicalAssignment.setTextInputAllowed(false);
+
+        this.projectDescription.setRequired(true);
+        this.projectDescription.setMaxLength(2000);
+
+        this.classification.setRequired(true);
+        this.classification.setTextInputAllowed(false);
+
+        IntStream.range(0,5).forEach(i -> {
+            keywords[i].setMaxLength(19);
+        });
+
+        this.sequencingAim.setRequired(true);
+        this.sequencingAim.setMaxLength(1000);
+        this.sequencingAim.setInvalidAllowed(false);
+
+        this.totalCost.setRequired(true);
+        this.totalCost.setValidationVisible(true);
+        this.totalCost.setImmediate(true);
+        this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\,[0-9][0-9]?)?", true,"Number must be formatted as 123,45!"));
     }
 
     public TextField getDfgID() {

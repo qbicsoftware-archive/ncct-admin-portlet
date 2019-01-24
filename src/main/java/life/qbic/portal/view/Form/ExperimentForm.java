@@ -1,18 +1,21 @@
 package life.qbic.portal.view.Form;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.validator.NullValidator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
-import java.time.LocalDate;
-import java.util.stream.IntStream;
+import java.util.Date;
 
 public class ExperimentForm extends VerticalLayout {
 
-    private final TextField numberOfSamples;
+    private final Grid allExperiments;
+
+    private final TextField numberOfSamplesExperiment;
     private final TextField coverage;
     private final TextField costs;
     private final TextField genomeSize;
@@ -21,48 +24,32 @@ public class ExperimentForm extends VerticalLayout {
     private final ComboBox species;
     private final ComboBox type;
     private final ComboBox library;
-    private final ComboBox nucleic_acid;
+    private final ComboBox nucleicAcid;
 
     private final Grid batches;
+    private final TextField numberOfSamplesBatches;
 
-    private final Grid allExperiments;
-    private final Button addExperiment;
+    public ExperimentForm() {
 
-    public ExperimentForm(){
-
-        Label expLabel = new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML);
         this.allExperiments = new Grid();
         this.allExperiments.addColumn("Read Type", String.class);
         this.allExperiments.addColumn("Species", String.class);
         this.allExperiments.addColumn("Material", String.class);
         this.allExperiments.addColumn("Instrument", String.class);
         this.allExperiments.addColumn("Library", String.class);
-        this.allExperiments.addColumn("Genome size(Gb)", Double.class);
+        this.allExperiments.addColumn("Genome size(Gb)", String.class);
         this.allExperiments.addColumn("Nucleic Acid", String.class);
-        this.allExperiments.addColumn("Coverage (X)", Integer.class);
-        this.allExperiments.addColumn("Number of Samples", Integer.class);
-        this.allExperiments.addColumn("Cost(EUR)", Double.class);
+        this.allExperiments.addColumn("Coverage (X)", String.class);
+        this.allExperiments.addColumn("Number of Samples", String.class);
+        this.allExperiments.addColumn("Cost(EUR)", String.class);
 
         addGridSettings(allExperiments);
 
-        this.addExperiment = new Button("Add New Experiment");
-        this.addExperiment.addStyleName("corners");
+        this.type = new ComboBox("Read type");
+        addComboboxSettings(type);
 
-        this.numberOfSamples = new TextField("Number of Samples");
-        this.numberOfSamples.setValue("0");
-        addTextFieldSettings(numberOfSamples);
-
-        this.coverage = new TextField("Coverage(X)");
-        this.coverage.setValue("0");
-        addTextFieldSettings(coverage);
-
-        this.costs = new TextField("Cost(EUR)");
-        this.costs.setValue("0.00");
-        addTextFieldSettings(costs);
-
-        this.genomeSize = new TextField("Genome Size(Gb)");
-        this.genomeSize.setValue("0.0");
-        addTextFieldSettings(genomeSize);
+        this.species = new ComboBox("Specie");
+        addComboboxSettings(species);
 
         this.material = new ComboBox("Material");
         addComboboxSettings(material);
@@ -70,106 +57,115 @@ public class ExperimentForm extends VerticalLayout {
         this.instrument = new ComboBox("Instrument");
         addComboboxSettings(instrument);
 
-        this.species = new ComboBox("Specie");
-        addComboboxSettings(species);
-
-        this.type = new ComboBox("Read type");
-        addComboboxSettings(type);
-
         this.library = new ComboBox("Library");
         addComboboxSettings(library);
 
-        this.nucleic_acid = new ComboBox("Nucleic Acid");
-        addComboboxSettings(nucleic_acid);
+        this.genomeSize = new TextField("Genome Size(Gb)");
+        addTextFieldSettings(genomeSize, "[0-9]+\\.?[0-9]*", "Number must be formatted as positive double");
 
-        Label batchLabel = new Label("<b><u>Batches:</u></b>", ContentMode.HTML);
+        this.nucleicAcid = new ComboBox("Nucleic Acid");
+        addComboboxSettings(nucleicAcid);
+
+        this.coverage = new TextField("Coverage(X)");
+        addTextFieldSettings(coverage, "[0-9]+",  "Must be positive number");
+
+        this.numberOfSamplesExperiment = new TextField("Number of Samples");
+        addTextFieldSettings(numberOfSamplesExperiment, "[0-9]+",  "Must be positive number");
+
+        this.costs = new TextField("Cost(EUR)");
+        addTextFieldSettings(costs, "[0-9]+(\\,[0-9][0-9]?)?", "Number must be formatted as 123,45!" );
+
+        this.allExperiments.getColumn("Read Type").setEditorField(type);
+        this.allExperiments.getColumn("Species").setEditorField(species);
+        this.allExperiments.getColumn("Material").setEditorField(material);
+        this.allExperiments.getColumn("Instrument").setEditorField(instrument);
+        this.allExperiments.getColumn("Library").setEditorField(library);
+        this.allExperiments.getColumn("Genome size(Gb)").setEditorField(genomeSize);
+        this.allExperiments.getColumn("Nucleic Acid").setEditorField(nucleicAcid);
+        this.allExperiments.getColumn("Coverage (X)").setEditorField(coverage);
+        this.allExperiments.getColumn("Number of Samples").setEditorField(numberOfSamplesExperiment);
+        this.allExperiments.getColumn("Cost(EUR)").setEditorField(costs);
+
+        addEmptyExperimentRow();
+
+
         this.batches = new Grid();
         this.batches.addColumn("Estimated Delivery Date", String.class);
-        this.batches.addColumn("Number of Samples", Integer.class);
+        this.batches.addColumn("Number of Samples", String.class);
+        addGridSettings(batches);
 
-        this.batches.setEditorEnabled(true);
-        this.batches.setSizeFull();
-        this.batches.setHeightMode( HeightMode.ROW );
-        this.batches.setHeightByRows(5);
-        this.batches.setSelectionMode(Grid.SelectionMode.MULTI);
+        this.numberOfSamplesBatches = new TextField();
+        addTextFieldSettings(numberOfSamplesBatches, "[0-9]+",  "Must be positive number");
 
-        IntStream.range(0,1).forEach(i -> addEmptyBatchRow());
+        DateField dateField = new DateField();
+        dateField.setResolution(Resolution.DAY);
+        dateField.setValidationVisible(true);
+        dateField.addValidator(new NullValidator("Select date", false));
+        this.batches.getColumn("Estimated Delivery Date").setEditorField(dateField);
+        this.batches.getColumn("Number of Samples").setEditorField(numberOfSamplesBatches);
 
-        HorizontalLayout entryFieldsLayout = new HorizontalLayout();
-        entryFieldsLayout.setSizeFull();
-        entryFieldsLayout.addComponents(type, species, material, instrument,
-                             library, genomeSize, nucleic_acid, coverage,
-                             numberOfSamples, costs);
+        addEmptyBatchRow();
 
-        this.addComponents(expLabel, allExperiments, entryFieldsLayout, addExperiment, batchLabel, batches);
-        this.setComponentAlignment(addExperiment, Alignment.BOTTOM_RIGHT);
+        this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments,
+                            new Label("<b><u>Batches:</u></b>", ContentMode.HTML), batches);
+
         this.setSpacing(true);
+
+
     }
 
-    private void addTextFieldSettings(TextField textField){
-        textField.addStyleName("corners");
-        textField.setSizeFull();
-        textField.setHeight(40, UNITS_PIXELS);
-    }
-
-    private void addGridSettings(Grid grid){
+    private void addGridSettings(Grid grid) {
         grid.setSizeFull();
-        grid.setHeightMode( HeightMode.ROW );
+        grid.setHeightMode(HeightMode.ROW);
         grid.setHeightByRows(5);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setEditorEnabled(true);
     }
 
-    private void addComboboxSettings(ComboBox comboBox){
-        comboBox.addStyleName("corners");
-        comboBox.setInvalidAllowed(false);
-        comboBox.setNullSelectionAllowed(false);
+    private void addTextFieldSettings(TextField textField, String validationRegex, String errorMessage) {
+        textField.setRequired(true);
+        textField.setValidationVisible(true);
+        textField.setImmediate(true);
+        textField.addValidator(new RegexpValidator(validationRegex, true, errorMessage));
+    }
+
+    private void addComboboxSettings(ComboBox comboBox) {
         comboBox.setFilteringMode(FilteringMode.CONTAINS);
-        comboBox.setSizeFull();
+        comboBox.setImmediate(true);
+        comboBox.setValidationVisible(true);
+        comboBox.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
-        //TODO remove this when real data is available
-        String[] planets = new String[] {
-                "Mercury", "Venus", "Earth", "Mars",
-                "Jupiter", "Saturn", "Uranus", "Neptune" };
-        for (int i = 0; i < planets.length; i++)
-            for (int j = 0; j < planets.length; j++)
-                comboBox.addItem(planets[j] + " to " + planets[i]);
+//        //TODO remove this when real data is available
+//        String[] planets = new String[]{
+//                "Mercury", "Venus", "Earth", "Mars",
+//                "Jupiter", "Saturn", "Uranus", "Neptune"};
+//        for (int i = 0; i < planets.length; i++)
+//                comboBox.addItem(planets[i]);
     }
 
-    public void addEmptyBatchRow(){//TODO whenever a batch is successfully added to grid, then add new line
-        this.batches.addRow(null, null);
+    public void addEmptyBatchRow() {//TODO whenever a batch is successfully added to grid, then add new line
+        this.batches.addRow("", "");
     }
 
-    public void addDataToGrid(String type, String species, String material, String instrument,
-                              String library, double genomeSize, String nucleic_acid, int coverage,
-                              int numberOfSamples, double costs ) throws IllegalArgumentException{
-
-        if(type != null && species!= null && material != null && instrument != null && library != null &&
-             nucleic_acid != null) {
-
-            this.allExperiments.addRow(type, species, material, instrument,
-                                    library, genomeSize, nucleic_acid, coverage,
-                                    numberOfSamples, costs);
-            clearEntryFields();
-        }else{
-            throw new IllegalArgumentException("All fields must be specified");
-        }
+    public void addEmptyExperimentRow() {//TODO whenever a experiment is successfully added to grid, then add new line
+        this.allExperiments.addRow("", "", "", "", "", "", "", "", "", "");
     }
 
-    private void clearEntryFields(){
+    private void clearEntryFields() {
         this.type.clear();
         this.species.clear();
         this.material.clear();
         this.instrument.clear();
         this.library.clear();
         this.genomeSize.clear();
-        this.nucleic_acid.clear();
+        this.nucleicAcid.clear();
         this.coverage.clear();
-        this.numberOfSamples.clear();
+        this.numberOfSamplesExperiment.clear();
         this.costs.clear();
     }
 
-    public TextField getNumberOfSamples() {
-        return numberOfSamples;
+    public TextField getNumberOfSamplesExperiment() {
+        return numberOfSamplesExperiment;
     }
 
     public TextField getCoverage() {
@@ -204,8 +200,8 @@ public class ExperimentForm extends VerticalLayout {
         return library;
     }
 
-    public ComboBox getNucleic_acid() {
-        return nucleic_acid;
+    public ComboBox getNucleicAcid() {
+        return nucleicAcid;
     }
 
     public Grid getBatches() {
@@ -216,7 +212,7 @@ public class ExperimentForm extends VerticalLayout {
         return allExperiments;
     }
 
-    public Button getAddExperiment() {
-        return addExperiment;
+    public TextField getNumberOfSamplesBatches() {
+        return numberOfSamplesBatches;
     }
 }

@@ -1,5 +1,7 @@
 package life.qbic.portal.view.Form;
 
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -37,6 +39,8 @@ public class ContactPersonForm extends VerticalLayout {
         styleFields(email);
         styleFields(phoneNumber);
 
+        validateFields();
+
         layout.addComponents(lastName, firstName, institution, city, email, phoneNumber);
         layout.setSizeFull();
 
@@ -48,6 +52,33 @@ public class ContactPersonForm extends VerticalLayout {
         textField.addStyleName("corners");
         textField.setSizeFull();
         textField.setHeight(40, Unit.PIXELS);
+    }
+
+    private void validateFields(){
+
+        this.lastName.setRequired(true);
+        this.lastName.setMaxLength(100);
+
+        this.firstName.setRequired(true);
+        this.firstName.setMaxLength(100);
+
+        this.institution.setRequired(true);
+        this.institution.setMaxLength(100);
+
+        this.city.setRequired(true);
+        this.city.setMaxLength(50);
+
+        this.email.setRequired(true);
+        this.email.setMaxLength(100);
+        this.email.setValidationVisible(true);
+        this.email.setImmediate(true);
+        this.email.addValidator(new EmailValidator("Invalid format"));
+
+        this.phoneNumber.setRequired(true);
+        this.phoneNumber.setValidationVisible(true);
+        this.phoneNumber.setImmediate(true);
+        this.phoneNumber.setMaxLength(15);
+        this.phoneNumber.addValidator(new RegexpValidator("\\+(?:[0-9]?){6,14}[0-9]", "+4945611234"));
     }
 
     public TextField getLastName() {

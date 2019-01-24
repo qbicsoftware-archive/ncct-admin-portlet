@@ -106,12 +106,11 @@ public class DBManager {
    * @return a map of Vocabulary terms with names as keys and ids as values
    */
   public Map<String, Integer> getVocabularyMapForTable(TableName t) {
-    String sql = "SELECT * from ?";
+    String sql = "SELECT * from "+t.toString();
     Map<String, Integer> res = new HashMap<>();
     Connection conn = login();
     try {
       PreparedStatement statement = conn.prepareStatement(sql);
-      statement.setString(1, t.toString());
       ResultSet rs = statement.executeQuery();
       while (rs.next()) {
         res.put(rs.getString("name"), rs.getInt("id"));

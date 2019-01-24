@@ -3,6 +3,7 @@ package life.qbic.portal.view.Form;
 import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
@@ -101,12 +102,14 @@ public class ProjectForm extends VerticalLayout {
 
         this.topicalAssignment.setRequired(true);
         this.topicalAssignment.setTextInputAllowed(false);
+        this.topicalAssignment.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
         this.projectDescription.setRequired(true);
         this.projectDescription.setMaxLength(2000);
 
         this.classification.setRequired(true);
         this.classification.setTextInputAllowed(false);
+        this.classification.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
         IntStream.range(0,5).forEach(i -> {
             keywords[i].setMaxLength(19);

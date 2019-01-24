@@ -23,14 +23,7 @@ public class Person {
 
   public Person(String firstName, String lastName, String email, String city, String phone,
       String affiliation) {
-    super();
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.city = city;
-    this.phone = phone;
-    this.affiliation = affiliation;
-    this.id = -1;
+    this(-1, firstName, lastName, email, city, phone, affiliation);
   }
 
   public String getFirstName() {

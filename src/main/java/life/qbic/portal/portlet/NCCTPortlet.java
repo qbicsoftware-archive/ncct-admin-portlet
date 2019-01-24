@@ -7,14 +7,7 @@ import com.vaadin.ui.Layout;
 
 import com.vaadin.ui.VerticalLayout;
 
-import life.qbic.portal.model.DBConfig;
-import life.qbic.portal.model.DBManager;
-import life.qbic.portal.model.Person;
-import life.qbic.portal.presenter.ProjectsPresenter;
-import life.qbic.portal.utils.ConfigurationManager;
-import life.qbic.portal.utils.ConfigurationManagerFactory;
-
-import java.util.List;
+import life.qbic.portal.presenter.MainPresenter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
  * is found in the {@code portal-utils-lib} library.
- * 
+ *
  * @see <a href=https://github.com/qbicsoftware/portal-utils-lib>portal-utils-lib</a>
  */
 @Theme("mytheme")
@@ -44,14 +37,8 @@ public class NCCTPortlet extends QBiCPortletUI {
 
     // TODO we might want to move this to model or presenter?
     // read in the configuration file
-    ConfigurationManager config = ConfigurationManagerFactory.getInstance();
-    DBManager db = new DBManager(new DBConfig(config.getMysqlHost(), config.getMysqlPort(),
-        config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
-    db.initVocabularies();
 
-    List<Person> existingPersons = db.getAllPersons();
-
-    ProjectsPresenter mainPresenter = new ProjectsPresenter();
+    MainPresenter mainPresenter = new MainPresenter();
     return mainPresenter.getCanvas();
   }
 }

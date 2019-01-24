@@ -1,6 +1,7 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import life.qbic.portal.model.Vocabulary;
 
 public class ExperimentPresenter {
 
@@ -9,6 +10,7 @@ public class ExperimentPresenter {
     public ExperimentPresenter(FormPresenter formPresenter){
         this.formPresenter = formPresenter;
         addListener();
+        fillComboBoxes();
     }
 
     private void addListener(){
@@ -36,6 +38,16 @@ public class ExperimentPresenter {
             }
         });
 
+    }
+
+    private void fillComboBoxes(){
+
+        this.formPresenter.getFormLayout().getExperimentForm().getType().addItems(Vocabulary.getReadTypeValues());
+        this.formPresenter.getFormLayout().getExperimentForm().getSpecies().addItems(Vocabulary.getSpeciesValues());
+        this.formPresenter.getFormLayout().getExperimentForm().getMaterial().addItems(Vocabulary.getMaterialValues());
+        this.formPresenter.getFormLayout().getExperimentForm().getInstrument().addItems(Vocabulary.getInstrumentValues());
+        this.formPresenter.getFormLayout().getExperimentForm().getLibrary().addItems(Vocabulary.getLibraryValues());
+        this.formPresenter.getFormLayout().getExperimentForm().getNucleicAcid().addItems(Vocabulary.getNucleicAcidValues());
     }
 
 

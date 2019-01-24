@@ -1,5 +1,7 @@
 package life.qbic.portal.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -114,6 +116,35 @@ public class Vocabulary {
 
   public static String getMaterialName(int id) {
     return idToMaterial.get(id);
+  }
+
+
+  public static List<String> getReadTypeValues() {
+    return new ArrayList<>(idToTechnologyType.values());
+  }
+
+  public static List<String> getSpeciesValues() {
+    return new ArrayList<>(idToSpeciesName.values());
+  }
+
+  public static List<String> getMaterialValues() {
+    return new ArrayList<>(idToMaterial.values());
+  }
+
+  public static List<String> getInstrumentValues() {
+    return new ArrayList<>(idToTechnologyInstrument.values());
+  }
+
+  public static List<String> getLibraryValues() {
+    return new ArrayList<>(idToLibrary.values());
+  }
+
+  public static List<String> getNucleicAcidValues() {
+    return new ArrayList<>(idToNucleicAcid.values());
+  }
+
+  public static List<String> getTopicalAssignmentNames(){
+    return new ArrayList<>(topicalAssignmentToID.keySet());
   }
 
 }

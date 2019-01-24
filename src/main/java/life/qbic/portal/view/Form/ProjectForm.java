@@ -4,6 +4,7 @@ import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
@@ -74,13 +75,14 @@ public class ProjectForm extends VerticalLayout {
 
         this.projectTitle.setSizeFull();
 
-        CustomStyle.styleComboBox(topicalAssignment);
         this.topicalAssignment.setSizeFull();
+        this.topicalAssignment.setFilteringMode(FilteringMode.CONTAINS);
+
 
         CustomStyle.styleTextArea(projectDescription);
         this.projectDescription.setRows(5);
 
-        CustomStyle.styleComboBox(classification);
+        classification.setFilteringMode(FilteringMode.CONTAINS);
 
         IntStream.range(0,5).forEach(i -> {
             keywords[i].setSizeFull();
@@ -101,7 +103,6 @@ public class ProjectForm extends VerticalLayout {
         this.dfgID.setRequired(true);
 
         this.topicalAssignment.setRequired(true);
-        this.topicalAssignment.setTextInputAllowed(false);
         this.topicalAssignment.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
         this.projectDescription.setRequired(true);

@@ -95,4 +95,8 @@ public class FormLayout extends VerticalLayout {
     public PersonForm getCooperationPartners() {
         return cooperationPartners;
     }
+
+    public ProjectForm getProjectForm() {
+        return projectForm;
+    }
 }

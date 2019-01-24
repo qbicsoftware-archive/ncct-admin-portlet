@@ -135,12 +135,6 @@ public class ExperimentForm extends VerticalLayout {
         comboBox.setValidationVisible(true);
         comboBox.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
-//        //TODO remove this when real data is available
-//        String[] planets = new String[]{
-//                "Mercury", "Venus", "Earth", "Mars",
-//                "Jupiter", "Saturn", "Uranus", "Neptune"};
-//        for (int i = 0; i < planets.length; i++)
-//                comboBox.addItem(planets[i]);
     }
 
     public void addEmptyBatchRow() {//TODO whenever a batch is successfully added to grid, then add new line

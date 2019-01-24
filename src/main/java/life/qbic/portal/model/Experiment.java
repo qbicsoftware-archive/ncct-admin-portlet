@@ -20,9 +20,9 @@ public class Experiment {
   private List<Batch> batches;
   // private String project;
 
-  public Experiment(int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
-      String material, String species, String technologyType, String instrument,
-      String nucleicAcid, String library) {
+  public Experiment(int id, int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
+      String material, String species, String technologyType, String instrument, String nucleicAcid,
+      String library) {
     super();
     this.numOfSamples = numOfSamples;
     this.coverage = coverage;
@@ -35,25 +35,24 @@ public class Experiment {
     this.nucleicAcid = nucleicAcid;
     this.library = library;
     this.batches = new ArrayList<>();
-    this.id = -1;
-  }
-
-  public Experiment(int id, int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
-      String material, String species, String technologyType, String instrument,
-      String nucleicAcid, String library) {
-    this(numOfSamples, coverage, costs, genomeSize, material, species, technologyType, instrument,
-        nucleicAcid, library);
     this.id = id;
   }
-  
+
+  public Experiment(int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
+      String material, String species, String technologyType, String instrument, String nucleicAcid,
+      String library) {
+    this(-1, numOfSamples, coverage, costs, genomeSize, material, species, technologyType,
+        instrument, nucleicAcid, library);
+  }
+
   public int getID() {
     return id;
   }
-  
+
   public List<Batch> getBatches() {
     return batches;
   }
-  
+
   public void addBatch(Batch b) {
     batches.add(b);
   }
@@ -129,7 +128,7 @@ public class Experiment {
   public void setNucleicAcid(String nucleicAcid) {
     this.nucleicAcid = nucleicAcid;
   }
-  
+
   public String getLibrary() {
     return library;
   }

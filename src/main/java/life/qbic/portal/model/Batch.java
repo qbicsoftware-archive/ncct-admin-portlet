@@ -16,9 +16,7 @@ public class Batch {
   }
 
   public Batch(int numOfSamples, Date estimatedDelivery) {
-    this.estimatedDelivery = estimatedDelivery;
-    this.id = -1;
-    this.numOfSamples = numOfSamples;
+    this(-1, estimatedDelivery, numOfSamples);
   }
 
   public int getId() {

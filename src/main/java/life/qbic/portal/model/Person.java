@@ -26,6 +26,11 @@ public class Person {
     this(-1, firstName, lastName, email, city, phone, affiliation);
   }
 
+  public Person(String firstName, String lastName, String city,
+      String affiliation) {
+    this(-1, firstName, lastName, "", city, "", affiliation);
+  }
+
   public String getFirstName() {
     return firstName;
   }

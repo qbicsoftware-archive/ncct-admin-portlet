@@ -49,6 +49,12 @@ public class Project {
     this(-1, qbicID, dfgID, title, totalCost, description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
   }
   
+  public Project(String dfgID, String title, BigDecimal totalCost,
+      String description, String declarationOfInterest, String classification, String keywords,
+      String sequencingAim, Person contactPerson, String topicalAssignment) {
+    this(-1, "", dfgID, title, totalCost, description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+  }
+  
   public void addExperiment(Experiment experiment) {
     experiments.add(experiment);
   }

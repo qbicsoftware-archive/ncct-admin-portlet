@@ -1,5 +1,8 @@
 package life.qbic.portal.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -106,7 +109,7 @@ public class DBManager {
    * @return a map of Vocabulary terms with names as keys and ids as values
    */
   public Map<String, Integer> getVocabularyMapForTable(TableName t) {
-    String sql = "SELECT * from "+t.toString();
+    String sql = "SELECT * from " + t.toString();
     Map<String, Integer> res = new HashMap<>();
     Connection conn = login();
     try {
@@ -632,6 +635,26 @@ public class DBManager {
       res = rs.getInt(1);
     }
     return res;
+  }
+
+  private void addFileToProject(int projectID, File file)
+      throws FileNotFoundException, SQLException {
+    Connection connection = login();
+    String sql = "UPDATE project SET file=? WHERE id=?";
+    FileInputStream inputStream = new FileInputStream(file);
+    try {
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setBlob(1, inputStream);
+      statement.close();
+    } catch (SQLException e) {
+    } finally {
+      try {
+        connection.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
   }
 
   private void createBatches(List<Batch> batches, int expID, Connection connection)

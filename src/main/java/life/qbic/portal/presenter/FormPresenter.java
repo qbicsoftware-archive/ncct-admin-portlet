@@ -11,17 +11,19 @@ import java.io.OutputStream;
 public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private final FormLayout formLayout;
-    private final ProjectsPresenter projectsPresenter;
+    private final MainPresenter mainPresenter;
     private final ExperimentPresenter experimentPresenter;
     private final PersonFormPresenter personFormPresenter;
+    private final ProjectFormPresenter projectFormPresenter;
     private File tempFile;
 
-    public FormPresenter(ProjectsPresenter projectsPresenter){
-        this.projectsPresenter = projectsPresenter;
+    public FormPresenter(MainPresenter mainPresenter){
+        this.mainPresenter = mainPresenter;
         this.formLayout = new FormLayout();
 
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
+        this.projectFormPresenter = new ProjectFormPresenter(this);
         //TODO load data for all drop down menues
         addListener();
     }
@@ -41,7 +43,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     private void addSaveEntryListener(){
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
             //TODO save all data in DB, check that all fields have some content!
-            this.projectsPresenter.displayProjects();
+            this.mainPresenter.displayProjects();
         });
     }
 
@@ -72,7 +74,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         }
     }
 
-
-
-
+    public MainPresenter getMainPresenter() {
+        return mainPresenter;
+    }
 }

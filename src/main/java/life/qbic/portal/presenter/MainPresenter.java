@@ -28,6 +28,7 @@ public class MainPresenter {
         this.canvas.addComponent(projectsLayout);
 
         ConfigurationManager config;
+
         if (PortalUtils.isLiferayPortlet()) {
             config   = ConfigurationManagerFactory.getInstance();
         } else {

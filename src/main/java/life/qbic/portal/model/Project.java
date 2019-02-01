@@ -43,12 +43,18 @@ public class Project {
     this.experiments = new ArrayList<>();
   }
 
-  public Project(String qbicID, String dfgID, String title, BigDecimal totalCost,
+  public Project(String qbicID, String dfgID, String title, String totalCost,
       String description, String declarationOfInterest, String classification, String keywords,
       String sequencingAim, Person contactPerson, String topicalAssignment) {
-    this(-1, qbicID, dfgID, title, totalCost, description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+    this(-1, qbicID, dfgID, title, new BigDecimal(totalCost), description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
   }
   
+  public Project(String dfgID, String title, String totalCost,
+      String description, String declarationOfInterest, String classification, String keywords,
+      String sequencingAim, Person contactPerson, String topicalAssignment) {
+    this(-1, "", dfgID, title, new BigDecimal(totalCost), description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+  }
+
   public void addExperiment(Experiment experiment) {
     experiments.add(experiment);
   }

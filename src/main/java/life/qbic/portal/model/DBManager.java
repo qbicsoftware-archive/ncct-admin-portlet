@@ -234,16 +234,15 @@ public class DBManager {
         String title = rs.getString("title");
         BigDecimal totalCost = rs.getBigDecimal("total_cost");
         String description = rs.getString("description");
-        String classification = rs.getString("classification");
-        String declarationOfInterest = rs.getString("declaration_of_intent");
         String keywords = rs.getString("keywords");
         String sequencingAim = rs.getString("sequencing_aim");
         int contactID = rs.getInt("contact_person_id");
         int topicalID = rs.getInt("topical_assignment_id");
-
+        int classificationID = rs.getInt("classification");
 
         Person contactPerson = getPersonFromID(contactID);
         String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
+        String classification = Vocabulary.getClassificationName(classificationID);
         File tempFile = null;
         try {
           tempFile = blobToTempFile(rs.getBlob("declaration_of_intent"));

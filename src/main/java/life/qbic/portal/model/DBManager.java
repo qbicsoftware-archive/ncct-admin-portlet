@@ -1,8 +1,11 @@
 package life.qbic.portal.model;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -100,7 +103,7 @@ public class DBManager {
    * @return a map of Vocabulary terms with names as keys and ids as values
    */
   public Map<String, Integer> getVocabularyMapForTable(TableName t) {
-    String sql = "SELECT * from "+t.toString();
+    String sql = "SELECT * from " + t.toString();
     Map<String, Integer> res = new HashMap<>();
     Connection conn = login();
     try {
@@ -120,6 +123,11 @@ public class DBManager {
     return res;
   }
 
+  /**
+   * this does not store the key id, thus see function @getTopicalAssignmentIDFromName
+   * 
+   * @return
+   */
   public Map<String, String> getTopicalAssignmentVocabularyMap() {
     String sql = "SELECT * from topical_assignment";
     Map<String, String> res = new HashMap<>();
@@ -486,6 +494,31 @@ public class DBManager {
     return res;
   }
 
+  private int getTopicalAssignmentIDFromName(String name) {
+    String contactSql = "SELECT id from topical_assignment WHERE name = ?";
+    int res = -1;
+    Connection conn = login();
+    try {
+      PreparedStatement statement = conn.prepareStatement(contactSql);
+      statement.setString(1, name);
+      ResultSet rs = statement.executeQuery();
+
+      while (rs.next()) {
+        res = rs.getInt("id");
+      }
+      statement.close();
+    } catch (SQLException e) {
+    } finally {
+      try {
+        conn.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    return res;
+  }
+
   private String getTopicalAssignmentNameFromID(int topicalID) {
     String contactSql = "SELECT * from topical_assignment WHERE id = ?";
     String res = null;
@@ -571,16 +604,16 @@ public class DBManager {
         if (applicantID < 0) {
           applicantID = addPerson(applicant, connection);
         }
-        insertJunctionTableConnection(TableName.project_has_applicants, "applicant_id",
-            "project_id", applicantID, projectID, connection);
+        insertApplicantJunction(applicantID, projectID, connection);
+        // insertJunctionTableConnection(TableName.project_has_applicants, "applicant_id",
+        // "project_id", applicantID, projectID, connection);
       }
       for (Person cooperator : project.getCooperationPartners()) {
         int cooperatorID = cooperator.getID();
         if (cooperatorID < 0) {
           cooperatorID = addPerson(cooperator, connection);
         }
-        insertJunctionTableConnection(TableName.project_has_collaboration_partners,
-            "cooperation_partner_id", "project_id", cooperatorID, projectID, connection);
+        insertCooperationJunction(cooperatorID, projectID, connection);
       }
       // insert experiment tables and add respective batches
       for (Experiment exp : project.getExperiments()) {
@@ -591,6 +624,7 @@ public class DBManager {
       logger.error("project has been successfully added to all related tables.");
       success = true;
     } catch (Exception ex) {
+      ex.printStackTrace();
       logger.error("exception occured while adding project. rolling back.");
       connection.rollback();
     } finally {
@@ -605,7 +639,7 @@ public class DBManager {
     int res = -1;
     logger.info("Trying to add project " + project.getQbicID() + " to the DB");
     String sql =
-        "INSERT INTO project (qbic_id, dfg_id, title, total_cost, description, classification, declaration_of_interest, keywords, sequencing_aim, contact_person_id, topical_assignments_number) "
+        "INSERT INTO project (qbic_id, dfg_id, title, total_cost, description, classification, declaration_of_intent, keywords, sequencing_aim, contact_person_id, topical_assignment_id) "
             + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setString(1, project.getQbicID());
@@ -618,7 +652,7 @@ public class DBManager {
     statement.setString(8, project.getKeywords());
     statement.setString(9, project.getSequencingAim());
     statement.setInt(10, contactID);
-    statement.setString(11, Vocabulary.getTopicalAssignmentID(project.getTopicalAssignment()));
+    statement.setInt(11, getTopicalAssignmentIDFromName(project.getTopicalAssignment()));
     statement.execute();
     ResultSet rs = statement.getGeneratedKeys();
     statement.close();
@@ -628,14 +662,43 @@ public class DBManager {
     return res;
   }
 
+  public void addFileToProject(int projectID, File file)
+      throws FileNotFoundException, SQLException {
+    Connection connection = login();
+    String sql = "UPDATE project SET declaration_of_intent=? WHERE id=?";
+    FileInputStream inputStream = new FileInputStream(file);
+    try {
+      PreparedStatement statement = connection.prepareStatement(sql);
+      statement.setBlob(1, inputStream);
+      statement.setInt(2, projectID);
+      statement.execute();
+      statement.close();
+    } catch (SQLException e) {
+    } finally {
+      try {
+        connection.close();
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private Date convertDate(java.util.Date d) {
+    return new Date(d.getTime());
+  }
+  
   private void createBatches(List<Batch> batches, int expID, Connection connection)
       throws SQLException {
     logger.info("Trying to add sample batches to the DB");
-    String sql = "INSERT INTO batch (estimated_delivery_date, number_samples) " + "VALUES(?, ?)";
+    String sql = "INSERT INTO batch (estimated_delivery_date, number_samples, experiment_id) "
+        + "VALUES(?, ?, ?)";
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     for (Batch batch : batches) {
-      statement.setDate(1, batch.getEstimatedDelivery());
+      Date sqlDate = convertDate(batch.getEstimatedDelivery());
+      statement.setDate(1, sqlDate);
       statement.setInt(2, batch.getNumOfSamples());
+      statement.setInt(3, expID);
       statement.addBatch();
     }
     statement.executeBatch();
@@ -646,19 +709,20 @@ public class DBManager {
     int res = -1;
     logger.info("Trying to add experiment to the DB");
     String sql =
-        "INSERT INTO experiment (number_of_samples, coverage, costs, material_id, species_id, technology_type_id, technology_instrument_id, nucleic_acid_id, library_id, project_id) "
-            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO experiment (number_of_samples, coverage, costs, genome_size, material_id, species_id, technology_type_id, technology_instrument_id, nucleic_acid_id, library_id, project_id) "
+            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setInt(1, exp.getNumOfSamples());
     statement.setString(2, exp.getCoverage());
     statement.setBigDecimal(3, exp.getCosts());
-    statement.setInt(4, Vocabulary.getMaterialID(exp.getMaterial()));
-    statement.setInt(5, Vocabulary.getSpeciesID(exp.getSpecies()));
-    statement.setInt(6, Vocabulary.getTechnologyTypeID(exp.getTechnologyType()));
-    statement.setInt(7, Vocabulary.getTechInstrumentID(exp.getInstrument()));
-    statement.setInt(8, Vocabulary.getNucleicAcidID(exp.getNucleicAcid()));
-    statement.setInt(9, Vocabulary.getLibraryID(exp.getLibrary()));
-    statement.setInt(10, projectID);
+    statement.setString(4, exp.getGenomeSize());
+    statement.setInt(5, Vocabulary.getMaterialID(exp.getMaterial()));
+    statement.setInt(6, Vocabulary.getSpeciesID(exp.getSpecies()));
+    statement.setInt(7, Vocabulary.getTechnologyTypeID(exp.getTechnologyType()));
+    statement.setInt(8, Vocabulary.getTechInstrumentID(exp.getInstrument()));
+    statement.setInt(9, Vocabulary.getNucleicAcidID(exp.getNucleicAcid()));
+    statement.setInt(10, Vocabulary.getLibraryID(exp.getLibrary()));
+    statement.setInt(11, projectID);
     statement.execute();
     ResultSet rs = statement.getGeneratedKeys();
     statement.close();
@@ -690,18 +754,48 @@ public class DBManager {
     return res;
   }
 
-  private void insertJunctionTableConnection(TableName t, String firstIDName, String secondIDName,
-      int firstID, int secondID, Connection connection) throws SQLException {
-    logger.info("Adding connection between " + firstIDName + " and " + secondIDName);
-    String sql = "INSERT INTO " + t.toString() + " (?, ?) " + "VALUES(?, ?)";
+  private void insertApplicantJunction(int applicantID, int projectID, Connection connection)
+      throws SQLException {
+    logger.info("Adding connection between applicant and project");
+    String sql = "INSERT INTO project_has_applicants (applicant_id, project_id) " + "VALUES(?, ?)";
+    System.out.println(sql);
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    statement.setString(1, firstIDName);
-    statement.setString(2, secondIDName);
-    statement.setInt(3, firstID);
-    statement.setInt(4, secondID);
+    statement.setInt(1, applicantID);
+    statement.setInt(2, projectID);
     statement.execute();
     statement.close();
   }
+
+  private void insertCooperationJunction(int coopID, int projectID, Connection connection)
+      throws SQLException {
+    logger.info("Adding connection between cooperator and project");
+    String sql =
+        "INSERT INTO project_has_cooperation_partners (cooperation_partner_id, project_id) "
+            + "VALUES(?, ?)";
+    System.out.println(sql);
+    PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    statement.setInt(1, coopID);
+    statement.setInt(2, projectID);
+    statement.execute();
+    statement.close();
+  }
+
+  //
+  // private void insertJunctionTableConnection(TableName t, String firstIDName, String
+  // secondIDName,
+  // int firstID, int secondID, Connection connection) throws SQLException {
+  // logger.info("Adding connection between " + firstIDName + " and " + secondIDName);
+  // String sql = "INSERT INTO " + t.toString() + " (?, ?) " + "VALUES(?, ?)";
+  // System.out.println(sql);
+  // PreparedStatement statement = connection.prepareStatement(sql,
+  // Statement.RETURN_GENERATED_KEYS);
+  // statement.setString(1, firstIDName);
+  // statement.setString(2, secondIDName);
+  // statement.setInt(3, firstID);
+  // statement.setInt(4, secondID);
+  // statement.execute();
+  // statement.close();
+  // }
 
 
 

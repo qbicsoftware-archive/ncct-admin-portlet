@@ -7,6 +7,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
 
+
 public class ExperimentForm extends VerticalLayout {
 
     private final Grid allExperiments;

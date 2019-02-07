@@ -130,6 +130,10 @@ public class Vocabulary {
   public static List<String> getMaterialValues() {
     return new ArrayList<>(idToMaterial.values());
   }
+  
+  public static List<String> getTechnologyValues() {
+    return new ArrayList<>(idToTechnologyType.values());
+  }
 
   public static List<String> getInstrumentValues() {
     return new ArrayList<>(idToTechnologyInstrument.values());

@@ -82,6 +82,9 @@ public class Vocabulary {
     return materialToID.get(name);
   }
 
+  public static int getClassificationID(String name) {
+    return classificationToID.get(name);
+  }
 
   // public static String getTopicalAssignment(int id) {
   // return topicalAssignmentToID.get(name);

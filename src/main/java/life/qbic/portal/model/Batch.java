@@ -1,6 +1,11 @@
 package life.qbic.portal.model;
 
-import java.util.Date;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Batch {
 
@@ -8,15 +13,32 @@ public class Batch {
   private Date estimatedDelivery;
   private int numOfSamples;
 
+  private final Logger logger = LogManager.getLogger(Batch.class);
+
   // TODO convert vaadin date to SQL Timestamp
-  public Batch(int id, Date estimatedDelivery, int numOfSamples) {
+  public Batch(int id, Date deliveryDate, int numOfSamples) {
     this.id = id;
-    this.estimatedDelivery = estimatedDelivery;
+    this.estimatedDelivery = deliveryDate;
     this.numOfSamples = numOfSamples;
   }
 
-  public Batch(int numOfSamples, Date estimatedDelivery) {
-    this(-1, estimatedDelivery, numOfSamples);
+  private Date parseDate(String estimatedDelivery) {
+    System.out.println(estimatedDelivery);
+    SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    try {
+      java.util.Date parsed = format.parse(estimatedDelivery);
+      return new Date(parsed.getTime());
+    } catch (ParseException e) {
+      logger.error("could not parse date "+estimatedDelivery);
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public Batch(int numOfSamples, String estimatedDelivery) {
+    this.id = -1;
+    this.numOfSamples = numOfSamples;
+    this.estimatedDelivery = parseDate(estimatedDelivery);
   }
 
   public int getId() {
@@ -38,5 +60,9 @@ public class Batch {
   public void setEstimatedDelivery(Date estimatedDelivery) {
     this.estimatedDelivery = estimatedDelivery;
   }
+
+    public void setEstimatedDelivery(String estimatedDelivery) {
+      this.estimatedDelivery = parseDate(estimatedDelivery);
+    }
 
 }

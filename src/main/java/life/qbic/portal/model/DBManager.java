@@ -553,10 +553,10 @@ public class DBManager {
     }
     return res;
   }
-
-  private Date convertDate(java.util.Date d) {
-    return new Date(d.getTime());
-  }
+//
+//  private Date convertDate(java.util.Date d) {
+//    return new Date(d.getTime());
+//  }
 
   private void createBatches(List<Batch> batches, int expID, Connection connection)
       throws SQLException {
@@ -565,8 +565,7 @@ public class DBManager {
         + "VALUES(?, ?, ?)";
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     for (Batch batch : batches) {
-      Date sqlDate = convertDate(batch.getEstimatedDelivery());
-      statement.setDate(1, sqlDate);
+      statement.setDate(1, batch.getEstimatedDelivery());
       statement.setInt(2, batch.getNumOfSamples());
       statement.setInt(3, expID);
       statement.addBatch();

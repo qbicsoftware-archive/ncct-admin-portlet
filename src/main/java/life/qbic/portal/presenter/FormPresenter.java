@@ -1,6 +1,7 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Upload;
 import life.qbic.portal.model.Experiment;
 import life.qbic.portal.model.Person;
@@ -21,16 +22,25 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     private final PersonFormPresenter personFormPresenter;
     private final ProjectFormPresenter projectFormPresenter;
     private File tempFile;
+    private final FieldGroup fieldGroup;
 
     public FormPresenter(MainPresenter mainPresenter){
         this.mainPresenter = mainPresenter;
         this.formLayout = new FormLayout();
+
+        this.fieldGroup = new FieldGroup();
+        this.fieldGroup.setBuffered(true);
 
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
         this.projectFormPresenter = new ProjectFormPresenter(this);
 
         addListener();
+        addAllFiledsToFieldGroup();
+    }
+
+    private void addAllFiledsToFieldGroup(){
+        
     }
 
     private void addListener(){

@@ -7,7 +7,7 @@ public class Person {
   private String email;
   private String city;
   private String phone;
-  private String affiliation;
+  private String institution;
 
   public Person(int id, String firstName, String lastName, String email, String city, String phone,
       String affiliation) {
@@ -18,7 +18,7 @@ public class Person {
     this.email = email;
     this.city = city;
     this.phone = phone;
-    this.affiliation = affiliation;
+    this.institution = affiliation;
   }
 
   public Person(String firstName, String lastName, String email, String city, String phone,
@@ -71,19 +71,19 @@ public class Person {
     this.phone = phone;
   }
 
-  public String getAffiliation() {
-    return affiliation;
+  public String getInstitution() {
+    return institution;
   }
 
-  public void setAffiliation(String affiliation) {
-    this.affiliation = affiliation;
+  public void setInstitution(String institution) {
+    this.institution = institution;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((affiliation == null) ? 0 : affiliation.hashCode());
+    result = prime * result + ((institution == null) ? 0 : institution.hashCode());
     result = prime * result + ((city == null) ? 0 : city.hashCode());
     result = prime * result + ((email == null) ? 0 : email.hashCode());
     result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
@@ -102,10 +102,10 @@ public class Person {
     if (getClass() != obj.getClass())
       return false;
     Person other = (Person) obj;
-    if (affiliation == null) {
-      if (other.affiliation != null)
+    if (institution == null) {
+      if (other.institution != null)
         return false;
-    } else if (!affiliation.equals(other.affiliation))
+    } else if (!institution.equals(other.institution))
       return false;
     if (city == null) {
       if (other.city != null)

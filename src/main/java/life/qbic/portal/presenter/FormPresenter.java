@@ -1,12 +1,18 @@
 package life.qbic.portal.presenter;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Upload;
+import life.qbic.portal.model.Experiment;
+import life.qbic.portal.model.Person;
+import life.qbic.portal.model.Project;
 import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 
 public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
@@ -24,13 +30,14 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
         this.projectFormPresenter = new ProjectFormPresenter(this);
-        //TODO load data for all drop down menues
+
         addListener();
     }
 
     private void addListener(){
         addUploadListener();
         addSaveEntryListener();
+        addCancelListener();
     }
 
 
@@ -42,9 +49,18 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private void addSaveEntryListener(){
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
-            //TODO save all data in DB, check that all fields have some content!
+            saveEntry();
+            this.mainPresenter.loadProjects();
             this.mainPresenter.displayProjects();
         });
+    }
+
+    private void addCancelListener(){
+        this.formLayout.getCancel().addClickListener( clickEvent -> {
+            this.mainPresenter.loadProjects();
+            this.mainPresenter.displayProjects();
+        });
+
     }
 
     public FormLayout getFormLayout(){
@@ -76,5 +92,104 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     public MainPresenter getMainPresenter() {
         return mainPresenter;
+    }
+
+    private void saveEntry(){
+        //TODO validate this: use fieldgroup for this
+
+        Person contactPerson = new Person(
+                this.formLayout.getContactPersonForm().getFirstNameValue(),
+                this.formLayout.getContactPersonForm().getLastNameValue(),
+                this.formLayout.getContactPersonForm().getEmailValue(),
+                this.formLayout.getContactPersonForm().getCityValue(),
+                this.formLayout.getContactPersonForm().getPhoneNumberValue(),
+                this.formLayout.getContactPersonForm().getInstitutionValue()
+        );
+
+        Project project = new Project(this.formLayout.getProjectForm().getQbicIDValue(),
+                this.formLayout.getProjectForm().getDfgIDValue(),
+                this.formLayout.getProjectForm().getProjectTitleValue(),
+                new BigDecimal(this.formLayout.getProjectForm().getTotalCostValue()),
+                this.formLayout.getProjectForm().getProjectDescriptionValue(),
+                "", //TODO
+                this.formLayout.getProjectForm().getClassificationValue(),
+                this.formLayout.getProjectForm().getKeywordsValue(),
+                this.formLayout.getProjectForm().getSequencingAimValue(),
+                contactPerson,
+                this.formLayout.getProjectForm().getTopicalAssignmentValue()
+                );
+
+        for(Object id : this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItemIds()){
+            Item item = this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id);
+
+            if( ! ((String)item.getItemProperty("Read Type").getValue()).isEmpty()) {
+                Experiment experiment = new Experiment(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
+                        (String) item.getItemProperty("Coverage(X)").getValue(),
+                        new BigDecimal((String) item.getItemProperty("Cost(EUR)").getValue()),
+                        (String) item.getItemProperty("Genome Size(Gb)").getValue(),
+                        (String) item.getItemProperty("Material").getValue(),
+                        (String) item.getItemProperty("Species").getValue(),
+                        (String) item.getItemProperty("Read Type").getValue(),
+                        (String) item.getItemProperty("Instrument").getValue(),
+                        (String) item.getItemProperty("Nucleic Acid").getValue(),
+                        (String) item.getItemProperty("Library").getValue());
+                project.addExperiment(experiment);
+
+            }
+        }
+
+        //TODO sanity check if this adds up to overall amount of samples
+//        for(Object id : this.formLayout.getExperimentForm().getBatches().getContainerDataSource().getItemIds()){
+//            Item item = this.formLayout.getExperimentForm().getBatches().getContainerDataSource().getItem(id);
+//
+//            if( ! ((String)item.getItemProperty("Number of Samples").getValue()).isEmpty()) {
+//                Batch batch = new Batch(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
+//                        (Date) item.getItemProperty("Estimated Delivery Date").getValue());
+//                System.out.println(item);
+//                System.out.println(batch.getEstimatedDelivery());
+//                System.out.println(batch.getNumOfSamples());
+//            }
+//        }
+
+        for(Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()){
+            Item item = this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItem(id);
+
+            if( ! ((String)item.getItemProperty("Last Name").getValue()).isEmpty()) {
+                Person applicant = new Person((String) item.getItemProperty("First Name").getValue(),
+                        (String) item.getItemProperty("Last Name").getValue(),
+                        "",
+                        (String) item.getItemProperty("City").getValue(),
+                        "",
+                        (String) item.getItemProperty("Institution").getValue());
+
+                project.addApplicant(applicant);
+
+            }
+        }
+
+        for(Object id : this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItemIds()){
+            Item item = this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItem(id);
+
+            if( ! ((String)item.getItemProperty("Last Name").getValue()).isEmpty()) {
+                Person cooperationPartner = new Person((String) item.getItemProperty("First Name").getValue(),
+                        (String) item.getItemProperty("Last Name").getValue(),
+                        "",
+                        (String) item.getItemProperty("City").getValue(),
+                        "",
+                        (String) item.getItemProperty("Institution").getValue());
+
+                project.addCooperationPartner(cooperationPartner);
+
+            }
+        }
+
+        try {
+            this.mainPresenter.getDb().createProjectWithConnections(project);
+        }catch(SQLException e ){
+            e.printStackTrace();
+        }
+
+
+
     }
 }

@@ -1,23 +1,17 @@
 package life.qbic.portal.model;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DBManager {
   private DBConfig config;
@@ -747,7 +741,7 @@ public class DBManager {
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setString(1, person.getLastName());
     statement.setString(2, person.getFirstName());
-    statement.setString(3, person.getAffiliation());
+    statement.setString(3, person.getInstitution());
     statement.setString(4, person.getCity());
     statement.setString(5, person.getEmail());
     statement.setString(6, person.getPhone());

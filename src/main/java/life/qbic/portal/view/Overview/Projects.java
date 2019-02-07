@@ -7,7 +7,7 @@ public class Projects extends Grid {
 
 
     public Projects(){
-        this.addColumn("ID", String.class);
+        this.addColumn("DFG ID", String.class);
         this.addColumn("Title", String.class);
         this.addColumn("Contact Person", String.class);
         this.addColumn("Description", String.class);

@@ -4,16 +4,13 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Layout;
-
 import com.vaadin.ui.VerticalLayout;
-
 import life.qbic.portal.presenter.MainPresenter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-
+//TODO authorships, logging, delete unnecassary code, comment
 /**
  * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
  * is found in the {@code portal-utils-lib} library.

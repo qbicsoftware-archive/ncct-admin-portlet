@@ -234,16 +234,15 @@ public class DBManager {
         String title = rs.getString("title");
         BigDecimal totalCost = rs.getBigDecimal("total_cost");
         String description = rs.getString("description");
-        String classification = rs.getString("classification");
-        String declarationOfInterest = rs.getString("declaration_of_intent");
         String keywords = rs.getString("keywords");
         String sequencingAim = rs.getString("sequencing_aim");
         int contactID = rs.getInt("contact_person_id");
         int topicalID = rs.getInt("topical_assignment_id");
-
+        int classificationID = rs.getInt("classification");
 
         Person contactPerson = getPersonFromID(contactID);
         String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
+        String classification = Vocabulary.getClassificationName(classificationID);
         File tempFile = null;
         try {
           tempFile = blobToTempFile(rs.getBlob("declaration_of_intent"));
@@ -526,7 +525,7 @@ public class DBManager {
     int res = -1;
     logger.info("Trying to add project " + project.getQbicID() + " to the DB");
     String sql =
-        "INSERT INTO project (qbic_id, dfg_id, title, total_cost, description, classification, declaration_of_intent, keywords, sequencing_aim, contact_person_id, topical_assignment_id) "
+        "INSERT INTO project (qbic_id, dfg_id, title, total_cost, description, declaration_of_intent, keywords, sequencing_aim, contact_person_id, topical_assignment_id, classification_id) "
             + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setString(1, project.getQbicID());
@@ -539,16 +538,17 @@ public class DBManager {
     FileInputStream inputStream;
     try {
       inputStream = new FileInputStream(project.getDeclarationOfIntent());
-      statement.setBlob(7, inputStream);
+      statement.setBlob(6, inputStream);
     } catch (FileNotFoundException e) {
       logger.error("could not save " + project.getDeclarationOfIntent().getName() + " as blob");
       e.printStackTrace();
     }
 
-    statement.setString(8, project.getKeywords());
-    statement.setString(9, project.getSequencingAim());
-    statement.setInt(10, contactID);
-    statement.setInt(11, getTopicalAssignmentIDFromName(project.getTopicalAssignment()));
+    statement.setString(7, project.getKeywords());
+    statement.setString(8, project.getSequencingAim());
+    statement.setInt(9, contactID);
+    statement.setInt(10, getTopicalAssignmentIDFromName(project.getTopicalAssignment()));
+    statement.setInt(11, Vocabulary.getClassificationID(project.getClassification()));
     statement.execute();
     ResultSet rs = statement.getGeneratedKeys();
     statement.close();
@@ -653,120 +653,6 @@ public class DBManager {
     statement.execute();
     statement.close();
   }
-
-  //
-  // private void insertJunctionTableConnection(TableName t, String firstIDName, String
-  // secondIDName,
-  // int firstID, int secondID, Connection connection) throws SQLException {
-  // logger.info("Adding connection between " + firstIDName + " and " + secondIDName);
-  // String sql = "INSERT INTO " + t.toString() + " (?, ?) " + "VALUES(?, ?)";
-  // System.out.println(sql);
-  // PreparedStatement statement = connection.prepareStatement(sql,
-  // Statement.RETURN_GENERATED_KEYS);
-  // statement.setString(1, firstIDName);
-  // statement.setString(2, secondIDName);
-  // statement.setInt(3, firstID);
-  // statement.setInt(4, secondID);
-  // statement.execute();
-  // statement.close();
-  // }
-
-
-
-  // public int addExperimentToDB(String id) {
-  // int exists = isExpInDB(id);
-  // if (exists < 0) {
-  // String sql = "INSERT INTO experiments (openbis_experiment_identifier) VALUES(?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement =
-  // conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-  // statement.setString(1, id);
-  // statement.execute();
-  // ResultSet rs = statement.getGeneratedKeys();
-  // if (rs.next()) {
-  // logout(conn);
-  // return rs.getInt(1);
-  // }
-  // } catch (SQLException e) {
-  // logger.error("Was trying to add experiment " + id + " to the person DB");
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // }
-  // logout(conn);
-  // return -1;
-  // }
-  // logger.info("added experiment do mysql db");
-  // return exists;
-  // }
-  //
-  // private int isExpInDB(String id) {
-  // logger.info("Looking for experiment " + id + " in the DB");
-  // String sql = "SELECT * from experiments WHERE openbis_experiment_identifier = ?";
-  // int res = -1;
-  // Connection conn = login();
-  // try {
-  // PreparedStatement statement = conn.prepareStatement(sql);
-  // statement.setString(1, id);
-  // ResultSet rs = statement.executeQuery();
-  // if (rs.next()) {
-  // logger.info("experiment found!");
-  // res = rs.getInt("id");
-  // }
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return res;
-  // }
-  //
-  // public void addPersonToExperiment(int expID, int personID, String role) {
-  // if (expID == 0 || personID == 0)
-  // return;
-  //
-  // if (!hasPersonRoleInExperiment(personID, expID, role)) {
-  // logger.info("Trying to add person with role " + role + " to an experiment.");
-  // String sql =
-  // "INSERT INTO experiments_persons (experiment_id, person_id, experiment_role) VALUES(?, ?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement =
-  // conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-  // statement.setInt(1, expID);
-  // statement.setInt(2, personID);
-  // statement.setString(3, role);
-  // statement.execute();
-  // logger.info("Successful.");
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // }
-  // }
-  //
-  // private boolean hasPersonRoleInExperiment(int personID, int expID, String role) {
-  // logger.info("Checking if person already has this role in the experiment.");
-  // String sql =
-  // "SELECT * from experiments_persons WHERE person_id = ? AND experiment_id = ? and
-  // experiment_role = ?";
-  // boolean res = false;
-  // Connection conn = login();
-  // try {
-  // PreparedStatement statement = conn.prepareStatement(sql);
-  // statement.setInt(1, personID);
-  // statement.setInt(2, expID);
-  // statement.setString(3, role);
-  // ResultSet rs = statement.executeQuery();
-  // if (rs.next()) {
-  // res = true;
-  // logger.info("person already has this role!");
-  // }
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return res;
-  // }
 
   private void endQuery(Connection c, PreparedStatement p) {
     if (p != null)

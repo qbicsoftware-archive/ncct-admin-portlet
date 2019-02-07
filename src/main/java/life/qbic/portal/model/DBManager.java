@@ -514,14 +514,13 @@ public class DBManager {
       logger.error("exception occured while adding project. rolling back.");
       connection.rollback();
     } finally {
-      connection.setAutoCommit(true);
       connection.close();
     }
     return success;
   }
 
   private int addProject(Project project, int contactID, Connection connection)
-      throws SQLException {
+      throws SQLException, IOException {
     int res = -1;
     logger.info("Trying to add project " + project.getQbicID() + " to the DB");
     String sql =
@@ -535,7 +534,7 @@ public class DBManager {
     statement.setString(5, project.getDescription());
     statement.setString(6, project.getClassification());
 
-    FileInputStream inputStream;
+    FileInputStream inputStream = null;
     try {
       inputStream = new FileInputStream(project.getDeclarationOfIntent());
       statement.setBlob(6, inputStream);
@@ -552,6 +551,7 @@ public class DBManager {
     statement.execute();
     ResultSet rs = statement.getGeneratedKeys();
     statement.close();
+    inputStream.close();
     if (rs.next()) {
       res = rs.getInt(1);
     }
@@ -632,7 +632,6 @@ public class DBManager {
       throws SQLException {
     logger.info("Adding connection between applicant and project");
     String sql = "INSERT INTO project_has_applicants (applicant_id, project_id) " + "VALUES(?, ?)";
-    System.out.println(sql);
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setInt(1, applicantID);
     statement.setInt(2, projectID);
@@ -646,7 +645,6 @@ public class DBManager {
     String sql =
         "INSERT INTO project_has_cooperation_partners (cooperation_partner_id, project_id) "
             + "VALUES(?, ?)";
-    System.out.println(sql);
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setInt(1, coopID);
     statement.setInt(2, projectID);

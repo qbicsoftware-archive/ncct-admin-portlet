@@ -110,7 +110,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
                 this.formLayout.getProjectForm().getProjectTitleValue(),
                 this.formLayout.getProjectForm().getTotalCostValue(),
                 this.formLayout.getProjectForm().getProjectDescriptionValue(),
-                "", //TODO
+                tempFile,
                 this.formLayout.getProjectForm().getClassificationValue(),
                 this.formLayout.getProjectForm().getKeywordsValue(),
                 this.formLayout.getProjectForm().getSequencingAimValue(),

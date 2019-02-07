@@ -1,7 +1,5 @@
 package life.qbic.portal.view.Form;
 
-import com.vaadin.data.util.converter.StringToDoubleConverter;
-import com.vaadin.data.validator.DoubleRangeValidator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -59,6 +57,7 @@ public class ProjectForm extends VerticalLayout {
         addTextField("Total amount for sequencing costs (in EUR; costs should include all services of the NGS-CC,e.g." +
                 " library preparation AND sequencing):",  totalCost);
 
+
         addStyleElements();
         addValidations();
 
@@ -93,6 +92,12 @@ public class ProjectForm extends VerticalLayout {
         CustomStyle.styleTextArea(sequencingAim);
         this.sequencingAim.setRows(5);
 
+        CustomStyle.addComboboxSettings(classification);
+
+        //TODO add claissfication table
+        classification.addItems("S1", "S2");
+
+
     }
 
     private void addValidations(){
@@ -123,34 +128,55 @@ public class ProjectForm extends VerticalLayout {
         this.totalCost.setRequired(true);
         this.totalCost.setValidationVisible(true);
         this.totalCost.setImmediate(true);
-        this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\,[0-9][0-9]?)?", true,"Number must be formatted as 123,45!"));
+        this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\.[0-9][0-9]?)?", true,"Number must be formatted as 123.45!"));
     }
 
-    public TextField getDfgID() {
-        return dfgID;
+    public String getQbicIDValue() {
+        return qbicID.getValue();
     }
 
-    public TextField getProjectTitle() {
-        return projectTitle;
+    public String getDfgIDValue() {
+        return dfgID.getValue();
     }
 
-    public TextField getTotalCost() {
-        return totalCost;
+    public String getProjectTitleValue() {
+        return projectTitle.getValue();
     }
 
-    public TextArea getProjectDescription() {
-        return projectDescription;
+    public String getTotalCostValue() {
+        return totalCost.getValue();
+    }
+
+    public String getProjectDescriptionValue() {
+        return projectDescription.getValue();
+    }
+
+    public String getTopicalAssignmentValue() {
+        return topicalAssignment.getValue().toString();
+    }
+
+    public String getKeywordsValue() {
+        StringBuilder values =  new StringBuilder();
+
+        for(int i = 0; i < keywords.length; i++ ){
+            values.append(keywords[i].getValue());
+
+            if(i < keywords.length -1){
+                values.append(",");
+            }
+        }
+        return values.toString();
+    }
+
+    public String getSequencingAimValue() {
+        return sequencingAim.getValue();
+    }
+
+    public String getClassificationValue() {
+        return classification.getValue().toString();
     }
 
     public ComboBox getTopicalAssignment() {
         return topicalAssignment;
-    }
-
-    public TextField[] getKeywords() {
-        return keywords;
-    }
-
-    public TextArea getSequencingAim() {
-        return sequencingAim;
     }
 }

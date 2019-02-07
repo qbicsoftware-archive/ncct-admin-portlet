@@ -3,14 +3,11 @@ package life.qbic.portal.presenter;
 import com.vaadin.ui.VerticalLayout;
 import life.qbic.portal.model.DBConfig;
 import life.qbic.portal.model.DBManager;
-import life.qbic.portal.model.Person;
 import life.qbic.portal.utils.ConfigurationManager;
 import life.qbic.portal.utils.ConfigurationManagerFactory;
 import life.qbic.portal.utils.LiferayIndependentConfigurationManager;
 import life.qbic.portal.utils.PortalUtils;
 import life.qbic.portal.view.Overview.ProjectsLayout;
-
-import java.util.List;
 
 public class MainPresenter {
 
@@ -21,16 +18,15 @@ public class MainPresenter {
 
     private final DBManager db;
 
-    public MainPresenter(){
+    public MainPresenter() {
         this.projectsLayout = new ProjectsLayout();
         this.canvas = new VerticalLayout();
 
-        this.canvas.addComponent(projectsLayout);
 
         ConfigurationManager config;
 
         if (PortalUtils.isLiferayPortlet()) {
-            config   = ConfigurationManagerFactory.getInstance();
+            config = ConfigurationManagerFactory.getInstance();
         } else {
             LiferayIndependentConfigurationManager.Instance.init("local.properties");
             config = LiferayIndependentConfigurationManager.Instance;
@@ -41,17 +37,20 @@ public class MainPresenter {
 
         initDB();
         addListener();
+
+        loadProjects();
+        this.canvas.addComponent(projectsLayout);
     }
 
-    private void initDB(){
+    private void initDB() {
         db.initVocabularies();
     }
 
-    private void addListener(){
+    private void addListener() {
         addButtonListener();
     }
 
-    private void addButtonListener(){
+    private void addButtonListener() {
         this.projectsLayout.getAddNewProjectButton().addClickListener(clickEvent -> {
             this.canvas.removeAllComponents();
             FormPresenter formPresenter = new FormPresenter(this);
@@ -59,10 +58,19 @@ public class MainPresenter {
         });
     }
 
-    public void displayProjects(){
-        //TODO get existing projects and add them to the form
+    public void displayProjects() {
         this.canvas.removeAllComponents();
         this.canvas.addComponent(projectsLayout);
+    }
+
+    void loadProjects() {
+        this.projectsLayout.getProjects().getContainerDataSource().removeAllItems();
+        db.getProjects().forEach(project -> {
+            this.projectsLayout.getProjects().addRow(project.getDfgID(),
+                    project.getTitle(),
+                    project.getContactPerson().getFirstName().concat(" ").concat(project.getContactPerson().getLastName()),
+                    project.getDescription());
+        });
     }
 
     public VerticalLayout getCanvas() {

@@ -38,8 +38,10 @@ public class Experiment {
     this.id = id;
   }
 
-  public Experiment(int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
-      String material, String species, String technologyType, String instrument, String nucleicAcid,
+  public Experiment(int numOfSamples, String coverage,
+                    BigDecimal costs, String genomeSize,
+      String material, String species,
+                    String technologyType, String instrument, String nucleicAcid,
       String library) {
     this(-1, numOfSamples, coverage, costs, genomeSize, material, species, technologyType,
         instrument, nucleicAcid, library);

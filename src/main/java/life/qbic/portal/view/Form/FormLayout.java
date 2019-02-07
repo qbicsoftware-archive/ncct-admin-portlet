@@ -14,6 +14,7 @@ public class FormLayout extends VerticalLayout {
     private final Label addDoI;
     private final Upload uploadAttachment;
     private final Button saveEntries;
+    private final Button cancel;
     private final Label asterixExplained;
 
     public FormLayout() {
@@ -35,6 +36,9 @@ public class FormLayout extends VerticalLayout {
         this.saveEntries = new Button("Save Project");
         this.saveEntries.addStyleName("corners");
 
+        this.cancel = new Button("Cancel");
+        this.cancel.addStyleName("corners");
+
         this.uploadAttachment = new Upload();
         this.addDoI = new Label("<b><u>Upload Declaration of Intent:</u></b>", ContentMode.HTML);
 
@@ -50,17 +54,18 @@ public class FormLayout extends VerticalLayout {
         this.tabSheet.setSizeFull();
 
         this.asterixExplained = new Label(" <font color='red'>*</font> Required fields", ContentMode.HTML);
+
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.addComponents(cancel, saveEntries);
         this.addComponents(tabSheet,
                             addDoI,
                             uploadAttachment,
-                            saveEntries,
+                            buttons,
                             asterixExplained);
 
 
-        this.setComponentAlignment(saveEntries, Alignment.BOTTOM_RIGHT);
+        this.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
         this.setSpacing(true);
-        //TODO add explanation for red asterix, somehow it needs to be checked whther all fields are required when pressing save!
-
 
     }
 
@@ -74,6 +79,10 @@ public class FormLayout extends VerticalLayout {
 
     public Button getSaveEntries() {
         return saveEntries;
+    }
+
+    public Button getCancel() {
+        return cancel;
     }
 
     public Upload getUploadAttachment() {

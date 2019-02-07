@@ -24,4 +24,8 @@ public class ProjectsLayout extends VerticalLayout {
     public Button getAddNewProjectButton() {
         return addNewProjectButton;
     }
+
+    public Projects getProjects() {
+        return projects;
+    }
 }

@@ -81,27 +81,27 @@ public class ContactPersonForm extends VerticalLayout {
         this.phoneNumber.addValidator(new RegexpValidator("\\+(?:[0-9]?){6,14}[0-9]", "+4945611234"));
     }
 
-    public TextField getLastName() {
-        return lastName;
+    public String getLastNameValue() {
+        return lastName.getValue();
     }
 
-    public TextField getFirstName() {
-        return firstName;
+    public String getFirstNameValue() {
+        return firstName.getValue();
     }
 
-    public TextField getInstitution() {
-        return institution;
+    public String getInstitutionValue() {
+        return institution.getValue();
     }
 
-    public TextField getCity() {
-        return city;
+    public String getCityValue() {
+        return city.getValue();
     }
 
-    public TextField getEmail() {
-        return email;
+    public String getEmailValue() {
+        return email.getValue();
     }
 
-    public TextField getPhoneNumber() {
-        return phoneNumber;
+    public String getPhoneNumberValue() {
+        return phoneNumber.getValue();
     }
 }

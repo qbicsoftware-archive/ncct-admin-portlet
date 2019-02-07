@@ -249,7 +249,7 @@ public class DBManager {
         } catch (IOException e) {
           logger.error("could not fetch blob as a file.");
         }
-        
+
         Project project =
             new Project(id, qbicID, dfgID, title, totalCost, description, tempFile,
                 classification, keywords, sequencingAim, contactPerson, topicalAssignment);

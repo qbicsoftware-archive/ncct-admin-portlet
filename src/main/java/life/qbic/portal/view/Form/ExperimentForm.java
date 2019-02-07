@@ -47,14 +47,12 @@ public class ExperimentForm extends VerticalLayout {
 
         this.species = new ComboBox("Species");
         CustomStyle.addComboboxSettings(species);
-        species.addItem("Other");
 
         this.material = new ComboBox("Material");
         CustomStyle.addComboboxSettings(material);
 
         this.instrument = new ComboBox("Instrument");
         CustomStyle.addComboboxSettings(instrument);
-        instrument.addItems("Other");
 
         this.library = new ComboBox("Library");
         CustomStyle.addComboboxSettings(library);

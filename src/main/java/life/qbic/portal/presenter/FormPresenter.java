@@ -28,18 +28,11 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         this.formLayout = new FormLayout();
 
 
-       // this.fieldGroup.setBuffered(true);
-
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
         this.projectFormPresenter = new ProjectFormPresenter(this);
 
         addListener();
-        addAllFiledsToFieldGroup();
-    }
-
-    private void addAllFiledsToFieldGroup(){
-        //this.fieldGroup.bindMemberFields(this.formLayout.getUploadAttachment());
     }
 
     private void addListener(){
@@ -49,6 +42,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     }
 
 
+
     private void addUploadListener(){
         this.formLayout.getUploadAttachment().setReceiver(this);
         this.formLayout.getUploadAttachment().addSucceededListener(this);
@@ -56,6 +50,8 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     }
 
     private void addSaveEntryListener(){
+
+
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
             saveEntry();
             this.mainPresenter.loadProjects();

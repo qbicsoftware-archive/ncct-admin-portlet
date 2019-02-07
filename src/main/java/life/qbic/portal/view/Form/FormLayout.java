@@ -17,11 +17,9 @@ public class FormLayout extends VerticalLayout {
     private final Button saveEntries;
     private final Button cancel;
     private final Label asterixExplained;
-    private final FieldGroup fieldGroup;
 
     public FormLayout() {
 
-        this.fieldGroup = new FieldGroup();
 
         this.contactPersonForm = new ContactPersonForm();
 
@@ -44,6 +42,7 @@ public class FormLayout extends VerticalLayout {
         this.cancel.addStyleName("corners");
 
         this.uploadAttachment = new Upload();
+        this.uploadAttachment.setButtonCaption("Save");
         this.addDoI = new Label("<b><u>Upload Declaration of Intent:</u></b>", ContentMode.HTML);
 
         VerticalLayout verticalLayout = new VerticalLayout(contactPersonForm,applicantForm, cooperationPartners);
@@ -70,6 +69,8 @@ public class FormLayout extends VerticalLayout {
 
         this.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
         this.setSpacing(true);
+
+
 
     }
 

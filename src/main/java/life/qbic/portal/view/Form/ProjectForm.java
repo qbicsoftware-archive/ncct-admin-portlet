@@ -1,5 +1,6 @@
 package life.qbic.portal.view.Form;
 
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.combobox.FilteringMode;

@@ -19,5 +19,7 @@ public class ProjectFormPresenter {
 
     private void fillComboBoxes(){
         this.formPresenter.getFormLayout().getProjectForm().getTopicalAssignment().addItems(Vocabulary.getTopicalAssignmentNames());
+        this.formPresenter.getFormLayout().getProjectForm().getClassification().addItems(Vocabulary.getClassificationValues());
+
     }
 }

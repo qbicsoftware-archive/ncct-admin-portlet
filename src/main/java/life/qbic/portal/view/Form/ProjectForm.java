@@ -94,8 +94,6 @@ public class ProjectForm extends VerticalLayout {
 
         CustomStyle.addComboboxSettings(classification);
 
-        //TODO add claissfication table
-        classification.addItems("S1", "S2");
 
 
     }
@@ -178,5 +176,9 @@ public class ProjectForm extends VerticalLayout {
 
     public ComboBox getTopicalAssignment() {
         return topicalAssignment;
+    }
+
+    public ComboBox getClassification() {
+        return classification;
     }
 }

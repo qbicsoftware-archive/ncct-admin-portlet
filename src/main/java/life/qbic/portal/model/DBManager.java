@@ -668,7 +668,7 @@ public class DBManager {
     return res;
   }
 
-  private void addFileToProject(int projectID, File file)
+  public void addFileToProject(int projectID, File file)
       throws FileNotFoundException, SQLException {
     Connection connection = login();
     String sql = "UPDATE project SET declaration_of_intent=? WHERE id=?";
@@ -676,6 +676,8 @@ public class DBManager {
     try {
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setBlob(1, inputStream);
+      statement.setInt(2, projectID);
+      statement.execute();
       statement.close();
     } catch (SQLException e) {
     } finally {

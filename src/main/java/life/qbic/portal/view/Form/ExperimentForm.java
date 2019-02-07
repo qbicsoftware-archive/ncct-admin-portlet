@@ -9,8 +9,6 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
-import java.util.Date;
-
 public class ExperimentForm extends VerticalLayout {
 
     private final Grid allExperiments;

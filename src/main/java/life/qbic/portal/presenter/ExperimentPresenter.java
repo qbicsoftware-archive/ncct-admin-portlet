@@ -23,10 +23,23 @@ public class ExperimentPresenter {
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
+                //Add listener to each newly created batch tab
+                formPresenter.getFormLayout().getExperimentForm().getLastTab().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+                    @Override
+                    public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+
+                    }
+
+                    @Override
+                    public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                        formPresenter.getFormLayout().getExperimentForm().getLastTab().addEmptyBatchRow();
+                    }
+                });
             }
         });
 
-        formPresenter.getFormLayout().getExperimentForm().getBatches().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+        //Add listener to inital batch tab
+        formPresenter.getFormLayout().getExperimentForm().getLastTab().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
 
@@ -34,9 +47,10 @@ public class ExperimentPresenter {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                formPresenter.getFormLayout().getExperimentForm().addEmptyBatchRow();
+                formPresenter.getFormLayout().getExperimentForm().getLastTab().addEmptyBatchRow();
             }
         });
+
 
     }
 

@@ -7,6 +7,9 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ExperimentForm extends VerticalLayout {
 
@@ -23,12 +26,13 @@ public class ExperimentForm extends VerticalLayout {
     private final ComboBox library;
     private final ComboBox nucleicAcid;
 
-    private final Grid batches;
-    private final TextField numberOfSamplesBatches;
+    private final TabSheet batches = new TabSheet();
+    private int counter = 0;
 
     public ExperimentForm() {
 
         this.allExperiments = new Grid();
+        this.allExperiments.addColumn("ID", Integer.class);
         this.allExperiments.addColumn("Read Type", String.class);
         this.allExperiments.addColumn("Species", String.class);
         this.allExperiments.addColumn("Material", String.class);
@@ -40,7 +44,7 @@ public class ExperimentForm extends VerticalLayout {
         this.allExperiments.addColumn("Number of Samples", String.class);
         this.allExperiments.addColumn("Cost(EUR)", String.class);
 
-        addGridSettings(allExperiments);
+        CustomStyle.addGridSettings(allExperiments);
 
         this.type = new ComboBox("Read Type");
         CustomStyle.addComboboxSettings(type);
@@ -83,49 +87,28 @@ public class ExperimentForm extends VerticalLayout {
         this.allExperiments.getColumn("Number of Samples").setEditorField(numberOfSamplesExperiment);
         this.allExperiments.getColumn("Cost(EUR)").setEditorField(costs);
 
-        addEmptyExperimentRow();
 
-
-        this.batches = new Grid();
-        this.batches.addColumn("Estimated Delivery Date", String.class);
-        this.batches.addColumn("Number of Samples", String.class);
-        addGridSettings(batches);
-
-        this.numberOfSamplesBatches = new TextField();
-        CustomStyle.addTextFieldSettings(numberOfSamplesBatches, "[0-9]+",  "Must be positive number");
-
-        DateField dateField = new DateField();
-        dateField.setResolution(Resolution.DAY);
-        dateField.setValidationVisible(true);
-        dateField.addValidator(new NullValidator("Select date", false));
-        this.batches.getColumn("Estimated Delivery Date").setEditorField(dateField);
-        this.batches.getColumn("Number of Samples").setEditorField(numberOfSamplesBatches);
-
-        addEmptyBatchRow();
-
-        this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments,
-                            new Label("<b><u>Batches:</u></b>", ContentMode.HTML), batches);
 
         this.setSpacing(true);
 
 
-    }
+        this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments,
+                new Label("<b><u>Batches:</u></b>", ContentMode.HTML), batches);
 
-    private void addGridSettings(Grid grid) {
-        grid.setSizeFull();
-        grid.setHeightMode(HeightMode.ROW);
-        grid.setHeightByRows(5);
-        grid.setSelectionMode(Grid.SelectionMode.MULTI);
-        grid.setEditorEnabled(true);
-    }
+        addEmptyExperimentRow();
 
 
-    public void addEmptyBatchRow() {//TODO whenever a batch is successfully added to grid, then add new line
-        this.batches.addRow("", "");
     }
 
     public void addEmptyExperimentRow() {//TODO whenever a experiment is successfully added to grid, then add new line
-        this.allExperiments.addRow("", "", "", "", "", "", "", "", "", "");
+        this.allExperiments.addRow(counter + 1 , "", "", "", "", "", "", "", "", "", "");
+        batches.addTab(new BatchForm(), "Experiment " + (counter + 1));
+        batches.setSelectedTab(counter );
+        counter++;
+    }
+
+    public BatchForm getLastTab(){
+        return (BatchForm) batches.getTab(counter - 1).getComponent();
     }
 
     public TextField getNumberOfSamplesExperiment() {
@@ -168,15 +151,11 @@ public class ExperimentForm extends VerticalLayout {
         return nucleicAcid;
     }
 
-    public Grid getBatches() {
-        return batches;
-    }
-
     public Grid getAllExperiments() {
         return allExperiments;
     }
 
-    public TextField getNumberOfSamplesBatches() {
-        return numberOfSamplesBatches;
+    public TabSheet getBatches() {
+        return batches;
     }
 }

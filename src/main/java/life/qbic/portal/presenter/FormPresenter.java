@@ -1,7 +1,9 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.Upload;
+import life.qbic.portal.model.Batch;
 import life.qbic.portal.model.Experiment;
 import life.qbic.portal.model.Person;
 import life.qbic.portal.model.Project;
@@ -12,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
@@ -132,23 +136,23 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
                         (String) item.getItemProperty("Instrument").getValue(),
                         (String) item.getItemProperty("Nucleic Acid").getValue(),
                         (String) item.getItemProperty("Library").getValue());
+
+                for(Object batchId : ((Grid)this.formLayout.getExperimentForm().getBatches().getTab((int)id).getComponent()).getContainerDataSource().getItemIds()) {
+
+                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab((int) id).getComponent()).getContainerDataSource().getItem(batchId);
+
+                    if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
+                        Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
+                                (String)batchItem.getItemProperty("Estimated Delivery Date").getValue());
+
+                        experiment.addBatch(batch);
+                    }
+                }
+
                 project.addExperiment(experiment);
 
             }
         }
-
-        //TODO sanity check if this adds up to overall amount of samples
-//        for(Object id : this.formLayout.getExperimentForm().getBatches().getContainerDataSource().getItemIds()){
-//            Item item = this.formLayout.getExperimentForm().getBatches().getContainerDataSource().getItem(id);
-//
-//            if( ! ((String)item.getItemProperty("Number of Samples").getValue()).isEmpty()) {
-//                Batch batch = new Batch(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
-//                        (Date) item.getItemProperty("Estimated Delivery Date").getValue());
-//                System.out.println(item);
-//                System.out.println(batch.getEstimatedDelivery());
-//                System.out.println(batch.getNumOfSamples());
-//            }
-//        }
 
         for(Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()){
             Item item = this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItem(id);

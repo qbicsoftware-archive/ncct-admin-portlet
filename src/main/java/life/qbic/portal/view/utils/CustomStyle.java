@@ -4,7 +4,9 @@ import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
@@ -37,5 +39,14 @@ public final class CustomStyle {
         comboBox.setValidationVisible(true);
         comboBox.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
 
+    }
+
+
+    public static void addGridSettings(Grid grid) {
+        grid.setSizeFull();
+        grid.setHeightMode(HeightMode.ROW);
+        grid.setHeightByRows(5);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.setEditorEnabled(true);
     }
 }

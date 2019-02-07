@@ -6,6 +6,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -240,9 +244,15 @@ public class DBManager {
 
         Person contactPerson = getPersonFromID(contactID);
         String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
-
+        File tempFile = null;
+        try {
+          tempFile = blobToTempFile(rs.getBlob("declaration_of_intent"));
+        } catch (IOException e) {
+          logger.error("could not fetch blob as a file.");
+        }
+        
         Project project =
-            new Project(id, qbicID, dfgID, title, totalCost, description, declarationOfInterest,
+            new Project(id, qbicID, dfgID, title, totalCost, description, tempFile,
                 classification, keywords, sequencingAim, contactPerson, topicalAssignment);
         project.setApplicants(getPeopleForProjectID("project_has_applicants", "applicant_id", id));
         project.setCooperationPartners(getPeopleForProjectID("project_has_cooperation_partners",
@@ -259,6 +269,20 @@ public class DBManager {
       // TODO: handle exception
     }
     return res;
+  }
+
+  private File blobToTempFile(Blob blob) throws SQLException, IOException {
+    InputStream in = blob.getBinaryStream();
+    byte[] buff = new byte[4096];  // how much of the blob to read/write at a time
+    int len = 0;
+    File tempFile = File.createTempFile("intent.pdf", "xml");
+    tempFile.deleteOnExit();
+    OutputStream out = new FileOutputStream(tempFile);
+    while ((len = in.read(buff)) != -1) {
+        out.write(buff, 0, len);
+    }
+    out.close();
+    return tempFile;
   }
 
   private List<Experiment> getExperimentsWithProjectID(int projectID) {
@@ -511,7 +535,16 @@ public class DBManager {
     statement.setBigDecimal(4, project.getTotalCost());
     statement.setString(5, project.getDescription());
     statement.setString(6, project.getClassification());
-    statement.setString(7, project.getDeclarationOfInterest());
+
+    FileInputStream inputStream;
+    try {
+      inputStream = new FileInputStream(project.getDeclarationOfIntent());
+      statement.setBlob(7, inputStream);
+    } catch (FileNotFoundException e) {
+      logger.error("could not save " + project.getDeclarationOfIntent().getName() + " as blob");
+      e.printStackTrace();
+    }
+
     statement.setString(8, project.getKeywords());
     statement.setString(9, project.getSequencingAim());
     statement.setInt(10, contactID);
@@ -523,28 +556,6 @@ public class DBManager {
       res = rs.getInt(1);
     }
     return res;
-  }
-
-  public void addFileToProject(int projectID, File file)
-      throws FileNotFoundException, SQLException {
-    Connection connection = login();
-    String sql = "UPDATE project SET declaration_of_intent=? WHERE id=?";
-    FileInputStream inputStream = new FileInputStream(file);
-    try {
-      PreparedStatement statement = connection.prepareStatement(sql);
-      statement.setBlob(1, inputStream);
-      statement.setInt(2, projectID);
-      statement.execute();
-      statement.close();
-    } catch (SQLException e) {
-    } finally {
-      try {
-        connection.close();
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
   }
 
   private Date convertDate(java.util.Date d) {

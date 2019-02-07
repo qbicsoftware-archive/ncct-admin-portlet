@@ -1,5 +1,6 @@
 package life.qbic.portal.model;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class Project {
   private String title;
   private BigDecimal totalCost;
   private String description;
-  private String declarationOfInterest;
+  private File declarationOfIntent;
   private String classification;
   private String keywords;
   private String sequencingAim;
@@ -23,7 +24,7 @@ public class Project {
   private List<Experiment> experiments;
 
   public Project(int id, String qbicID, String dfgID, String title, BigDecimal totalCost,
-      String description, String declarationOfInterest, String classification, String keywords,
+      String description, File declarationOfIntent, String classification, String keywords,
       String sequencingAim, Person contactPerson, String topicalAssignment) {
     super();
     this.id = id;
@@ -32,7 +33,7 @@ public class Project {
     this.title = title;
     this.totalCost = totalCost;
     this.description = description;
-    this.declarationOfInterest = declarationOfInterest;
+    this.declarationOfIntent = declarationOfIntent;
     this.classification = classification;
     this.keywords = keywords;
     this.sequencingAim = sequencingAim;
@@ -44,15 +45,15 @@ public class Project {
   }
 
   public Project(String qbicID, String dfgID, String title, String totalCost,
-      String description, String declarationOfInterest, String classification, String keywords,
+      String description, File declarationOfIntent, String classification, String keywords,
       String sequencingAim, Person contactPerson, String topicalAssignment) {
-    this(-1, qbicID, dfgID, title, new BigDecimal(totalCost), description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+    this(-1, qbicID, dfgID, title, new BigDecimal(totalCost), description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
   }
   
   public Project(String dfgID, String title, String totalCost,
-      String description, String declarationOfInterest, String classification, String keywords,
+      String description, File declarationOfIntent, String classification, String keywords,
       String sequencingAim, Person contactPerson, String topicalAssignment) {
-    this(-1, "", dfgID, title, new BigDecimal(totalCost), description, declarationOfInterest, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+    this(-1, "", dfgID, title, new BigDecimal(totalCost), description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
   }
 
   public void addExperiment(Experiment experiment) {
@@ -123,12 +124,12 @@ public class Project {
     this.description = description;
   }
 
-  public String getDeclarationOfInterest() {
-    return declarationOfInterest;
+  public File getDeclarationOfIntent() {
+    return declarationOfIntent;
   }
 
-  public void setDeclarationOfInterest(String declarationOfInterest) {
-    this.declarationOfInterest = declarationOfInterest;
+  public void setDeclarationOfIntent(File declarationOfIntent) {
+    this.declarationOfIntent = declarationOfIntent;
   }
 
   public String getClassification() {

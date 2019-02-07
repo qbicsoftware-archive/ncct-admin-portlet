@@ -38,11 +38,11 @@ CREATE TABLE IF NOT EXISTS `ncct_db`.`batch` (
 
 
 -- -----------------------------------------------------
--- Table `ncct_db`.`Classification`
+-- Table `ncct_db`.`classification`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ncct_db`.`Classification` ;
+DROP TABLE IF EXISTS `ncct_db`.`classification` ;
 
-CREATE TABLE IF NOT EXISTS `ncct_db`.`Classification` (
+CREATE TABLE IF NOT EXISTS `ncct_db`.`classification` (
   `id` INT ZEROFILL NOT NULL AUTO_INCREMENT,
   `classification` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`id`),

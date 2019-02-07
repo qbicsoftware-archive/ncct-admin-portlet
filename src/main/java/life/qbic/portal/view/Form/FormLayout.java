@@ -1,5 +1,6 @@
 package life.qbic.portal.view.Form;
 
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
@@ -16,8 +17,11 @@ public class FormLayout extends VerticalLayout {
     private final Button saveEntries;
     private final Button cancel;
     private final Label asterixExplained;
+    private final FieldGroup fieldGroup;
 
     public FormLayout() {
+
+        this.fieldGroup = new FieldGroup();
 
         this.contactPersonForm = new ContactPersonForm();
 

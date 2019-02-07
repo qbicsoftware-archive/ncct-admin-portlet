@@ -22,14 +22,13 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     private final PersonFormPresenter personFormPresenter;
     private final ProjectFormPresenter projectFormPresenter;
     private File tempFile;
-    private final FieldGroup fieldGroup;
 
     public FormPresenter(MainPresenter mainPresenter){
         this.mainPresenter = mainPresenter;
         this.formLayout = new FormLayout();
 
-        this.fieldGroup = new FieldGroup();
-        this.fieldGroup.setBuffered(true);
+
+       // this.fieldGroup.setBuffered(true);
 
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
@@ -40,7 +39,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     }
 
     private void addAllFiledsToFieldGroup(){
-        
+        //this.fieldGroup.bindMemberFields(this.formLayout.getUploadAttachment());
     }
 
     private void addListener(){

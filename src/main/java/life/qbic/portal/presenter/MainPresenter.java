@@ -66,6 +66,7 @@ public class MainPresenter {
     void loadProjects() {
         this.projectsLayout.getProjects().getContainerDataSource().removeAllItems();
         db.getProjects().forEach(project -> {
+            System.out.println(project.getTitle());
             this.projectsLayout.getProjects().addRow(project.getDfgID(),
                     project.getTitle(),
                     project.getContactPerson().getFirstName().concat(" ").concat(project.getContactPerson().getLastName()),

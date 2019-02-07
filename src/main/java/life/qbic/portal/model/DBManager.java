@@ -378,8 +378,7 @@ public class DBManager {
         int contactID = rs.getInt("contact_person_id");
         int topicalID = rs.getInt("topical_assignment_id");
 
-        rs.close();
-        statement.close();
+
         Person contactPerson = getPersonFromID(contactID);
         String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
 
@@ -391,7 +390,12 @@ public class DBManager {
             "cooperation_partner_id", id));
         project.setExperiments(getExperimentsWithProjectID(id));
         res.add(project);
+
+        System.out.println("Project found" + project.getTitle());
       }
+
+      rs.close();
+      statement.close();
     } catch (SQLException e) {
       // TODO: handle exception
     }

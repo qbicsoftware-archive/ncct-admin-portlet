@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
@@ -109,7 +108,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         Project project = new Project(this.formLayout.getProjectForm().getQbicIDValue(),
                 this.formLayout.getProjectForm().getDfgIDValue(),
                 this.formLayout.getProjectForm().getProjectTitleValue(),
-                new BigDecimal(this.formLayout.getProjectForm().getTotalCostValue()),
+                this.formLayout.getProjectForm().getTotalCostValue(),
                 this.formLayout.getProjectForm().getProjectDescriptionValue(),
                 "", //TODO
                 this.formLayout.getProjectForm().getClassificationValue(),
@@ -125,7 +124,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
             if( ! ((String)item.getItemProperty("Read Type").getValue()).isEmpty()) {
                 Experiment experiment = new Experiment(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
                         (String) item.getItemProperty("Coverage(X)").getValue(),
-                        new BigDecimal((String) item.getItemProperty("Cost(EUR)").getValue()),
+                        (String) item.getItemProperty("Cost(EUR)").getValue(),
                         (String) item.getItemProperty("Genome Size(Gb)").getValue(),
                         (String) item.getItemProperty("Material").getValue(),
                         (String) item.getItemProperty("Species").getValue(),

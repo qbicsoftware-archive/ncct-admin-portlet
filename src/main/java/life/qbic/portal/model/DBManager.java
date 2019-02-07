@@ -224,7 +224,6 @@ public class DBManager {
     String sql = "SELECT * from project";
     Connection conn = login();
     try {
-
       PreparedStatement statement = conn.prepareStatement(sql);
       ResultSet rs = statement.executeQuery();
       while (rs.next()) {
@@ -238,8 +237,8 @@ public class DBManager {
         String sequencingAim = rs.getString("sequencing_aim");
         int contactID = rs.getInt("contact_person_id");
         int topicalID = rs.getInt("topical_assignment_id");
-        int classificationID = rs.getInt("classification");
-
+        int classificationID = rs.getInt("classification_id");
+        
         Person contactPerson = getPersonFromID(contactID);
         String topicalAssignment = getTopicalAssignmentNameFromID(topicalID);
         String classification = Vocabulary.getClassificationName(classificationID);
@@ -249,7 +248,6 @@ public class DBManager {
         } catch (IOException e) {
           logger.error("could not fetch blob as a file.");
         }
-
         Project project =
             new Project(id, qbicID, dfgID, title, totalCost, description, tempFile,
                 classification, keywords, sequencingAim, contactPerson, topicalAssignment);
@@ -258,14 +256,12 @@ public class DBManager {
             "cooperation_partner_id", id));
         project.setExperiments(getExperimentsWithProjectID(id));
         res.add(project);
-
-        System.out.println("Project found" + project.getTitle());
       }
 
       rs.close();
       statement.close();
     } catch (SQLException e) {
-      // TODO: handle exception
+      e.printStackTrace();
     }
     return res;
   }
@@ -514,14 +510,13 @@ public class DBManager {
       logger.error("exception occured while adding project. rolling back.");
       connection.rollback();
     } finally {
-      connection.setAutoCommit(true);
       connection.close();
     }
     return success;
   }
 
   private int addProject(Project project, int contactID, Connection connection)
-      throws SQLException {
+      throws SQLException, IOException {
     int res = -1;
     logger.info("Trying to add project " + project.getQbicID() + " to the DB");
     String sql =
@@ -535,7 +530,7 @@ public class DBManager {
     statement.setString(5, project.getDescription());
     statement.setString(6, project.getClassification());
 
-    FileInputStream inputStream;
+    FileInputStream inputStream = null;
     try {
       inputStream = new FileInputStream(project.getDeclarationOfIntent());
       statement.setBlob(6, inputStream);
@@ -552,6 +547,7 @@ public class DBManager {
     statement.execute();
     ResultSet rs = statement.getGeneratedKeys();
     statement.close();
+    inputStream.close();
     if (rs.next()) {
       res = rs.getInt(1);
     }
@@ -632,7 +628,6 @@ public class DBManager {
       throws SQLException {
     logger.info("Adding connection between applicant and project");
     String sql = "INSERT INTO project_has_applicants (applicant_id, project_id) " + "VALUES(?, ?)";
-    System.out.println(sql);
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setInt(1, applicantID);
     statement.setInt(2, projectID);
@@ -646,7 +641,6 @@ public class DBManager {
     String sql =
         "INSERT INTO project_has_cooperation_partners (cooperation_partner_id, project_id) "
             + "VALUES(?, ?)";
-    System.out.println(sql);
     PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     statement.setInt(1, coopID);
     statement.setInt(2, projectID);
@@ -688,168 +682,5 @@ public class DBManager {
         getVocabularyMapForTable(TableName.nucleic_acid),
         getVocabularyMapForTable(TableName.classification));
   }
-
-  //
-  // public String getInvestigatorForProject(String projectCode) {
-  // String id_query = "SELECT pi_id FROM projects WHERE project_code = " + projectCode;
-  // String id = "";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(id_query)) {
-  // ResultSet rs = statement.executeQuery();
-  // while (rs.next()) {
-  // id = Integer.toString(rs.getInt("pi_id"));
-  // }
-  // statement.close();
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // }
-  //
-  // String sql = "SELECT first_name, last_name FROM project_investigators WHERE pi_id = " + id;
-  // String fullName = "";
-  // try (PreparedStatement statement = conn.prepareStatement(sql)) {
-  // ResultSet rs = statement.executeQuery();
-  // while (rs.next()) {
-  // String first = rs.getString("first_name");
-  // String last = rs.getString("last_name");
-  // fullName = first + " " + last;
-  // }
-  // statement.close();
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return fullName;
-  // }
-
-  // /**
-  // * add a new institute to the database. not in use yet since the schema is old
-  // *
-  // * @param name
-  // * @param street
-  // * @param zip
-  // * @param city
-  // * @return
-  // */
-  // public int addNewInstitute(String name, String street, String zip, String city) {
-  // String sql = "insert into institutes (name, street, zip_code, city) " + "VALUES(?, ?, ?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
-  // {
-  // statement.setString(1, name);
-  // statement.setString(2, street);
-  // statement.setString(3, zip);
-  // statement.setString(4, city);
-  // statement.execute();
-  // ResultSet rs = statement.getGeneratedKeys();
-  // if (rs.next()) {
-  // return rs.getInt(1);
-  // }
-  // logger.info("Successful.");
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return -1;
-  // }
-
-  // /**
-  // * add a person whose institude id is known. not in use yet since the schema is old
-  // *
-  // * @return
-  // */
-  // public int addNewPersonWithInstituteID(Person p) {
-  // String sql =
-  // "insert into project_investigators (zdvID, first_name, last_name, email, phone, institute_id,
-  // active) "
-  // + "VALUES(?, ?, ?, ?, ?, ?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
-  // {
-  // statement.setString(1, p.getZdvID());
-  // statement.setString(2, p.getFirstName());
-  // statement.setString(3, p.getLastName());
-  // statement.setString(4, p.getEmail());
-  // statement.setString(5, p.getPhone());
-  // statement.setInt(6, p.getInstituteID());
-  // statement.setInt(7, 1);
-  // statement.execute();
-  // ResultSet rs = statement.getGeneratedKeys();
-  // if (rs.next()) {
-  // return rs.getInt(1);
-  // }
-  // logger.info("Successful.");
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return -1;
-  // }
-
-  // public int addNewPerson(PersonWithAdress p) {
-  // String sql =
-  // "insert into project_investigators (zdvID, first_name, last_name, email, street, zip_code,
-  // city, phone, institute, active) "
-  // + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
-  // {
-  // statement.setString(1, p.getZdvID());
-  // statement.setString(2, p.getFirstName());
-  // statement.setString(3, p.getLastName());
-  // statement.setString(4, p.getEmail());
-  // statement.setString(5, p.getStreet());
-  // statement.setString(6, p.getZipCode());
-  // statement.setString(7, p.getCity());
-  // statement.setString(8, p.getPhone());
-  // statement.setString(9, p.getInstitute());
-  // statement.setInt(10, 1);
-  // statement.execute();
-  // ResultSet rs = statement.getGeneratedKeys();
-  // if (rs.next()) {
-  // return rs.getInt(1);
-  // }
-  // logger.info("Successful.");
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return -1;
-  // }
-
-  // public void printPeople() {
-  // String sql = "SELECT * FROM project_investigators";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql)) {
-  // ResultSet rs = statement.executeQuery();
-  // while (rs.next()) {
-  // System.out.println(Integer.toString(rs.getInt(1)) + " " + rs.getString(2) + " "
-  // + rs.getString(3) + " " + rs.getString(4) + " " + rs.getString(5) + " "
-  // + rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8) + " "
-  // + rs.getString(9) + " " + rs.getString(10) + " " + rs.getString(11));
-  // }
-  // statement.close();
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // }
-  // }
-  //
-  // public void printProjects() {
-  // String sql = "SELECT pi_id, project_code FROM projects";
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql)) {
-  // ResultSet rs = statement.executeQuery();
-  // while (rs.next()) {
-  // int pi_id = rs.getInt("pi_id");
-  // String first = rs.getString("project_code");
-  // System.out.println(pi_id + first);
-  // }
-  // statement.close();
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // }
-  // }
 
 }

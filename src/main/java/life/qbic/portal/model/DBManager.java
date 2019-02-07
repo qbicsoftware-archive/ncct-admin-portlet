@@ -48,54 +48,6 @@ public class DBManager {
     return conn;
   }
 
-  // private Connection login(String db) {
-  // String DB_URL = "jdbc:mariadb://" + config.getHostname() + ":" + config.getPort() + "/" + db;
-  //
-  // Connection conn = null;
-  //
-  // try {
-  // Class.forName("org.mariadb.jdbc.Driver");
-  // conn = DriverManager.getConnection(DB_URL, config.getUsername(), config.getPassword());
-  // } catch (Exception e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // return conn;
-  // }
-
-  // public Person getPersonForProject(String projectIdentifier, String role) {
-  // String sql =
-  // "SELECT * FROM persons LEFT JOIN projects_persons ON persons.id = projects_persons.person_id "
-  // + "LEFT JOIN projects ON projects_persons.project_id = projects.id WHERE "
-  // + "projects.openbis_project_identifier = ? AND projects_persons.project_role = ?";
-  // Person res = null;
-  //
-  // Connection conn = login();
-  // try (PreparedStatement statement = conn.prepareStatement(sql)) {
-  // statement.setString(1, projectIdentifier);
-  // statement.setString(2, role);
-  //
-  // ResultSet rs = statement.executeQuery();
-  //
-  // while (rs.next()) {
-  // String zdvID = rs.getString("username");
-  // String first = rs.getString("first_name");
-  // String last = rs.getString("family_name");
-  // String email = rs.getString("email");
-  // String tel = rs.getString("phone");
-  // int instituteID = -1;// TODO fetch correct id
-  // res = new Person(zdvID, first, last, email, tel, instituteID);
-  // }
-  // } catch (SQLException e) {
-  // e.printStackTrace();
-  // logout(conn);
-  // // LOGGER.debug("Project not associated with Investigator. PI will be set to 'Unknown'");
-  // }
-  //
-  // logout(conn);
-  // return res;
-  // }
-
   /**
    * Returns a Map of Vocabulary terms from a Table containing id and name field
    * 
@@ -169,99 +121,6 @@ public class DBManager {
     logout(conn);
     return res;
   }
-  //
-  // public int isProjectInDB(String projectIdentifier) {
-  // logger.info("Looking for project " + projectIdentifier + " in the DB");
-  // String sql = "SELECT * from projects WHERE openbis_project_identifier = ?";
-  // int res = -1;
-  // Connection conn = login();
-  // try {
-  // PreparedStatement statement = conn.prepareStatement(sql);
-  // statement.setString(1, projectIdentifier);
-  // ResultSet rs = statement.executeQuery();
-  // if (rs.next()) {
-  // res = rs.getInt("id");
-  // logger.info("project found!");
-  // }
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return res;
-  // }
-
-  // public int addProjectToDB(String projectIdentifier, String projectName) {
-  // int exists = isProjectInDB(projectIdentifier);
-  // if (exists < 0) {
-  // logger.info("Trying to add project " + projectIdentifier + " to the person DB");
-  // String sql = "INSERT INTO projects (openbis_project_identifier, short_title) VALUES(?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement =
-  // conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-  // statement.setString(1, projectIdentifier);
-  // statement.setString(2, projectName);
-  // statement.execute();
-  // ResultSet rs = statement.getGeneratedKeys();
-  // if (rs.next()) {
-  // logout(conn);
-  // logger.info("Successful.");
-  // return rs.getInt(1);
-  // }
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return -1;
-  // }
-  // return exists;
-  // }
-
-  // public boolean hasPersonRoleInProject(int personID, int projectID, String role) {
-  // logger.info("Checking if person already has this role in the project.");
-  // String sql =
-  // "SELECT * from projects_persons WHERE person_id = ? AND project_id = ? and project_role = ?";
-  // boolean res = false;
-  // Connection conn = login();
-  // try {
-  // PreparedStatement statement = conn.prepareStatement(sql);
-  // statement.setInt(1, personID);
-  // statement.setInt(2, projectID);
-  // statement.setString(3, role);
-  // ResultSet rs = statement.executeQuery();
-  // if (rs.next()) {
-  // res = true;
-  // logger.info("person already has this role!");
-  // }
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // return res;
-  // }
-
-  // public void addPersonToProject(int projectID, int personID, String role) {
-  // if (!hasPersonRoleInProject(personID, projectID, role)) {
-  // logger.info("Trying to add person with role " + role + " to a project.");
-  // String sql =
-  // "INSERT INTO projects_persons (project_id, person_id, project_role) VALUES(?, ?, ?)";
-  // Connection conn = login();
-  // try (PreparedStatement statement =
-  // conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-  // statement.setInt(1, projectID);
-  // statement.setInt(2, personID);
-  // statement.setString(3, role);
-  // statement.execute();
-  // logger.info("Successful.");
-  // } catch (SQLException e) {
-  // logger.error("SQL operation unsuccessful: " + e.getMessage());
-  // e.printStackTrace();
-  // }
-  // logout(conn);
-  // }
-  // }
 
   /**
    * returns a list of available persons
@@ -691,7 +550,7 @@ public class DBManager {
   private Date convertDate(java.util.Date d) {
     return new Date(d.getTime());
   }
-  
+
   private void createBatches(List<Batch> batches, int expID, Connection connection)
       throws SQLException {
     logger.info("Trying to add sample batches to the DB");
@@ -929,7 +788,8 @@ public class DBManager {
         getVocabularyMapForTable(TableName.species),
         getVocabularyMapForTable(TableName.technology_type),
         getVocabularyMapForTable(TableName.material),
-        getVocabularyMapForTable(TableName.nucleic_acid));
+        getVocabularyMapForTable(TableName.nucleic_acid),
+        getVocabularyMapForTable(TableName.classification));
   }
 
   //

@@ -14,6 +14,7 @@ public class Vocabulary {
   private static Map<String, Integer> technologyTypeToID;
   private static Map<String, Integer> materialToID;
   private static Map<String, Integer> nucleicAcidToID;
+  private static Map<String, Integer> classificationToID;
 
   private static Map<Integer, String> idToLibrary;
   private static Map<Integer, String> idToTechnologyInstrument;
@@ -21,11 +22,12 @@ public class Vocabulary {
   private static Map<Integer, String> idToTechnologyType;
   private static Map<Integer, String> idToMaterial;
   private static Map<Integer, String> idToNucleicAcid;
+  private static Map<Integer, String> idToClassification;
 
   public Vocabulary(Map<String, String> topicalAssignmentToID, Map<String, Integer> libraryToID,
       Map<String, Integer> technologyInstrumentToID, Map<String, Integer> speciesNameToID,
       Map<String, Integer> technologyTypeToID, Map<String, Integer> materialToID,
-      Map<String, Integer> nucleicAcidToID) {
+      Map<String, Integer> nucleicAcidToID, Map<String, Integer> classificationToID) {
     super();
     Vocabulary.topicalAssignmentToID = topicalAssignmentToID;
     Vocabulary.libraryToID = libraryToID;
@@ -34,30 +36,21 @@ public class Vocabulary {
     Vocabulary.technologyTypeToID = technologyTypeToID;
     Vocabulary.materialToID = materialToID;
     Vocabulary.nucleicAcidToID = nucleicAcidToID;
-    
-    Vocabulary.idToLibrary = 
-        libraryToID.entrySet()
-        .stream()
+    Vocabulary.classificationToID = classificationToID;
+
+    Vocabulary.idToClassification = classificationToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-    Vocabulary.idToTechnologyInstrument = 
-        technologyInstrumentToID.entrySet()
-        .stream()
+    Vocabulary.idToLibrary = libraryToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-    Vocabulary.idToSpeciesName = 
-        speciesNameToID.entrySet()
-        .stream()
+    Vocabulary.idToTechnologyInstrument = technologyInstrumentToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-    Vocabulary.idToTechnologyType = 
-        technologyTypeToID.entrySet()
-        .stream()
+    Vocabulary.idToSpeciesName = speciesNameToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-    Vocabulary.idToMaterial = 
-        materialToID.entrySet()
-        .stream()
+    Vocabulary.idToTechnologyType = technologyTypeToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-    Vocabulary.idToNucleicAcid = 
-        nucleicAcidToID.entrySet()
-        .stream()
+    Vocabulary.idToMaterial = materialToID.entrySet().stream()
+        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+    Vocabulary.idToNucleicAcid = nucleicAcidToID.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
   }
 
@@ -88,17 +81,17 @@ public class Vocabulary {
   public static int getMaterialID(String name) {
     return materialToID.get(name);
   }
-  
 
-//  public static String getTopicalAssignment(int id) {
-//    return topicalAssignmentToID.get(name);
-//  }
+
+  // public static String getTopicalAssignment(int id) {
+  // return topicalAssignmentToID.get(name);
+  // }
 
   public static String getLibraryName(int id) {
     return idToLibrary.get(id);
   }
 
-  public static String getTechInstrumentName(int id ) {
+  public static String getTechInstrumentName(int id) {
     return idToTechnologyInstrument.get(id);
   }
 
@@ -118,6 +111,14 @@ public class Vocabulary {
     return idToMaterial.get(id);
   }
 
+  public static String getClassificationName(int id) {
+    return idToClassification.get(id);
+  }
+
+
+  public static List<String> getClassificationValues() {
+    return new ArrayList<>(idToClassification.values());
+  }
 
   public static List<String> getReadTypeValues() {
     return new ArrayList<>(idToTechnologyType.values());
@@ -130,7 +131,7 @@ public class Vocabulary {
   public static List<String> getMaterialValues() {
     return new ArrayList<>(idToMaterial.values());
   }
-  
+
   public static List<String> getTechnologyValues() {
     return new ArrayList<>(idToTechnologyType.values());
   }
@@ -147,7 +148,7 @@ public class Vocabulary {
     return new ArrayList<>(idToNucleicAcid.values());
   }
 
-  public static List<String> getTopicalAssignmentNames(){
+  public static List<String> getTopicalAssignmentNames() {
     return new ArrayList<>(topicalAssignmentToID.keySet());
   }
 

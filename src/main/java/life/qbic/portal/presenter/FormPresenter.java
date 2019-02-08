@@ -1,7 +1,9 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.Item;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
 import life.qbic.portal.model.Batch;
 import life.qbic.portal.model.Experiment;
@@ -52,9 +54,18 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
 
     private void addSaveEntryListener(){
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
-            saveEntry();
-            this.mainPresenter.loadProjects();
-            this.mainPresenter.displayProjects();
+            try {
+                saveEntry();
+                this.mainPresenter.loadProjects();
+                this.mainPresenter.displayProjects();
+            }catch(Exception e){
+                Notification notification = new Notification("Couldn't store entry",
+                        "Check if all fields marked with * are specified, the declaration of intent is uploaded and DFG ID/QBiC Id is unique",
+                        Notification.Type.ERROR_MESSAGE,
+                        true);
+                notification.setDelayMsec(-1); //infinity
+                notification.show(Page.getCurrent());
+            }
         });
     }
 
@@ -97,7 +108,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         return mainPresenter;
     }
 
-    private void saveEntry(){
+    private void saveEntry() throws SQLException{
         //TODO validate this: use fieldgroup for this
 
         Person contactPerson = new Person(
@@ -137,9 +148,9 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
                         (String) item.getItemProperty("Nucleic Acid").getValue(),
                         (String) item.getItemProperty("Library").getValue());
 
-                for(Object batchId : ((Grid)this.formLayout.getExperimentForm().getBatches().getTab((int)id).getComponent()).getContainerDataSource().getItemIds()) {
+                for(Object batchId : ((Grid)this.formLayout.getExperimentForm().getBatches().getTab(((int)id) -1).getComponent()).getContainerDataSource().getItemIds()) {
 
-                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab((int) id).getComponent()).getContainerDataSource().getItem(batchId);
+                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id)-1).getComponent()).getContainerDataSource().getItem(batchId);
 
                     if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
                         Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
@@ -186,11 +197,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
             }
         }
 
-        try {
-            this.mainPresenter.getDb().createProjectWithConnections(project);
-        }catch(SQLException e ){
-            e.printStackTrace();
-        }
+        this.mainPresenter.getDb().createProjectWithConnections(project);
 
 
 

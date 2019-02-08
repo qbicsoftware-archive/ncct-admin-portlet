@@ -1,7 +1,10 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.Grid;
+import life.qbic.portal.model.Batch;
 import life.qbic.portal.model.Vocabulary;
+import life.qbic.portal.view.Form.BatchForm;
 
 public class ExperimentPresenter {
 
@@ -23,34 +26,8 @@ public class ExperimentPresenter {
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
-                //Add listener to each newly created batch tab
-                formPresenter.getFormLayout().getExperimentForm().getLastTab().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
-                    @Override
-                    public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-
-                    }
-
-                    @Override
-                    public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                        formPresenter.getFormLayout().getExperimentForm().getLastTab().addEmptyBatchRow();
-                    }
-                });
             }
         });
-
-        //Add listener to inital batch tab
-        formPresenter.getFormLayout().getExperimentForm().getLastTab().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
-            @Override
-            public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-
-            }
-
-            @Override
-            public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                formPresenter.getFormLayout().getExperimentForm().getLastTab().addEmptyBatchRow();
-            }
-        });
-
 
     }
 

@@ -1,5 +1,6 @@
 package life.qbic.portal.view.Form;
 
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.DateField;
@@ -33,6 +34,19 @@ public class BatchForm extends Grid {
 
         addEmptyBatchRow();
 
+
+        //TODO: very irregular and should  be in presenter. Couldn't get it to work there though and due to deadline ahead, it will remain here for now
+        this.getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
+                    @Override
+                    public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+
+                    }
+
+                    @Override
+                    public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
+                       addEmptyBatchRow();
+                    }
+        });
 
     }
 

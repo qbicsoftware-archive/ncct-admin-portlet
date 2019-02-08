@@ -23,12 +23,11 @@ public class Batch {
   }
 
   private Date parseDate(String estimatedDelivery) {
-    System.out.println(estimatedDelivery);
+    java.util.Date date = new java.util.Date(estimatedDelivery);
     SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     try {
-      java.util.Date parsed = format.parse(estimatedDelivery);
-      return new Date(parsed.getTime());
-    } catch (ParseException e) {
+      return new Date(date.getTime());
+    } catch (Exception e) {
       logger.error("could not parse date "+estimatedDelivery);
       e.printStackTrace();
     }

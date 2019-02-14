@@ -203,7 +203,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
                 }
             }
 
-           //    this.mainPresenter.getDb().createProjectWithConnections(project);
+            this.mainPresenter.getDb().createProjectWithConnections(project);
 
 
     }

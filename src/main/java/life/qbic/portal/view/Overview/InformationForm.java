@@ -7,7 +7,9 @@ import life.qbic.portal.model.db.Project;
 
 public class InformationForm  extends Window {
 
-    Button download;
+    private final Button download;
+    private final HorizontalLayout downloadLayout;
+    private final VerticalLayout subContent;
 
     public InformationForm(Project p){
 
@@ -20,7 +22,7 @@ public class InformationForm  extends Window {
 
         this.setWidth("800");
         this.setHeight("550");
-        VerticalLayout subContent = new VerticalLayout();
+        subContent = new VerticalLayout();
         subContent.setSpacing(true);
         subContent.setMargin(true);
         this.setContent(subContent);
@@ -46,7 +48,7 @@ public class InformationForm  extends Window {
 
         subContent.addComponent(infoGrid);
         Label l = new Label("Download Declaration of Intent: ");
-        HorizontalLayout downloadLayout = new HorizontalLayout(l,download);
+        downloadLayout = new HorizontalLayout(l,download);
         downloadLayout.setSpacing(true);
         subContent.addComponent(downloadLayout);
         subContent.setComponentAlignment(downloadLayout, Alignment.BOTTOM_RIGHT);
@@ -56,4 +58,8 @@ public class InformationForm  extends Window {
     public Button getDownload() {
         return download;
     }
+
+    public void removeDownload(){
+        this.subContent.removeComponent(downloadLayout);
+     }
 }

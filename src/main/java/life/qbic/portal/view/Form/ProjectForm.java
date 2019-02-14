@@ -67,11 +67,6 @@ public class ProjectForm extends VerticalLayout {
         addStyleElements();
         addValidations();
 
-        this.projectTitle.setValue("Test project");
-        this.projectDescription.setValue("this is a description");
-        this.sequencingAim.setValue("This is a sequencing aim");
-        this.totalCost.setValue("123.45");
-
     }
 
     private void addTextField(String title, TextField textField) {
@@ -91,7 +86,7 @@ public class ProjectForm extends VerticalLayout {
         CustomStyle.styleTextArea(projectDescription);
         this.projectDescription.setRows(5);
 
-        classification.setFilteringMode(FilteringMode.CONTAINS);
+        this.classification.setFilteringMode(FilteringMode.CONTAINS);
 
         IntStream.range(0, 5).forEach(i -> {
             keywords[i].setSizeFull();
@@ -102,7 +97,6 @@ public class ProjectForm extends VerticalLayout {
         CustomStyle.styleTextArea(sequencingAim);
         this.sequencingAim.setRows(5);
 
-        CustomStyle.addComboboxSettings(classification);
 
 
     }
@@ -123,7 +117,6 @@ public class ProjectForm extends VerticalLayout {
         this.projectDescription.setMaxLength(2000);
 
         this.classification.setRequired(true);
-        this.classification.setTextInputAllowed(false);
         this.classification.addValidator(new StringLengthValidator("Select value", 1, Integer.MAX_VALUE, false));
 
         IntStream.range(0, 5).forEach(i -> {

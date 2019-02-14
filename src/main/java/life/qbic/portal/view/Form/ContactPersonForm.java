@@ -86,12 +86,6 @@ public class ContactPersonForm extends VerticalLayout {
         this.phoneNumber.setMaxLength(15);
         this.phoneNumber.addValidator(new RegexpValidator("\\+(?:[0-9]?){6,14}[0-9]", "+4945611234"));
 
-        this.lastName.setValue("Test");
-        this.firstName.setValue("test");
-        this.city.setValue("Tübigen");
-        this.institution.setValue("Tübingen");
-        this.phoneNumber.setValue("+6912381239");
-        this.email.setValue("123@web.de");
     }
 
     public String getLastNameValue() throws MyException{

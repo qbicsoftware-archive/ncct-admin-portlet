@@ -6,7 +6,13 @@ import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
+import life.qbic.portal.model.db.DBConfig;
+import life.qbic.portal.model.db.DBManager;
 import life.qbic.portal.model.db.Project;
+import life.qbic.portal.utils.ConfigurationManager;
+import life.qbic.portal.utils.ConfigurationManagerFactory;
+import life.qbic.portal.utils.LiferayIndependentConfigurationManager;
+import life.qbic.portal.utils.PortalUtils;
 import life.qbic.portal.view.Overview.InformationForm;
 import life.qbic.portal.view.Overview.ProjectsLayout;
 
@@ -26,7 +32,7 @@ public class MainPresenter {
     private final VerticalLayout canvas;
     private final ProjectsLayout projectsLayout;
 
-    //private final DBManager db;
+    private final DBManager db;
 
     private final Map<Object, Project> idToProject = new HashMap<>();
 
@@ -35,28 +41,28 @@ public class MainPresenter {
         this.canvas = new VerticalLayout();
 
 
-//        ConfigurationManager config;
-//
-//        if (PortalUtils.isLiferayPortlet()) {
-//            config = ConfigurationManagerFactory.getInstance();
-//        } else {
-//            LiferayIndependentConfigurationManager.Instance.init("local.properties");
-//            config = LiferayIndependentConfigurationManager.Instance;
-//        }
-//
-//        db = new DBManager(new DBConfig(config.getMysqlHost(), config.getMysqlPort(),
-//                config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
-//
-//        initDB();
+        ConfigurationManager config;
+
+        if (PortalUtils.isLiferayPortlet()) {
+            config = ConfigurationManagerFactory.getInstance();
+        } else {
+            LiferayIndependentConfigurationManager.Instance.init("local.properties");
+            config = LiferayIndependentConfigurationManager.Instance;
+        }
+
+        db = new DBManager(new DBConfig(config.getMysqlHost(), config.getMysqlPort(),
+                config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
+
+        initDB();
         addListeners();
 
         loadProjects();
         this.canvas.addComponent(projectsLayout);
     }
 
-  //  private void initDB() {
-//        db.initVocabularies();
-//    }
+    private void initDB() {
+        db.initVocabularies();
+    }
 
     private void addListeners() {
         addButtonListener();
@@ -74,7 +80,10 @@ public class MainPresenter {
             public void itemClick(ItemClickEvent event) {
                 if (event.isDoubleClick()) {
                     InformationForm informationForm = new InformationForm(idToProject.get(event.getItemId()));
-                    addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
+
+                    if(idToProject.get(event.getItemId()).getDeclarationOfIntent().exists()) {
+                        addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
+                    }
                     // Center it in the browser window
                     informationForm.center();
                     // Open it in the UI
@@ -100,13 +109,13 @@ public class MainPresenter {
 
     void loadProjects() {
         this.projectsLayout.getProjects().getContainerDataSource().removeAllItems();
-//        db.getProjects().forEach(project -> {
-//            Object id = this.projectsLayout.getProjects().addRow(
-//                    project.getDfgID(), project.getTitle(), project.getContactPerson().getFirstName()
-//                            .concat(" ").concat(project.getContactPerson().getLastName()),
-//                    project.getDescription());
-//            idToProject.put(id, project);
-//        });
+        db.getProjects().forEach(project -> {
+            Object id = this.projectsLayout.getProjects().addRow(
+                    project.getDfgID(), project.getTitle(), project.getContactPerson().getFirstName()
+                            .concat(" ").concat(project.getContactPerson().getLastName()),
+                    project.getDescription());
+            idToProject.put(id, project);
+        });
     }
 
     private void addDownloadOption(Button button, File tempFile) {
@@ -119,7 +128,7 @@ public class MainPresenter {
         return canvas;
     }
 
-  //  public DBManager getDb() {
-//        return db;
-//    }
+    public DBManager getDb() {
+        return db;
+    }
 }

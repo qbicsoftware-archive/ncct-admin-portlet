@@ -245,6 +245,7 @@ public class DBManager {
                 File tempFile = null;
                 try {
                     tempFile = blobToTempFile(rs.getBlob("declaration_of_intent"));
+                    System.out.println(tempFile.getTotalSpace());
                 } catch (IOException e) {
                     logger.error("could not fetch blob as a file.");
                 }
@@ -274,7 +275,7 @@ public class DBManager {
         InputStream in = blob.getBinaryStream();
         byte[] buff = new byte[4096];  // how much of the blob to read/write at a time
         int len = 0;
-        File tempFile = File.createTempFile("intent.pdf", "xml");
+        File tempFile = File.createTempFile("declarationOfIntent", "xml");
         tempFile.deleteOnExit();
         OutputStream out = new FileOutputStream(tempFile);
         while ((len = in.read(buff)) != -1) {
@@ -538,8 +539,11 @@ public class DBManager {
 
         FileInputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(project.getDeclarationOfIntent());
-            statement.setBlob(6, inputStream);
+            if(project.getDeclarationOfIntent() != null) {
+                inputStream = new FileInputStream(project.getDeclarationOfIntent());
+                statement.setBlob(6, inputStream);
+                inputStream.close();
+            }
         } catch (FileNotFoundException e) {
             logger.error("could not save " + project.getDeclarationOfIntent().getName() + " as blob");
             e.printStackTrace();
@@ -553,7 +557,6 @@ public class DBManager {
         statement.execute();
         ResultSet rs = statement.getGeneratedKeys();
         statement.close();
-        inputStream.close();
         if (rs.next()) {
             res = rs.getInt(1);
         }

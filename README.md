@@ -8,7 +8,7 @@ NCCT Admin Portlet, version 1.0.0-SNAPSHOT - This portlet captures information o
 
 Current DB structure:
 
-![Alt text](documents/eer_ncct.png?raw=true "Title")
+![DB](documents/eer_ncct.png) 
 
 ## How to Install
 

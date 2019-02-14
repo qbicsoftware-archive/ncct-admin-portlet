@@ -10,17 +10,22 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
+/**
+ * @author fhanssen
+ */
+
+
 public final class CustomStyle {
 
 
-    public static void styleTextArea(TextArea textArea){
+    public static void styleTextArea(TextArea textArea) {
         textArea.addStyleName("corners");
         textArea.setSizeFull();
         textArea.setWordwrap(true);
     }
 
 
-    public static void styleTextField(TextField textField){
+    public static void styleTextField(TextField textField) {
         textField.addStyleName("corners");
         textField.setHeight(40, Sizeable.Unit.PIXELS);
     }
@@ -37,7 +42,7 @@ public final class CustomStyle {
         comboBox.setFilteringMode(FilteringMode.CONTAINS);
         comboBox.setImmediate(true);
         comboBox.setValidationVisible(true);
-        comboBox.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
+        comboBox.addValidator(new StringLengthValidator("Select value", 1, Integer.MAX_VALUE, false));
 
     }
 

@@ -1,14 +1,12 @@
 package life.qbic.portal.view.Form;
 
-import com.vaadin.data.validator.NullValidator;
-import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * @author fhanssen
+ */
 
 
 public class ExperimentForm extends VerticalLayout {
@@ -68,13 +66,13 @@ public class ExperimentForm extends VerticalLayout {
         CustomStyle.addComboboxSettings(nucleicAcid);
 
         this.coverage = new TextField("Coverage(X)");
-        CustomStyle.addTextFieldSettings(coverage, "[0-9]+",  "Must be positive number");
+        CustomStyle.addTextFieldSettings(coverage, "[0-9]+", "Must be positive number");
 
         this.numberOfSamplesExperiment = new TextField("Number of Samples");
-        CustomStyle.addTextFieldSettings(numberOfSamplesExperiment, "[0-9]+",  "Must be positive number");
+        CustomStyle.addTextFieldSettings(numberOfSamplesExperiment, "[0-9]+", "Must be positive number");
 
         this.costs = new TextField("Cost(EUR)");
-        CustomStyle.addTextFieldSettings(costs, "[0-9]+(\\.[0-9][0-9]?)?", "Number must be formatted as 123.45!" );
+        CustomStyle.addTextFieldSettings(costs, "[0-9]+(\\.[0-9][0-9]?)?", "Number must be formatted as 123.45!");
 
         this.allExperiments.getColumn("Read Type").setEditorField(type);
         this.allExperiments.getColumn("Species").setEditorField(species);
@@ -86,7 +84,6 @@ public class ExperimentForm extends VerticalLayout {
         this.allExperiments.getColumn("Coverage(X)").setEditorField(coverage);
         this.allExperiments.getColumn("Number of Samples").setEditorField(numberOfSamplesExperiment);
         this.allExperiments.getColumn("Cost(EUR)").setEditorField(costs);
-
 
 
         this.setSpacing(true);
@@ -101,13 +98,13 @@ public class ExperimentForm extends VerticalLayout {
     }
 
     public void addEmptyExperimentRow() {//TODO whenever a experiment is successfully added to grid, then add new line
-        this.allExperiments.addRow(counter + 1 , "", "", "", "", "", "", "", "", "", "");
+        this.allExperiments.addRow(counter + 1, "", "", "", "", "", "", "", "", "", "");
         batches.addTab(new BatchForm(), "Experiment " + (counter + 1));
-        batches.setSelectedTab(counter );
+        batches.setSelectedTab(counter);
         counter++;
     }
 
-    public BatchForm getLastTab(){
+    public BatchForm getLastTab() {
         return (BatchForm) batches.getTab(counter - 1).getComponent();
     }
 

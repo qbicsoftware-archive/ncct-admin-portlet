@@ -1,22 +1,24 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.ui.Grid;
-import life.qbic.portal.model.Batch;
 import life.qbic.portal.model.Vocabulary;
-import life.qbic.portal.view.Form.BatchForm;
+
+
+/**
+ * @author fhanssen
+ */
 
 public class ExperimentPresenter {
 
     private final FormPresenter formPresenter;
 
-    public ExperimentPresenter(FormPresenter formPresenter){
+    public ExperimentPresenter(FormPresenter formPresenter) {
         this.formPresenter = formPresenter;
         addListener();
         fillComboBoxes();
     }
 
-    private void addListener(){
+    private void addListener() {
         formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getEditorFieldGroup().addCommitHandler(new FieldGroup.CommitHandler() {
             @Override
             public void preCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
@@ -31,7 +33,7 @@ public class ExperimentPresenter {
 
     }
 
-    private void fillComboBoxes(){
+    private void fillComboBoxes() {
 
         this.formPresenter.getFormLayout().getExperimentForm().getType().addItems(Vocabulary.getReadTypeValues());
         this.formPresenter.getFormLayout().getExperimentForm().getSpecies().addItems(Vocabulary.getSpeciesValues());

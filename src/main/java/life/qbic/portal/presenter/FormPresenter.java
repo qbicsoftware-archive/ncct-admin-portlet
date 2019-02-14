@@ -16,10 +16,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.util.Date;
 
-public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
+/**
+ * @author fhanssen
+ */
+
+
+public class FormPresenter implements Upload.Receiver, Upload.SucceededListener {
 
     private final FormLayout formLayout;
     private final MainPresenter mainPresenter;
@@ -28,7 +31,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
     private final ProjectFormPresenter projectFormPresenter;
     private File tempFile;
 
-    public FormPresenter(MainPresenter mainPresenter){
+    public FormPresenter(MainPresenter mainPresenter) {
         this.mainPresenter = mainPresenter;
         this.formLayout = new FormLayout();
 
@@ -39,26 +42,26 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         addListener();
     }
 
-    private void addListener(){
+    private void addListener() {
         addUploadListener();
         addSaveEntryListener();
         addCancelListener();
     }
 
 
-    private void addUploadListener(){
+    private void addUploadListener() {
         this.formLayout.getUploadAttachment().setReceiver(this);
         this.formLayout.getUploadAttachment().addSucceededListener(this);
 
     }
 
-    private void addSaveEntryListener(){
+    private void addSaveEntryListener() {
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
             try {
                 saveEntry();
                 this.mainPresenter.loadProjects();
                 this.mainPresenter.displayProjects();
-            }catch(Exception e){
+            } catch (Exception e) {
                 Notification notification = new Notification("Couldn't store entry",
                         "Check if all fields marked with * are specified, the declaration of intent is uploaded and DFG ID/QBiC Id is unique",
                         Notification.Type.ERROR_MESSAGE,
@@ -69,15 +72,15 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         });
     }
 
-    private void addCancelListener(){
-        this.formLayout.getCancel().addClickListener( clickEvent -> {
+    private void addCancelListener() {
+        this.formLayout.getCancel().addClickListener(clickEvent -> {
             this.mainPresenter.loadProjects();
             this.mainPresenter.displayProjects();
         });
 
     }
 
-    public FormLayout getFormLayout(){
+    public FormLayout getFormLayout() {
         return this.formLayout;
     }
 
@@ -108,7 +111,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         return mainPresenter;
     }
 
-    private void saveEntry() throws SQLException{
+    private void saveEntry() throws SQLException {
         //TODO validate this: use fieldgroup for this
 
         Person contactPerson = new Person(
@@ -131,12 +134,12 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
                 this.formLayout.getProjectForm().getSequencingAimValue(),
                 contactPerson,
                 this.formLayout.getProjectForm().getTopicalAssignmentValue()
-                );
+        );
 
-        for(Object id : this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItemIds()){
+        for (Object id : this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItemIds()) {
             Item item = this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id);
 
-            if( ! ((String)item.getItemProperty("Read Type").getValue()).isEmpty()) {
+            if (!((String) item.getItemProperty("Read Type").getValue()).isEmpty()) {
                 Experiment experiment = new Experiment(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
                         (String) item.getItemProperty("Coverage(X)").getValue(),
                         (String) item.getItemProperty("Cost(EUR)").getValue(),
@@ -148,13 +151,13 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
                         (String) item.getItemProperty("Nucleic Acid").getValue(),
                         (String) item.getItemProperty("Library").getValue());
 
-                for(Object batchId : ((Grid)this.formLayout.getExperimentForm().getBatches().getTab(((int)id) -1).getComponent()).getContainerDataSource().getItemIds()) {
+                for (Object batchId : ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItemIds()) {
 
-                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id)-1).getComponent()).getContainerDataSource().getItem(batchId);
+                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItem(batchId);
 
                     if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
                         Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
-                                (String)batchItem.getItemProperty("Estimated Delivery Date").getValue());
+                                (String) batchItem.getItemProperty("Estimated Delivery Date").getValue());
 
                         experiment.addBatch(batch);
                     }
@@ -165,10 +168,10 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
             }
         }
 
-        for(Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()){
+        for (Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()) {
             Item item = this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItem(id);
 
-            if( ! ((String)item.getItemProperty("Last Name").getValue()).isEmpty()) {
+            if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
                 Person applicant = new Person((String) item.getItemProperty("First Name").getValue(),
                         (String) item.getItemProperty("Last Name").getValue(),
                         "",
@@ -181,10 +184,10 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
             }
         }
 
-        for(Object id : this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItemIds()){
+        for (Object id : this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItemIds()) {
             Item item = this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItem(id);
 
-            if( ! ((String)item.getItemProperty("Last Name").getValue()).isEmpty()) {
+            if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
                 Person cooperationPartner = new Person((String) item.getItemProperty("First Name").getValue(),
                         (String) item.getItemProperty("Last Name").getValue(),
                         "",
@@ -198,7 +201,6 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener{
         }
 
         this.mainPresenter.getDb().createProjectWithConnections(project);
-
 
 
     }

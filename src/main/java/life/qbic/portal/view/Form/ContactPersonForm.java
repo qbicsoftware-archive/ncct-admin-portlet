@@ -8,6 +8,11 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * @author fhanssen
+ */
+
+
 public class ContactPersonForm extends VerticalLayout {
 
     private final Label title;
@@ -19,7 +24,7 @@ public class ContactPersonForm extends VerticalLayout {
     private final TextField email;
     private final TextField phoneNumber;
 
-    public ContactPersonForm(){
+    public ContactPersonForm() {
 
         this.title = new Label("<b><u>Contact person:</u></b>", ContentMode.HTML);
 
@@ -48,13 +53,13 @@ public class ContactPersonForm extends VerticalLayout {
         this.setSpacing(true);
     }
 
-    private void styleFields(TextField textField){
+    private void styleFields(TextField textField) {
         textField.addStyleName("corners");
         textField.setSizeFull();
         textField.setHeight(40, Unit.PIXELS);
     }
 
-    private void validateFields(){
+    private void validateFields() {
 
         this.lastName.setRequired(true);
         this.lastName.setMaxLength(100);

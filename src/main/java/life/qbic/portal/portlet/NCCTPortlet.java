@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 
 //TODO authorships, logging, delete unnecassary code, comment
+
 /**
  * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
  * is found in the {@code portal-utils-lib} library.
@@ -22,22 +23,22 @@ import org.apache.logging.log4j.Logger;
 @Widgetset("life.qbic.portal.portlet.AppWidgetSet")
 public class NCCTPortlet extends QBiCPortletUI {
 
-  private static final Logger LOG = LogManager.getLogger(NCCTPortlet.class);
+    private static final Logger LOG = LogManager.getLogger(NCCTPortlet.class);
 
-  VerticalLayout layout = new VerticalLayout();
+    VerticalLayout layout = new VerticalLayout();
 
-  @Override
-  protected Layout getPortletContent(final VaadinRequest request) {
-    LOG.info("Generating content for {}", NCCTPortlet.class);
+    @Override
+    protected Layout getPortletContent(final VaadinRequest request) {
+        LOG.info("Generating content for {}", NCCTPortlet.class);
 
-    // TODO: generate content for your portlet
-    // this method returns any non-null layout to avoid a NullPointerException later on
+        // TODO: generate content for your portlet
+        // this method returns any non-null layout to avoid a NullPointerException later on
 
 
-    // TODO we might want to move this to model or presenter?
-    // read in the configuration file
+        // TODO we might want to move this to model or presenter?
+        // read in the configuration file
 
-    MainPresenter mainPresenter = new MainPresenter();
-    return mainPresenter.getCanvas();
-  }
+        MainPresenter mainPresenter = new MainPresenter();
+        return mainPresenter.getCanvas();
+    }
 }

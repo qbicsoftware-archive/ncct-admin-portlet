@@ -7,6 +7,11 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * @author fhanssen
+ */
+
+
 public class PersonForm extends VerticalLayout {
 
     private final Label title;
@@ -31,7 +36,7 @@ public class PersonForm extends VerticalLayout {
 
         this.persons.setEditorEnabled(true);
         this.persons.setSizeFull();
-        this.persons.setHeightMode( HeightMode.ROW );
+        this.persons.setHeightMode(HeightMode.ROW);
         this.persons.setHeightByRows(5);
         this.persons.setSelectionMode(Grid.SelectionMode.MULTI);
 
@@ -65,7 +70,7 @@ public class PersonForm extends VerticalLayout {
 
     }
 
-    public void addRow(){//TODO whenever an applicant is successfully added to grid, then add new line
+    public void addRow() {//TODO whenever an applicant is successfully added to grid, then add new line
         this.persons.addRow("", "", "", "");
     }
 

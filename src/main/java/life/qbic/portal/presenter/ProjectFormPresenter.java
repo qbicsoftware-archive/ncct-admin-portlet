@@ -2,6 +2,11 @@ package life.qbic.portal.presenter;
 
 import life.qbic.portal.model.Vocabulary;
 
+/**
+ * @author fhanssen
+ */
+
+
 public class ProjectFormPresenter {
 
     private final FormPresenter formPresenter;
@@ -13,11 +18,11 @@ public class ProjectFormPresenter {
         fillComboBoxes();
     }
 
-    private void addListener(){
+    private void addListener() {
 
     }
 
-    private void fillComboBoxes(){
+    private void fillComboBoxes() {
         this.formPresenter.getFormLayout().getProjectForm().getTopicalAssignment().addItems(Vocabulary.getTopicalAssignmentNames());
         this.formPresenter.getFormLayout().getProjectForm().getClassification().addItems(Vocabulary.getClassificationValues());
 

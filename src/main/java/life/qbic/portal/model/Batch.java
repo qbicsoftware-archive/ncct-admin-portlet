@@ -1,67 +1,69 @@
 package life.qbic.portal.model;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
+/**
+ * @author afriedrich
+ */
 public class Batch {
 
-  private int id;
-  private Date estimatedDelivery;
-  private int numOfSamples;
+    private int id;
+    private Date estimatedDelivery;
+    private int numOfSamples;
 
-  private final Logger logger = LogManager.getLogger(Batch.class);
+    private final Logger logger = LogManager.getLogger(Batch.class);
 
-  // TODO convert vaadin date to SQL Timestamp
-  public Batch(int id, Date deliveryDate, int numOfSamples) {
-    this.id = id;
-    this.estimatedDelivery = deliveryDate;
-    this.numOfSamples = numOfSamples;
-  }
-
-  private Date parseDate(String estimatedDelivery) {
-    java.util.Date date = new java.util.Date(estimatedDelivery);
-    SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    try {
-      return new Date(date.getTime());
-    } catch (Exception e) {
-      logger.error("could not parse date "+estimatedDelivery);
-      e.printStackTrace();
+    // TODO convert vaadin date to SQL Timestamp
+    public Batch(int id, Date deliveryDate, int numOfSamples) {
+        this.id = id;
+        this.estimatedDelivery = deliveryDate;
+        this.numOfSamples = numOfSamples;
     }
-    return null;
-  }
 
-  public Batch(int numOfSamples, String estimatedDelivery) {
-    this.id = -1;
-    this.numOfSamples = numOfSamples;
-    this.estimatedDelivery = parseDate(estimatedDelivery);
-  }
+    private Date parseDate(String estimatedDelivery) {
+        java.util.Date date = new java.util.Date(estimatedDelivery);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        try {
+            return new Date(date.getTime());
+        } catch (Exception e) {
+            logger.error("could not parse date " + estimatedDelivery);
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-  public int getId() {
-    return id;
-  }
+    public Batch(int numOfSamples, String estimatedDelivery) {
+        this.id = -1;
+        this.numOfSamples = numOfSamples;
+        this.estimatedDelivery = parseDate(estimatedDelivery);
+    }
 
-  public int getNumOfSamples() {
-    return numOfSamples;
-  }
+    public int getId() {
+        return id;
+    }
 
-  public void setNumOfSamples(int numOfSamples) {
-    this.numOfSamples = numOfSamples;
-  }
+    public int getNumOfSamples() {
+        return numOfSamples;
+    }
 
-  public Date getEstimatedDelivery() {
-    return estimatedDelivery;
-  }
+    public void setNumOfSamples(int numOfSamples) {
+        this.numOfSamples = numOfSamples;
+    }
 
-  public void setEstimatedDelivery(Date estimatedDelivery) {
-    this.estimatedDelivery = estimatedDelivery;
-  }
+    public Date getEstimatedDelivery() {
+        return estimatedDelivery;
+    }
+
+    public void setEstimatedDelivery(Date estimatedDelivery) {
+        this.estimatedDelivery = estimatedDelivery;
+    }
 
     public void setEstimatedDelivery(String estimatedDelivery) {
-      this.estimatedDelivery = parseDate(estimatedDelivery);
+        this.estimatedDelivery = parseDate(estimatedDelivery);
     }
 
 }

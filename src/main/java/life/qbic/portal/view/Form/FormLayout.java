@@ -3,6 +3,11 @@ package life.qbic.portal.view.Form;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
+/**
+ * @author fhanssen
+ */
+
+
 public class FormLayout extends VerticalLayout {
 
     private final TabSheet tabSheet;
@@ -42,7 +47,7 @@ public class FormLayout extends VerticalLayout {
         this.uploadAttachment = new Upload();
         this.addDoI = new Label("<b><u>Upload Declaration of Intent:</u></b>", ContentMode.HTML);
 
-        VerticalLayout verticalLayout = new VerticalLayout(contactPersonForm,applicantForm, cooperationPartners);
+        VerticalLayout verticalLayout = new VerticalLayout(contactPersonForm, applicantForm, cooperationPartners);
         verticalLayout.setSpacing(true);
         verticalLayout.setMargin(true);
 
@@ -58,10 +63,10 @@ public class FormLayout extends VerticalLayout {
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.addComponents(cancel, saveEntries);
         this.addComponents(tabSheet,
-                            addDoI,
-                            uploadAttachment,
-                            buttons,
-                            asterixExplained);
+                addDoI,
+                uploadAttachment,
+                buttons,
+                asterixExplained);
 
 
         this.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);

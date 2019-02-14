@@ -9,6 +9,11 @@ import life.qbic.portal.view.utils.CustomStyle;
 
 import java.util.stream.IntStream;
 
+/**
+ * @author fhanssen
+ */
+
+
 public class ProjectForm extends VerticalLayout {
 
     private final TextField projectTitle;
@@ -23,7 +28,7 @@ public class ProjectForm extends VerticalLayout {
     private final TextField totalCost;
 
 
-    public ProjectForm(){
+    public ProjectForm() {
 
         this.setSpacing(true);
 
@@ -32,18 +37,18 @@ public class ProjectForm extends VerticalLayout {
         this.dfgID = new TextField();
         this.qbicID = new TextField();
         this.topicalAssignment = new ComboBox();
-        this.projectDescription = new TextArea( );
+        this.projectDescription = new TextArea();
         this.classification = new ComboBox();
         this.keyWordLayout = new HorizontalLayout();
         this.keywords = new TextField[5];
         this.sequencingAim = new TextArea();
         this.totalCost = new TextField();
 
-        addTextField("Project Title:",this.projectTitle);
+        addTextField("Project Title:", this.projectTitle);
         addTextField("DFG ID:", dfgID);
         addTextField("QBiC ID:", qbicID);
 
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(0, 5).forEach(i -> {
             keywords[i] = new TextField("#" + (i + 1));
             keyWordLayout.addComponent(keywords[i]);
         });
@@ -55,7 +60,7 @@ public class ProjectForm extends VerticalLayout {
                 new Label("<b><u>Aim of the planned sequencing analysis:</u></b>", ContentMode.HTML), sequencingAim);
 
         addTextField("Total amount for sequencing costs (in EUR; costs should include all services of the NGS-CC,e.g." +
-                " library preparation AND sequencing):",  totalCost);
+                " library preparation AND sequencing):", totalCost);
 
 
         addStyleElements();
@@ -70,14 +75,14 @@ public class ProjectForm extends VerticalLayout {
 
     }
 
-    private void addTextField(String title,  TextField textField){
-        Label label = new Label("<b><u>" + title +"</u></b>", ContentMode.HTML);
+    private void addTextField(String title, TextField textField) {
+        Label label = new Label("<b><u>" + title + "</u></b>", ContentMode.HTML);
         CustomStyle.styleTextField(textField);
         this.addComponents(label, textField);
 
     }
 
-    private void addStyleElements(){
+    private void addStyleElements() {
 
         this.projectTitle.setSizeFull();
 
@@ -90,7 +95,7 @@ public class ProjectForm extends VerticalLayout {
 
         classification.setFilteringMode(FilteringMode.CONTAINS);
 
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(0, 5).forEach(i -> {
             keywords[i].setSizeFull();
             CustomStyle.styleTextField(keywords[i]);
         });
@@ -102,10 +107,9 @@ public class ProjectForm extends VerticalLayout {
         CustomStyle.addComboboxSettings(classification);
 
 
-
     }
 
-    private void addValidations(){
+    private void addValidations() {
 
         this.projectTitle.setRequired(true);
         this.projectTitle.setMaxLength(100);
@@ -113,16 +117,16 @@ public class ProjectForm extends VerticalLayout {
         this.dfgID.setRequired(true);
 
         this.topicalAssignment.setRequired(true);
-        this.topicalAssignment.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
+        this.topicalAssignment.addValidator(new StringLengthValidator("Select value", 1, Integer.MAX_VALUE, false));
 
         this.projectDescription.setRequired(true);
         this.projectDescription.setMaxLength(2000);
 
         this.classification.setRequired(true);
         this.classification.setTextInputAllowed(false);
-        this.classification.addValidator(new StringLengthValidator("Select value",1, Integer.MAX_VALUE, false));
+        this.classification.addValidator(new StringLengthValidator("Select value", 1, Integer.MAX_VALUE, false));
 
-        IntStream.range(0,5).forEach(i -> {
+        IntStream.range(0, 5).forEach(i -> {
             keywords[i].setMaxLength(19);
         });
 
@@ -133,7 +137,7 @@ public class ProjectForm extends VerticalLayout {
         this.totalCost.setRequired(true);
         this.totalCost.setValidationVisible(true);
         this.totalCost.setImmediate(true);
-        this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\.[0-9][0-9]?)?", true,"Number must be formatted as 123.45!"));
+        this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\.[0-9][0-9]?)?", true, "Number must be formatted as 123.45!"));
     }
 
     public String getQbicIDValue() {
@@ -161,12 +165,12 @@ public class ProjectForm extends VerticalLayout {
     }
 
     public String getKeywordsValue() {
-        StringBuilder values =  new StringBuilder();
+        StringBuilder values = new StringBuilder();
 
-        for(int i = 0; i < keywords.length; i++ ){
+        for (int i = 0; i < keywords.length; i++) {
             values.append(keywords[i].getValue());
 
-            if(i < keywords.length -1){
+            if (i < keywords.length - 1) {
                 values.append(",");
             }
         }

@@ -4,9 +4,17 @@
 
 NCCT Admin Portlet, version 1.0.0-SNAPSHOT - This portlet captures information on NCCT projects.
 
-## Author
-Created by Friederike Hanssen (friederike.hanssen@student.uni-tuebingen.de).
-
 ## Description
 
+Current DB structure:
+
+![Alt text](documents/eer_ncct.png?raw=true "Title")
+
 ## How to Install
+
+
+## Author
+Created by Friederike Hanssen (friederike.hanssen@student.uni-tuebingen.de),
+Andreas Friedrich .
+
+

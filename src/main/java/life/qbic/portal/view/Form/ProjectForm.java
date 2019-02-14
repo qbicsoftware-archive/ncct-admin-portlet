@@ -67,8 +67,6 @@ public class ProjectForm extends VerticalLayout {
         addValidations();
 
         this.projectTitle.setValue("Test project");
-        this.dfgID.setValue("123");
-        this.qbicID.setValue("123");
         this.projectDescription.setValue("this is a description");
         this.sequencingAim.setValue("This is a sequencing aim");
         this.totalCost.setValue("123.45");

@@ -13019,6 +13019,10 @@ div.v-layout.v-horizontal.v-widget {
 	border-radius: 0px 0px 0px 0px;
 }
 
+.mytheme .v-upload-corners .v-button {
+	border-radius: 0px 0px 0px 0px;
+}
+
 .mytheme .v-tabsheet-framed .v-tabsheet-content > div {
 	background-color: transparent;
 	border: 1px solid grey;

@@ -87,7 +87,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
     @Override
     public OutputStream receiveUpload(String filename, String mimeType) {
         try {
-            tempFile = File.createTempFile(filename, "xml");
+            tempFile = File.createTempFile(filename, "pdf");
             tempFile.deleteOnExit();
             return new FileOutputStream(tempFile);
         } catch (IOException e) {
@@ -99,12 +99,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
 
     @Override
     public void uploadSucceeded(Upload.SucceededEvent event) {
-        try {
-            File destinationFile = new File("c:\\" + event.getFilename());
-            // TODO read and parse destinationFile
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.getFormLayout().getAddDoI().setCaption(tempFile.getName());
     }
 
     public MainPresenter getMainPresenter() {

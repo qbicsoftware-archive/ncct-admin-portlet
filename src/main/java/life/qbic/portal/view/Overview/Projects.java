@@ -19,7 +19,7 @@ public class Projects extends Grid {
 
         this.setEditorEnabled(false);
         this.setHeightMode(HeightMode.ROW);
-        this.setHeightByRows(5);
+        this.setHeightByRows(10);
         this.setSizeFull();
     }
 }

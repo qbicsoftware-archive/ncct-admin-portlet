@@ -15,6 +15,7 @@ import life.qbic.portal.utils.ConfigurationManager;
 import life.qbic.portal.utils.ConfigurationManagerFactory;
 import life.qbic.portal.utils.LiferayIndependentConfigurationManager;
 import life.qbic.portal.utils.PortalUtils;
+import life.qbic.portal.view.Overview.InformationForm;
 import life.qbic.portal.view.Overview.ProjectsLayout;
 
 import java.io.File;
@@ -76,43 +77,18 @@ public class MainPresenter {
         // doubleClickListener below, instead
         this.projectsLayout.getProjects().addItemClickListener(new ItemClickListener() {
 
+
             @Override
             public void itemClick(ItemClickEvent event) {
-                Project p = idToProject.get(event.getItemId());
+                if (event.isDoubleClick()) {
+                    InformationForm informationForm = new InformationForm(idToProject.get(event.getItemId()));
+                    addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
+                    // Center it in the browser window
+                    informationForm.center();
+                    // Open it in the UI
+                    UI.getCurrent().addWindow(informationForm);
 
-                Window subWindow = new Window("Project " + p.getDfgID());
-                subWindow.setWidth("600");
-                subWindow.setHeight("350");
-                VerticalLayout subContent = new VerticalLayout();
-                subContent.setSpacing(true);
-                subContent.setMargin(true);
-                subWindow.setContent(subContent);
-
-                Grid infoGrid = new Grid();
-                infoGrid.addColumn("Information", String.class);
-                infoGrid.addColumn("Value", String.class);
-
-                infoGrid.setSelectionMode(SelectionMode.NONE);
-                infoGrid.setEditorEnabled(false);
-                infoGrid.setHeightMode(HeightMode.ROW);
-                infoGrid.setHeightByRows(5);
-                infoGrid.setSizeFull();
-
-                infoGrid.addRow("Classification", p.getClassification());
-                infoGrid.addRow("Keywords", p.getKeywords());
-                infoGrid.addRow("QBiC ID", p.getQbicID());
-                infoGrid.addRow("Sequencing Aim", p.getSequencingAim());
-                infoGrid.addRow("Topical Assigment", p.getTopicalAssignment());
-
-                subContent.addComponent(infoGrid);
-                Label l = new Label("Download Declaration of Intent");
-                subContent.addComponent(l);
-                subContent.addComponent(createDeclarationDownloadButton(p.getDeclarationOfIntent()));
-
-                // Center it in the browser window
-                subWindow.center();
-                // Open it in the UI
-                UI.getCurrent().addWindow(subWindow);
+                }
             }
         });
     }
@@ -141,12 +117,10 @@ public class MainPresenter {
         });
     }
 
-    private Button createDeclarationDownloadButton(File tempFile) {
-        Button download = new Button();
-        download.setIcon(FontAwesome.DOWNLOAD);
+    private void addDownloadOption(Button button, File tempFile) {
+
         FileDownloader fileDownload = new FileDownloader(new FileResource(tempFile));
-        fileDownload.extend(download);
-        return download;
+        fileDownload.extend(button);
     }
 
     public VerticalLayout getCanvas() {

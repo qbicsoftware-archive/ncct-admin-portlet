@@ -251,7 +251,10 @@ public class DBManager {
                 Project project =
                         new Project(id, qbicID, dfgID, title, totalCost, description, tempFile,
                                 classification, keywords, sequencingAim, contactPerson, topicalAssignment);
-                project.setApplicants(getPeopleForProjectID("project_has_applicants", "applicant_id", id));
+
+                if(getPeopleForProjectID("project_has_applicants", "applicant_id", id).size() > 0) {
+                    project.setApplicants(getPeopleForProjectID("project_has_applicants", "applicant_id", id));
+                }
                 project.setCooperationPartners(getPeopleForProjectID("project_has_cooperation_partners",
                         "cooperation_partner_id", id));
                 project.setExperiments(getExperimentsWithProjectID(id));

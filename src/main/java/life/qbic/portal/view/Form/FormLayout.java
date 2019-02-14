@@ -1,5 +1,6 @@
 package life.qbic.portal.view.Form;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
@@ -44,8 +45,16 @@ public class FormLayout extends VerticalLayout {
         this.cancel = new Button("Cancel");
         this.cancel.addStyleName("corners");
 
+
         this.uploadAttachment = new Upload();
-        this.addDoI = new Label("<b><u>Upload Declaration of Intent:</u></b>", ContentMode.HTML);
+        this.uploadAttachment.setImmediate(true);
+        this.uploadAttachment.addStyleName("corners");
+        this.addDoI = new Label("Declaration of Intent<font color='red'>*</font>", ContentMode.HTML);
+        this.addDoI.setIcon(FontAwesome.UPLOAD);
+
+        HorizontalLayout uploadLayout = new HorizontalLayout(addDoI, uploadAttachment);
+        uploadLayout.setSpacing(true);
+        uploadLayout.setComponentAlignment(uploadAttachment, Alignment.BOTTOM_RIGHT);
 
         VerticalLayout verticalLayout = new VerticalLayout(contactPersonForm, applicantForm, cooperationPartners);
         verticalLayout.setSpacing(true);
@@ -60,17 +69,18 @@ public class FormLayout extends VerticalLayout {
 
         this.asterixExplained = new Label(" <font color='red'>*</font> Required fields", ContentMode.HTML);
 
-        HorizontalLayout buttons = new HorizontalLayout();
-        buttons.addComponents(cancel, saveEntries);
+        HorizontalLayout buttons = new HorizontalLayout(cancel, saveEntries);
+        buttons.setSpacing(true);
+
         this.addComponents(tabSheet,
-                addDoI,
-                uploadAttachment,
+                uploadLayout,
                 buttons,
                 asterixExplained);
 
-
+        this.setComponentAlignment(uploadLayout, Alignment.BOTTOM_RIGHT);
         this.setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
         this.setSpacing(true);
+        this.setMargin(true);
 
     }
 
@@ -112,5 +122,9 @@ public class FormLayout extends VerticalLayout {
 
     public ProjectForm getProjectForm() {
         return projectForm;
+    }
+
+    public Label getAddDoI() {
+        return addDoI;
     }
 }

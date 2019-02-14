@@ -1,7 +1,9 @@
 package life.qbic.portal.view.Overview;
 
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.TextField;
 
 /**
  * @author fhanssen
@@ -21,5 +23,6 @@ public class Projects extends Grid {
         this.setHeightMode(HeightMode.ROW);
         this.setHeightByRows(10);
         this.setSizeFull();
+
     }
 }

@@ -5,6 +5,7 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
+import life.qbic.portal.model.MyException;
 import life.qbic.portal.view.utils.CustomStyle;
 
 import java.util.stream.IntStream;
@@ -138,27 +139,52 @@ public class ProjectForm extends VerticalLayout {
         this.totalCost.addValidator(new RegexpValidator("[0-9]+(\\.[0-9][0-9]?)?", true, "Number must be formatted as 123.45!"));
     }
 
-    public String getQbicIDValue() {
+    public String getQbicIDValue() throws MyException {
+
+        if (qbicID.getValue().isEmpty()) {
+            throw new MyException("No QBiC ID set.");
+
+        }
         return qbicID.getValue();
     }
 
-    public String getDfgIDValue() {
+    public String getDfgIDValue() throws MyException{
+        if (dfgID.getValue().isEmpty()) {
+            throw new MyException("No DFG ID set.");
+
+        }
         return dfgID.getValue();
     }
 
-    public String getProjectTitleValue() {
+    public String getProjectTitleValue() throws MyException{
+        if (projectTitle.getValue().isEmpty()) {
+            throw new MyException("No project title set.");
+
+        }
         return projectTitle.getValue();
     }
 
-    public String getTotalCostValue() {
+    public String getTotalCostValue() throws MyException{
+        if (totalCost.getValue().isEmpty()) {
+            throw new MyException("No total costs set.");
+
+        }
         return totalCost.getValue();
     }
 
-    public String getProjectDescriptionValue() {
+    public String getProjectDescriptionValue() throws MyException{
+        if (projectDescription.getValue().isEmpty()) {
+            throw new MyException("No project description set.");
+
+        }
         return projectDescription.getValue();
     }
 
-    public String getTopicalAssignmentValue() {
+    public String getTopicalAssignmentValue() throws MyException{
+        if (topicalAssignment.getValue().equals("")) {
+            throw new MyException("No topical assignment set.");
+
+        }
         return topicalAssignment.getValue().toString();
     }
 
@@ -175,12 +201,22 @@ public class ProjectForm extends VerticalLayout {
         return values.toString();
     }
 
-    public String getSequencingAimValue() {
+    public String getSequencingAimValue() throws MyException{
+        if (sequencingAim.getValue().isEmpty()) {
+            throw new MyException("No sequencing aim set.");
+
+        }
         return sequencingAim.getValue();
     }
 
-    public String getClassificationValue() {
-        return classification.getValue().toString();
+    public String getClassificationValue() throws MyException {
+
+        try {
+            return classification.getValue().toString();
+
+        } catch (NullPointerException e) {
+            throw new MyException("No classification value specified.", e);
+        }
     }
 
     public ComboBox getTopicalAssignment() {

@@ -7,6 +7,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import life.qbic.portal.model.MyException;
 
 /**
  * @author fhanssen
@@ -93,27 +94,51 @@ public class ContactPersonForm extends VerticalLayout {
         this.email.setValue("123@web.de");
     }
 
-    public String getLastNameValue() {
+    public String getLastNameValue() throws MyException{
+        if (lastName.getValue().isEmpty()) {
+            throw new MyException("No last name set.");
+
+        }
         return lastName.getValue();
     }
 
-    public String getFirstNameValue() {
-        return firstName.getValue();
+    public String getFirstNameValue() throws MyException{
+
+        if (firstName.getValue().isEmpty()) {
+            throw new MyException("No first name set.");
+
+        }return firstName.getValue();
     }
 
-    public String getInstitutionValue() {
+    public String getInstitutionValue() throws MyException {
+        if (institution.getValue().isEmpty()) {
+            throw new MyException("No institution set.");
+
+        }
         return institution.getValue();
     }
 
-    public String getCityValue() {
+    public String getCityValue() throws MyException {
+        if (city.getValue().isEmpty()) {
+            throw new MyException("No city set.");
+
+        }
         return city.getValue();
     }
 
-    public String getEmailValue() {
+    public String getEmailValue() throws MyException {
+        if (email.getValue().isEmpty()) {
+            throw new MyException("No email set.");
+
+        }
         return email.getValue();
     }
 
-    public String getPhoneNumberValue() {
+    public String getPhoneNumberValue() throws  MyException{
+        if (phoneNumber.getValue().isEmpty()) {
+            throw new MyException("No phone number set.");
+
+        }
         return phoneNumber.getValue();
     }
 }

@@ -5,10 +5,7 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
-import life.qbic.portal.model.Batch;
-import life.qbic.portal.model.Experiment;
-import life.qbic.portal.model.Person;
-import life.qbic.portal.model.Project;
+import life.qbic.portal.model.*;
 import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
@@ -61,7 +58,15 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
                 saveEntry();
                 this.mainPresenter.loadProjects();
                 this.mainPresenter.displayProjects();
-            } catch (Exception e) {
+            } catch (MyException e) {
+                e.printStackTrace();
+                Notification notification = new Notification("Couldn't store entry",
+                        e.getMessage(),
+                        Notification.Type.ERROR_MESSAGE,
+                        true);
+                notification.setDelayMsec(-1); //infinity
+                notification.show(Page.getCurrent());
+            }catch(Exception e){
                 Notification notification = new Notification("Couldn't store entry",
                         "Check if all fields marked with * are specified, the declaration of intent is uploaded and DFG ID/QBiC Id is unique",
                         Notification.Type.ERROR_MESSAGE,
@@ -102,100 +107,97 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
         this.getFormLayout().getAddDoI().setCaption(tempFile.getName());
     }
 
-    public MainPresenter getMainPresenter() {
-        return mainPresenter;
-    }
-
-    private void saveEntry() throws SQLException {
+    private void saveEntry() throws SQLException, MyException {
         //TODO validate this: use fieldgroup for this
 
-        Person contactPerson = new Person(
-                this.formLayout.getContactPersonForm().getFirstNameValue(),
-                this.formLayout.getContactPersonForm().getLastNameValue(),
-                this.formLayout.getContactPersonForm().getEmailValue(),
-                this.formLayout.getContactPersonForm().getCityValue(),
-                this.formLayout.getContactPersonForm().getPhoneNumberValue(),
-                this.formLayout.getContactPersonForm().getInstitutionValue()
-        );
 
-        Project project = new Project(this.formLayout.getProjectForm().getQbicIDValue(),
-                this.formLayout.getProjectForm().getDfgIDValue(),
-                this.formLayout.getProjectForm().getProjectTitleValue(),
-                this.formLayout.getProjectForm().getTotalCostValue(),
-                this.formLayout.getProjectForm().getProjectDescriptionValue(),
-                tempFile,
-                this.formLayout.getProjectForm().getClassificationValue(),
-                this.formLayout.getProjectForm().getKeywordsValue(),
-                this.formLayout.getProjectForm().getSequencingAimValue(),
-                contactPerson,
-                this.formLayout.getProjectForm().getTopicalAssignmentValue()
-        );
+            Person contactPerson = new Person(
+                    this.formLayout.getContactPersonForm().getFirstNameValue(),
+                    this.formLayout.getContactPersonForm().getLastNameValue(),
+                    this.formLayout.getContactPersonForm().getEmailValue(),
+                    this.formLayout.getContactPersonForm().getCityValue(),
+                    this.formLayout.getContactPersonForm().getPhoneNumberValue(),
+                    this.formLayout.getContactPersonForm().getInstitutionValue()
+            );
 
-        for (Object id : this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItemIds()) {
-            Item item = this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id);
+            Project project = new Project(this.formLayout.getProjectForm().getQbicIDValue(),
+                    this.formLayout.getProjectForm().getDfgIDValue(),
+                    this.formLayout.getProjectForm().getProjectTitleValue(),
+                    this.formLayout.getProjectForm().getTotalCostValue(),
+                    this.formLayout.getProjectForm().getProjectDescriptionValue(),
+                    tempFile,
+                    this.formLayout.getProjectForm().getClassificationValue(),
+                    this.formLayout.getProjectForm().getKeywordsValue(),
+                    this.formLayout.getProjectForm().getSequencingAimValue(),
+                    contactPerson,
+                    this.formLayout.getProjectForm().getTopicalAssignmentValue()
+            );
 
-            if (!((String) item.getItemProperty("Read Type").getValue()).isEmpty()) {
-                Experiment experiment = new Experiment(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
-                        (String) item.getItemProperty("Coverage(X)").getValue(),
-                        (String) item.getItemProperty("Cost(EUR)").getValue(),
-                        (String) item.getItemProperty("Genome Size(Gb)").getValue(),
-                        (String) item.getItemProperty("Material").getValue(),
-                        (String) item.getItemProperty("Species").getValue(),
-                        (String) item.getItemProperty("Read Type").getValue(),
-                        (String) item.getItemProperty("Instrument").getValue(),
-                        (String) item.getItemProperty("Nucleic Acid").getValue(),
-                        (String) item.getItemProperty("Library").getValue());
+            for (Object id : this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItemIds()) {
+                Item item = this.formLayout.getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id);
 
-                for (Object batchId : ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItemIds()) {
+                if (!((String) item.getItemProperty("Read Type").getValue()).isEmpty()) {
+                    Experiment experiment = new Experiment(Integer.valueOf((String) item.getItemProperty("Number of Samples").getValue()),
+                            (String) item.getItemProperty("Coverage(X)").getValue(),
+                            (String) item.getItemProperty("Cost(EUR)").getValue(),
+                            (String) item.getItemProperty("Genome Size(Gb)").getValue(),
+                            (String) item.getItemProperty("Material").getValue(),
+                            (String) item.getItemProperty("Species").getValue(),
+                            (String) item.getItemProperty("Read Type").getValue(),
+                            (String) item.getItemProperty("Instrument").getValue(),
+                            (String) item.getItemProperty("Nucleic Acid").getValue(),
+                            (String) item.getItemProperty("Library").getValue());
 
-                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItem(batchId);
+                    for (Object batchId : ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItemIds()) {
 
-                    if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
-                        Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
-                                (String) batchItem.getItemProperty("Estimated Delivery Date").getValue());
+                        Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItem(batchId);
 
-                        experiment.addBatch(batch);
+                        if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
+                            Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
+                                    (String) batchItem.getItemProperty("Estimated Delivery Date").getValue());
+
+                            experiment.addBatch(batch);
+                        }
                     }
+
+                    project.addExperiment(experiment);
+
                 }
-
-                project.addExperiment(experiment);
-
             }
-        }
 
-        for (Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()) {
-            Item item = this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItem(id);
+            for (Object id : this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItemIds()) {
+                Item item = this.formLayout.getApplicantForm().getPersons().getContainerDataSource().getItem(id);
 
-            if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
-                Person applicant = new Person((String) item.getItemProperty("First Name").getValue(),
-                        (String) item.getItemProperty("Last Name").getValue(),
-                        "",
-                        (String) item.getItemProperty("City").getValue(),
-                        "",
-                        (String) item.getItemProperty("Institution").getValue());
+                if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
+                    Person applicant = new Person((String) item.getItemProperty("First Name").getValue(),
+                            (String) item.getItemProperty("Last Name").getValue(),
+                            "",
+                            (String) item.getItemProperty("City").getValue(),
+                            "",
+                            (String) item.getItemProperty("Institution").getValue());
 
-                project.addApplicant(applicant);
+                    project.addApplicant(applicant);
 
+                }
             }
-        }
 
-        for (Object id : this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItemIds()) {
-            Item item = this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItem(id);
+            for (Object id : this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItemIds()) {
+                Item item = this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItem(id);
 
-            if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
-                Person cooperationPartner = new Person((String) item.getItemProperty("First Name").getValue(),
-                        (String) item.getItemProperty("Last Name").getValue(),
-                        "",
-                        (String) item.getItemProperty("City").getValue(),
-                        "",
-                        (String) item.getItemProperty("Institution").getValue());
+                if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
+                    Person cooperationPartner = new Person((String) item.getItemProperty("First Name").getValue(),
+                            (String) item.getItemProperty("Last Name").getValue(),
+                            "",
+                            (String) item.getItemProperty("City").getValue(),
+                            "",
+                            (String) item.getItemProperty("Institution").getValue());
 
-                project.addCooperationPartner(cooperationPartner);
+                    project.addCooperationPartner(cooperationPartner);
 
+                }
             }
-        }
 
-        this.mainPresenter.getDb().createProjectWithConnections(project);
+            this.mainPresenter.getDb().createProjectWithConnections(project);
 
 
     }

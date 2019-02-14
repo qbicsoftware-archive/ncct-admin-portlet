@@ -53,7 +53,7 @@ public class BatchForm extends Grid {
     }
 
 
-    public void addEmptyBatchRow() {//TODO whenever a batch is successfully added to grid, then add new line
+    public void addEmptyBatchRow() {// whenever a batch is successfully added to grid, then add new line
         this.addRow("", "");
     }
 

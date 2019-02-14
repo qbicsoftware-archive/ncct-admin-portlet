@@ -1,14 +1,9 @@
 package life.qbic.portal.view.Overview;
 
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.*;
-import life.qbic.portal.model.Project;
-import life.qbic.portal.view.utils.CustomStyle;
-
-import java.io.File;
+import life.qbic.portal.model.db.Project;
 
 public class InformationForm  extends Window {
 

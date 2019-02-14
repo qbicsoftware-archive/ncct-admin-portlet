@@ -5,7 +5,11 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;
-import life.qbic.portal.model.*;
+import life.qbic.portal.model.db.Batch;
+import life.qbic.portal.model.db.Experiment;
+import life.qbic.portal.model.db.Person;
+import life.qbic.portal.model.db.Project;
+import life.qbic.portal.model.utils.MyException;
 import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
@@ -35,6 +39,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
         this.projectFormPresenter = new ProjectFormPresenter(this);
+
 
         addListener();
     }
@@ -120,6 +125,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
                     this.formLayout.getContactPersonForm().getInstitutionValue()
             );
 
+
             Project project = new Project(this.formLayout.getProjectForm().getQbicIDValue(),
                     this.formLayout.getProjectForm().getDfgIDValue(),
                     this.formLayout.getProjectForm().getProjectTitleValue(),
@@ -197,7 +203,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
                 }
             }
 
-            this.mainPresenter.getDb().createProjectWithConnections(project);
+           //    this.mainPresenter.getDb().createProjectWithConnections(project);
 
 
     }

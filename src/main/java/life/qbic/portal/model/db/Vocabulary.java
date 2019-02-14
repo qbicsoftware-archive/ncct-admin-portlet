@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.db;
 
 import java.util.ArrayList;
 import java.util.List;

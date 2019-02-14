@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.utils;
 
 
 public class MyException extends Exception {

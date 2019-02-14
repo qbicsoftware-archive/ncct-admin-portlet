@@ -27,6 +27,8 @@ public class ProjectsLayout extends VerticalLayout {
 
         setSpacing(true);
         this.setComponentAlignment(addNewProjectButton, Alignment.BOTTOM_RIGHT);
+
+
     }
 
     public Button getAddNewProjectButton() {

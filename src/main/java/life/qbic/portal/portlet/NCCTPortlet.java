@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-//TODO authorships, logging, delete unnecassary code, comment
+//TODO  logging, delete unnecassary code, comment
 
 /**
  * Entry point for portlet ncct-admin-portlet. This class derives from {@link QBiCPortletUI}, which
@@ -31,13 +31,8 @@ public class NCCTPortlet extends QBiCPortletUI {
     protected Layout getPortletContent(final VaadinRequest request) {
         LOG.info("Generating content for {}", NCCTPortlet.class);
 
-        // TODO: generate content for your portlet
+
         // this method returns any non-null layout to avoid a NullPointerException later on
-
-
-        // TODO we might want to move this to model or presenter?
-        // read in the configuration file
-
         MainPresenter mainPresenter = new MainPresenter();
         return mainPresenter.getCanvas();
     }

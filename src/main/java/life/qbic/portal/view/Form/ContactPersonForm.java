@@ -7,7 +7,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import life.qbic.portal.model.MyException;
+import life.qbic.portal.model.utils.MyException;
 
 /**
  * @author fhanssen

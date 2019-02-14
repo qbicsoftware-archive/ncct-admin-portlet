@@ -49,7 +49,7 @@ public class FormLayout extends VerticalLayout {
         this.uploadAttachment = new Upload();
         this.uploadAttachment.setImmediate(true);
         this.uploadAttachment.addStyleName("corners");
-        this.addDoI = new Label("Declaration of Intent<font color='red'>*</font>", ContentMode.HTML);
+        this.addDoI = new Label("Declaration of Intent (optional)", ContentMode.HTML);
         this.addDoI.setIcon(FontAwesome.UPLOAD);
 
         HorizontalLayout uploadLayout = new HorizontalLayout(addDoI, uploadAttachment);

@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.db;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -303,21 +303,21 @@ public class DBManager {
                 int materialID = rs.getInt("material_id");
                 int speciesID = rs.getInt("species_id");
                 int techID = rs.getInt("technology_type_id");
-                int instrumentID = rs.getInt("technology_instument_id");
+                int application_id = rs.getInt("application_id");
                 int nucleicAcidID = rs.getInt("nucleic_acid_id");
                 int libraryID = rs.getInt("library_id");
 
                 String material = Vocabulary.getMaterialName(materialID);
                 String species = Vocabulary.getSpeciesName(speciesID);
                 String technology = Vocabulary.getTechnologyTypeName(techID);
-                String instrument = Vocabulary.getTechInstrumentName(instrumentID);
+                String application = Vocabulary.getTechInstrumentName(application_id);
                 String nucleicAcid = Vocabulary.getNucleicAcidName(nucleicAcidID);
                 String library = Vocabulary.getMaterialName(libraryID);
                 rs.close();
                 statement.close();
 
                 Experiment exp = new Experiment(id, numOfSamples, coverage, costs, genomeSize, material,
-                        species, technology, instrument, nucleicAcid, library);
+                        species, technology, application, nucleicAcid, library);
                 exp.setBatches(getBatchesForExperimentID(id));
                 res.add(exp);
             }
@@ -590,7 +590,7 @@ public class DBManager {
         statement.setInt(5, Vocabulary.getMaterialID(exp.getMaterial()));
         statement.setInt(6, Vocabulary.getSpeciesID(exp.getSpecies()));
         statement.setInt(7, Vocabulary.getTechnologyTypeID(exp.getTechnologyType()));
-        statement.setInt(8, Vocabulary.getTechInstrumentID(exp.getInstrument()));
+        statement.setInt(8, Vocabulary.getTechInstrumentID(exp.getApplication()));
         statement.setInt(9, Vocabulary.getNucleicAcidID(exp.getNucleicAcid()));
         statement.setInt(10, Vocabulary.getLibraryID(exp.getLibrary()));
         statement.setInt(11, projectID);
@@ -676,7 +676,7 @@ public class DBManager {
 
     public void initVocabularies() {
         new Vocabulary(getTopicalAssignmentVocabularyMap(), getVocabularyMapForTable(TableName.library),
-                getVocabularyMapForTable(TableName.technology_instrument),
+                getVocabularyMapForTable(TableName.application),
                 getVocabularyMapForTable(TableName.species),
                 getVocabularyMapForTable(TableName.technology_type),
                 getVocabularyMapForTable(TableName.material),

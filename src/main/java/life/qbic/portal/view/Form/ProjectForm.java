@@ -5,7 +5,7 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
-import life.qbic.portal.model.MyException;
+import life.qbic.portal.model.utils.MyException;
 import life.qbic.portal.view.utils.CustomStyle;
 
 import java.util.stream.IntStream;
@@ -85,7 +85,6 @@ public class ProjectForm extends VerticalLayout {
 
         this.projectTitle.setSizeFull();
 
-        this.topicalAssignment.setSizeFull();
         this.topicalAssignment.setFilteringMode(FilteringMode.CONTAINS);
 
 
@@ -114,6 +113,8 @@ public class ProjectForm extends VerticalLayout {
         this.projectTitle.setMaxLength(100);
 
         this.dfgID.setRequired(true);
+
+        this.qbicID.setRequired(true);
 
         this.topicalAssignment.setRequired(true);
         this.topicalAssignment.addValidator(new StringLengthValidator("Select value", 1, Integer.MAX_VALUE, false));

@@ -97,7 +97,7 @@ public class ExperimentForm extends VerticalLayout {
 
     }
 
-    public void addEmptyExperimentRow() {//TODO whenever a experiment is successfully added to grid, then add new line
+    public void addEmptyExperimentRow() {// whenever a experiment is successfully added to grid, then add new line
         this.allExperiments.addRow(counter + 1, "", "", "", "", "", "", "", "", "", "");
         batches.addTab(new BatchForm(), "Experiment " + (counter + 1));
         batches.setSelectedTab(counter);

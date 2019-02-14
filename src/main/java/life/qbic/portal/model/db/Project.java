@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.db;
 
 import java.io.File;
 import java.math.BigDecimal;

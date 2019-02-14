@@ -70,7 +70,7 @@ public class PersonForm extends VerticalLayout {
 
     }
 
-    public void addRow() {//TODO whenever an applicant is successfully added to grid, then add new line
+    public void addRow() {// whenever an applicant is successfully added to grid, then add new line
         this.persons.addRow("", "", "", "");
     }
 

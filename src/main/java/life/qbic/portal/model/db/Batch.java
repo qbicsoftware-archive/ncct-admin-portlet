@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +17,6 @@ public class Batch {
 
     private final Logger logger = LogManager.getLogger(Batch.class);
 
-    // TODO convert vaadin date to SQL Timestamp
     public Batch(int id, Date deliveryDate, int numOfSamples) {
         this.id = id;
         this.estimatedDelivery = deliveryDate;

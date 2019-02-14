@@ -1,4 +1,4 @@
-package life.qbic.portal.model;
+package life.qbic.portal.model.db;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,13 +19,13 @@ public class Experiment {
     private String material;
     private String species;
     private String technologyType;
-    private String instrument;
+    private String application;
     private String nucleicAcid;
     private String library;
     private List<Batch> batches;
 
     public Experiment(int id, int numOfSamples, String coverage, BigDecimal costs, String genomeSize,
-                      String material, String species, String technologyType, String instrument, String nucleicAcid,
+                      String material, String species, String technologyType, String application, String nucleicAcid,
                       String library) {
         super();
         this.numOfSamples = numOfSamples;
@@ -35,7 +35,7 @@ public class Experiment {
         this.material = material;
         this.species = species;
         this.technologyType = technologyType;
-        this.instrument = instrument;
+        this.application = application;
         this.nucleicAcid = nucleicAcid;
         this.library = library;
         this.batches = new ArrayList<>();
@@ -43,10 +43,10 @@ public class Experiment {
     }
 
     public Experiment(int numOfSamples, String coverage, String costs, String genomeSize,
-                      String material, String species, String technologyType, String instrument, String nucleicAcid,
+                      String material, String species, String technologyType, String application, String nucleicAcid,
                       String library) {
         this(-1, numOfSamples, coverage, new BigDecimal(costs), genomeSize, material, species, technologyType,
-                instrument, nucleicAcid, library);
+                application, nucleicAcid, library);
     }
 
     public int getID() {
@@ -117,12 +117,12 @@ public class Experiment {
         this.technologyType = technologyType;
     }
 
-    public String getInstrument() {
-        return instrument;
+    public String getApplication() {
+        return application;
     }
 
-    public void setInstrument(String instrument) {
-        this.instrument = instrument;
+    public void setApplication(String application) {
+        this.application = application;
     }
 
     public String getNucleicAcid() {

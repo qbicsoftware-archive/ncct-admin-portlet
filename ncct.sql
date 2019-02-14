@@ -271,17 +271,6 @@ CREATE TABLE IF NOT EXISTS `ncct_db`.`species` (
   `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`));
 
-
--- -----------------------------------------------------
--- Table `ncct_db`.`table1`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `ncct_db`.`table1` ;
-
-CREATE TABLE IF NOT EXISTS `ncct_db`.`table1` (
-)
-ENGINE = InnoDB;
-
-
 -- -----------------------------------------------------
 -- Table `ncct_db`.`technology_type`
 -- -----------------------------------------------------
@@ -597,7 +586,6 @@ START TRANSACTION;
 USE `ncct_db`;
 INSERT INTO `ncct_db`.`technology_type` (`id`, `name`) VALUES (1, 'Short read');
 INSERT INTO `ncct_db`.`technology_type` (`id`, `name`) VALUES (2, 'Long read');
-INSERT INTO `ncct_db`.`technology_type` (`id`, `name`) VALUES (, DEFAULT);
 
 COMMIT;
 

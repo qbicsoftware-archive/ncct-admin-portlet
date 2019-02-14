@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `ncct_db`.`experiment` (
   `coverage` VARCHAR(45) NOT NULL,
   `costs` DECIMAL NOT NULL,
   `genome_size` VARCHAR(45) NOT NULL,
-  `material_id` INT UNSIGNED NOT NULL,
+  `material_id` INT UNSIGNED NOT NULL, 	 
   `species_id` INT UNSIGNED NOT NULL,
   `technology_type_id` INT UNSIGNED NOT NULL,
   `technology_instrument_id` INT UNSIGNED NOT NULL,

@@ -74,7 +74,12 @@ public class PersonForm extends VerticalLayout {
         this.persons.addRow("", "", "", "");
     }
 
+    public void addRow(String lastName, String firstName, String institution, String city) {// whenever an applicant is successfully added to grid, then add new line
+        this.persons.addRow(lastName, firstName, institution, city);
+    }
+
     public Grid getPersons() {
         return persons;
     }
+
 }

@@ -135,4 +135,30 @@ public class ContactPersonForm extends VerticalLayout {
         }
         return phoneNumber.getValue();
     }
+
+    public void setLastName(String lastName){
+        this.lastName.setValue(lastName);
+    }
+
+    public void setFirstName(String firstName){
+        this.firstName.setValue(firstName);
+    }
+
+    public void setInstitution(String institution){
+        this.institution.setValue(institution);
+    }
+
+    public void setCity(String city){
+        this.city.setValue(city);
+    }
+
+    public void setEmail(String email){
+        this.email.setValue(email);
+    }
+
+    public void setPhoneNumber(String phoneNumber){
+        this.phoneNumber.setValue(phoneNumber);
+    }
+
+
 }

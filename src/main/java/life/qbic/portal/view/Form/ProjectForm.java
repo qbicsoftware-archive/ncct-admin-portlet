@@ -220,4 +220,47 @@ public class ProjectForm extends VerticalLayout {
     public ComboBox getClassification() {
         return classification;
     }
+
+    public void setProjectTitle(String projectTitle){
+        this.projectTitle.setValue(projectTitle);
+    }
+
+    public void setQbicID(String qbicID){
+        this.qbicID.setValue(qbicID);
+    }
+
+    public void setDfgID(String dfgID){
+        this.dfgID.setValue(dfgID);
+    }
+
+    public void setTopicalAssignment(String topicalAssignment){
+        this.topicalAssignment.setValue(topicalAssignment);
+    }
+
+    public void setProjectDescription(String projectDescription){
+        this.projectDescription.setValue(projectDescription);
+    }
+
+    public void setClassification(String classification){
+        this.classification.setValue(classification);
+    }
+
+    public void setKeywords(String keywordString){
+        String[] keywordArray = keywordString.split(",");
+        IntStream.range(0, keywordArray.length).forEach(i -> {
+
+            if(i > 4){
+                throw new IndexOutOfBoundsException(); //TODO handle this better
+            }
+            keywords[i].setValue(keywordArray[i]);
+        });
+    }
+
+    public void setSequencingAim(String sequencingAim){
+        this.sequencingAim.setValue(sequencingAim);
+    }
+
+    public void setTotalCost(String totalCost){
+        this.totalCost.setValue(totalCost);
+    }
 }

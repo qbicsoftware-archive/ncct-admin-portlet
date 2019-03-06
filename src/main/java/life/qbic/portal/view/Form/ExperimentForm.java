@@ -4,6 +4,9 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * @author fhanssen
  */
@@ -92,14 +95,14 @@ public class ExperimentForm extends VerticalLayout {
         this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments,
                 new Label("<b><u>Batches:</u></b>", ContentMode.HTML), batches);
 
-        addEmptyExperimentRow();
-
 
     }
 
     public void addEmptyExperimentRow() {// whenever a experiment is successfully added to grid, then add new line
         this.allExperiments.addRow(counter + 1, "", "", "", "", "", "", "", "", "", "");
-        batches.addTab(new BatchForm(), "Experiment " + (counter + 1));
+        BatchForm batchForm = new BatchForm();
+        batchForm.addEmptyBatchRow();
+        batches.addTab(batchForm, "Experiment " + (counter + 1));
         batches.setSelectedTab(counter);
         counter++;
     }
@@ -154,5 +157,28 @@ public class ExperimentForm extends VerticalLayout {
 
     public TabSheet getBatches() {
         return batches;
+    }
+
+    public void addExperimentRow(String type, String species, String material, String instrument, String library, String
+            genomeSize, String nucleicAcid, String coverage, String numSamples, String cost){
+
+        this.allExperiments.addRow(counter+1, type, species, material, instrument, library, genomeSize, nucleicAcid, coverage, numSamples, cost);
+        BatchForm batchForm = new BatchForm();
+        batches.addTab(batchForm, "Experiment " + (counter + 1));
+        batches.setSelectedTab(counter);
+
+    }
+
+    public void incrementCounter() {
+        counter++;
+    }
+
+    public void addBatch(Date date, String numSamples){
+        System.out.println(date + " " + numSamples);
+        ((BatchForm)this.batches.getTab(counter).getComponent()).addDataRow(date, numSamples);
+    }
+
+    public int getCounter() {
+        return counter;
     }
 }

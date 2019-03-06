@@ -117,6 +117,10 @@ public class Project {
         return totalCost;
     }
 
+    public String getTotalCostToString() {
+        return String.valueOf(totalCost);
+    }
+
     public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
     }

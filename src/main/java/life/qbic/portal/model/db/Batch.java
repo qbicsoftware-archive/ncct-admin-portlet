@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 /**
  * @author afriedrich
@@ -23,11 +22,11 @@ public class Batch {
         this.numOfSamples = numOfSamples;
     }
 
-    private Date parseDate(String estimatedDelivery) {
-        java.util.Date date = new java.util.Date(estimatedDelivery);
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private Date parseDate(java.util.Date estimatedDelivery) {
+        //java.util.Date date = new java.util.Date(estimatedDelivery);
+        //SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         try {
-            return new Date(date.getTime());
+            return new Date(estimatedDelivery.getTime());
         } catch (Exception e) {
             logger.error("could not parse date " + estimatedDelivery);
             e.printStackTrace();
@@ -35,7 +34,7 @@ public class Batch {
         return null;
     }
 
-    public Batch(int numOfSamples, String estimatedDelivery) {
+    public Batch(int numOfSamples, java.util.Date estimatedDelivery) {
         this.id = -1;
         this.numOfSamples = numOfSamples;
         this.estimatedDelivery = parseDate(estimatedDelivery);
@@ -61,7 +60,7 @@ public class Batch {
         this.estimatedDelivery = estimatedDelivery;
     }
 
-    public void setEstimatedDelivery(String estimatedDelivery) {
+    public void setEstimatedDelivery(java.util.Date estimatedDelivery) {
         this.estimatedDelivery = parseDate(estimatedDelivery);
     }
 

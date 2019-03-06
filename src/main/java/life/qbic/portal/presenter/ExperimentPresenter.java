@@ -1,7 +1,11 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import life.qbic.portal.model.db.Experiment;
 import life.qbic.portal.model.db.Vocabulary;
+import life.qbic.portal.view.Form.BatchForm;
+
+import java.util.List;
 
 
 /**
@@ -41,6 +45,27 @@ public class ExperimentPresenter {
         this.formPresenter.getFormLayout().getExperimentForm().getInstrument().addItems(Vocabulary.getInstrumentValues());
         this.formPresenter.getFormLayout().getExperimentForm().getLibrary().addItems(Vocabulary.getLibraryValues());
         this.formPresenter.getFormLayout().getExperimentForm().getNucleicAcid().addItems(Vocabulary.getNucleicAcidValues());
+    }
+
+    public void setInformation(List<Experiment> experiments){
+
+        experiments.forEach(experiment -> {
+            this.formPresenter.getFormLayout().getExperimentForm().addExperimentRow(experiment.getTechnologyType(),
+                    experiment.getSpecies(), experiment.getMaterial(), experiment.getApplication(), experiment.getLibrary(),
+                    experiment.getGenomeSize(), experiment.getNucleicAcid(), experiment.getCoverage(), String.valueOf(experiment.getNumOfSamples()),
+                    String.valueOf(experiment.getCosts()));
+
+            experiment.getBatches().forEach(batch -> {
+                this.formPresenter.getFormLayout().getExperimentForm().addBatch(batch.getEstimatedDelivery(),
+                        String.valueOf(batch.getNumOfSamples()));
+            });
+            ((BatchForm)this.formPresenter.getFormLayout().getExperimentForm().getBatches().getTab(this.formPresenter.getFormLayout().getExperimentForm().getCounter()).getComponent()).addEmptyBatchRow();
+
+            this.formPresenter.getFormLayout().getExperimentForm().incrementCounter();
+        });
+        this.formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
+
+
     }
 
 

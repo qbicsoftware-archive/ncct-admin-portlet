@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * @author fhanssen
@@ -31,10 +31,13 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
     private final PersonFormPresenter personFormPresenter;
     private final ProjectFormPresenter projectFormPresenter;
     private File tempFile;
+    private final boolean isEdit;
 
-    public FormPresenter(MainPresenter mainPresenter) {
+    public FormPresenter(MainPresenter mainPresenter, boolean isEdit) {
         this.mainPresenter = mainPresenter;
-        this.formLayout = new FormLayout();
+        this.isEdit = isEdit;
+
+        this.formLayout = new FormLayout(isEdit);
 
         this.experimentPresenter = new ExperimentPresenter(this);
         this.personFormPresenter = new PersonFormPresenter(this);
@@ -60,24 +63,23 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
     private void addSaveEntryListener() {
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
             try {
-                saveEntry();
+                if(isEdit){
+                   // this.mainPresenter.getDb().updateProject(setData());
+
+                }else{
+                    this.mainPresenter.getDb().createProjectWithConnections(setData());
+
+                }
                 this.mainPresenter.loadProjects();
                 this.mainPresenter.displayProjects();
-            } catch (MyException e) {
-                e.printStackTrace();
+            }catch(Exception e){
                 Notification notification = new Notification("Couldn't store entry",
                         e.getMessage(),
                         Notification.Type.ERROR_MESSAGE,
                         true);
                 notification.setDelayMsec(-1); //infinity
                 notification.show(Page.getCurrent());
-            }catch(Exception e){
-                Notification notification = new Notification("Couldn't store entry",
-                        "Check if all fields marked with * are specified, the declaration of intent is uploaded and DFG ID/QBiC Id is unique",
-                        Notification.Type.ERROR_MESSAGE,
-                        true);
-                notification.setDelayMsec(-1); //infinity
-                notification.show(Page.getCurrent());
+                e.printStackTrace();
             }
         });
     }
@@ -112,9 +114,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
         this.getFormLayout().getAddDoI().setCaption(tempFile.getName());
     }
 
-    private void saveEntry() throws SQLException, MyException {
-        //TODO validate this: use fieldgroup for this
-
+    private Project setData() throws Exception {
 
             Person contactPerson = new Person(
                     this.formLayout.getContactPersonForm().getFirstNameValue(),
@@ -160,7 +160,7 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
 
                         if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
                             Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
-                                    (String) batchItem.getItemProperty("Estimated Delivery Date").getValue());
+                                    (Date) batchItem.getItemProperty("Estimated Delivery Date").getValue());
 
                             experiment.addBatch(batch);
                         }
@@ -203,8 +203,17 @@ public class FormPresenter implements Upload.Receiver, Upload.SucceededListener 
                 }
             }
 
-            this.mainPresenter.getDb().createProjectWithConnections(project);
 
+            return project;
 
+    }
+
+    public void setInformation(Project project){
+
+        personFormPresenter.setInformation(project.getContactPerson(), project.getApplicants(), project.getCooperationPartners());
+
+        experimentPresenter.setInformation(project.getExperiments());
+        projectFormPresenter.setInformation(project.getTitle(), project.getDfgID(), project.getQbicID(), project.getTopicalAssignment(), project.getDescription(),
+                project.getClassification(), project.getKeywords(), project.getSequencingAim(), project.getTotalCostToString());
     }
 }

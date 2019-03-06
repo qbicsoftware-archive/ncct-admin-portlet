@@ -22,16 +22,17 @@ public class FormLayout extends VerticalLayout {
     private final Button saveEntries;
     private final Button cancel;
     private final Label asterixExplained;
+    private final boolean isEdit;
 
-    public FormLayout() {
+    public FormLayout(boolean isEdit) {
+
+        this.isEdit = isEdit;
 
         this.contactPersonForm = new ContactPersonForm();
 
         this.applicantForm = new PersonForm("Applicants:");
-        addApplicantForm();
-
         this.cooperationPartners = new PersonForm("Cooperation Partners:");
-        addCooperationPartner();
+
 
         this.projectForm = new ProjectForm();
         projectForm.setMargin(true);
@@ -39,7 +40,15 @@ public class FormLayout extends VerticalLayout {
         this.experimentForm = new ExperimentForm();
         experimentForm.setMargin(true);
 
-        this.saveEntries = new Button("Save Project");
+        if(isEdit){
+            this.saveEntries = new Button("Update Project");
+
+        }else {
+            this.saveEntries = new Button("Save Project");
+            this.applicantForm.addRow();
+            this.cooperationPartners.addRow();
+            this.experimentForm.addEmptyExperimentRow();
+        }
         this.saveEntries.addStyleName("corners");
 
         this.cancel = new Button("Cancel");
@@ -84,13 +93,6 @@ public class FormLayout extends VerticalLayout {
 
     }
 
-    private void addApplicantForm() {
-        this.applicantForm.addRow();
-    }
-
-    private void addCooperationPartner() {
-        this.cooperationPartners.addRow();
-    }
 
     public Button getSaveEntries() {
         return saveEntries;

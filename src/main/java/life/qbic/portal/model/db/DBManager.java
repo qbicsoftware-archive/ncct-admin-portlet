@@ -253,6 +253,8 @@ public class DBManager {
                         new Project(id, qbicID, dfgID, title, totalCost, description, tempFile,
                                 classification, keywords, sequencingAim, contactPerson, topicalAssignment);
 
+                System.out.println("Applicants: " + getPeopleForProjectID("project_has_applicants", "applicant_id", id).size());
+                System.out.println("Projec id" + id);
                 if(getPeopleForProjectID("project_has_applicants", "applicant_id", id).size() > 0) {
                     project.setApplicants(getPeopleForProjectID("project_has_applicants", "applicant_id", id));
                 }
@@ -287,12 +289,12 @@ public class DBManager {
 
     private List<Experiment> getExperimentsWithProjectID(int projectID) {
         List<Experiment> res = new ArrayList<>();
-        String sql = "SELECT * from experiment WHERE project_id = ";
+        String sql = "SELECT * from experiment WHERE project_id = " + projectID;
         Connection conn = login();
         try {
 
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, projectID);
+//            statement.setInt(1, projectID);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -314,39 +316,42 @@ public class DBManager {
                 String application = Vocabulary.getTechInstrumentName(application_id);
                 String nucleicAcid = Vocabulary.getNucleicAcidName(nucleicAcidID);
                 String library = Vocabulary.getMaterialName(libraryID);
-                rs.close();
-                statement.close();
+
 
                 Experiment exp = new Experiment(id, numOfSamples, coverage, costs, genomeSize, material,
                         species, technology, application, nucleicAcid, library);
                 exp.setBatches(getBatchesForExperimentID(id));
                 res.add(exp);
             }
+            rs.close();
+            statement.close();
         } catch (SQLException e) {
             logger.error(e);
+            e.printStackTrace();
         }
+        System.out.println("Experiments: " + res.size());
         return res;
     }
 
     private List<Batch> getBatchesForExperimentID(int expId) {
         List<Batch> res = new ArrayList<>();
-        String sql = "SELECT * from batch WHERE experiment_id = ";
+        String sql = "SELECT * from batch WHERE experiment_id = " + expId;
         Connection conn = login();
         try {
 
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, expId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");
                 Date deliveryDate = rs.getDate("estimated_delivery_date");
                 int numberOfSamples = rs.getInt("number_samples");
-                rs.close();
-                statement.close();
+
 
                 Batch b = new Batch(id, deliveryDate, numberOfSamples);
                 res.add(b);
             }
+            rs.close();
+            statement.close();
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -355,15 +360,12 @@ public class DBManager {
 
     private List<Person> getPeopleForProjectID(String junctionTable, String junctionPersonID,
                                                int id) {
-        String sql = "SELECT * FROM person LEFT JOIN ? ON person.id = ?.? WHERE project_id = ?";
+
+        String sql = "SELECT * FROM person INNER JOIN "+ junctionTable +" ON person.id = " + junctionTable + "." + junctionPersonID + " WHERE project_id = " + id;
         Connection conn = login();
-        List<Person> res = new ArrayList<Person>();
+        List<Person> res = new ArrayList<>();
         try {
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, junctionTable);
-            statement.setString(2, junctionTable);
-            statement.setString(3, junctionPersonID);
-            statement.setInt(4, id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 res.add(parsePerson(rs));
@@ -583,7 +585,7 @@ public class DBManager {
         int res = -1;
         logger.info("Trying to add experiment to the DB");
         String sql =
-                "INSERT INTO experiment (number_of_samples, coverage, costs, genome_size, material_id, species_id, technology_type_id, technology_instrument_id, nucleic_acid_id, library_id, project_id) "
+                "INSERT INTO experiment (number_of_samples, coverage, costs, genome_size, material_id, species_id, technology_type_id, application_id, nucleic_acid_id, library_id, project_id) "
                         + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, exp.getNumOfSamples());

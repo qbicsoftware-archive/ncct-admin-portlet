@@ -73,23 +73,23 @@ public class MainPresenter {
         this.projectsLayout.getProjects().setSelectionMode(SelectionMode.NONE);// TODO if we need
         // selection we can use
         // doubleClickListener below, instead
-        this.projectsLayout.getProjects().addItemClickListener(new ItemClickListener() {
+        this.projectsLayout.getProjects().addItemClickListener((ItemClickListener) event -> {
+            if (event.isDoubleClick()) {
+//                    InformationForm informationForm = new InformationForm(idToProject.get(event.getItemId()));
+//
+//                    if(idToProject.get(event.getItemId()).getDeclarationOfIntent().exists()) {
+//                        addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
+//                    }
+//                    // Center it in the browser window
+//                    informationForm.center();
+//                    // Open it in the UI
+//                    UI.getCurrent().addWindow(informationForm);
+                canvas.removeAllComponents();
+                FormPresenter formPresenter = new FormPresenter(this, true);
+                System.out.println("Id to project: " + idToProject.get(event.getItemId()).getApplicants().size());
+                formPresenter.setInformation(idToProject.get(event.getItemId()));
+                canvas.addComponent(formPresenter.getFormLayout());
 
-
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                if (event.isDoubleClick()) {
-                    InformationForm informationForm = new InformationForm(idToProject.get(event.getItemId()));
-
-                    if(idToProject.get(event.getItemId()).getDeclarationOfIntent().exists()) {
-                        addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
-                    }
-                    // Center it in the browser window
-                    informationForm.center();
-                    // Open it in the UI
-                    UI.getCurrent().addWindow(informationForm);
-
-                }
             }
         });
     }
@@ -97,7 +97,7 @@ public class MainPresenter {
     private void addButtonListener() {
         this.projectsLayout.getAddNewProjectButton().addClickListener(clickEvent -> {
             this.canvas.removeAllComponents();
-            FormPresenter formPresenter = new FormPresenter(this);
+            FormPresenter formPresenter = new FormPresenter(this, false);
             this.canvas.addComponent(formPresenter.getFormLayout());
         });
     }
@@ -114,6 +114,7 @@ public class MainPresenter {
                     project.getDfgID(), project.getTitle(), project.getContactPerson().getFirstName()
                             .concat(" ").concat(project.getContactPerson().getLastName()),
                     project.getDescription());
+            System.out.println(project.getApplicants().size());
             idToProject.put(id, project);
         });
     }

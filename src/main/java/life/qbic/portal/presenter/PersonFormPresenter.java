@@ -2,6 +2,10 @@ package life.qbic.portal.presenter;
 
 
 import com.vaadin.data.fieldgroup.FieldGroup;
+import life.qbic.portal.model.db.Person;
+import life.qbic.portal.view.Form.ContactPersonForm;
+
+import java.util.List;
 
 /**
  * @author fhanssen
@@ -43,5 +47,26 @@ public class PersonFormPresenter {
         });
     }
 
+    public void setInformation(Person contactPerson, List<Person> applicants, List<Person> cooperationPartners){
 
+        this.formPresenter.getFormLayout().getContactPersonForm().setLastName(contactPerson.getLastName());
+        this.formPresenter.getFormLayout().getContactPersonForm().setFirstName(contactPerson.getFirstName());
+        this.formPresenter.getFormLayout().getContactPersonForm().setInstitution(contactPerson.getInstitution());
+        this.formPresenter.getFormLayout().getContactPersonForm().setCity(contactPerson.getCity());
+        this.formPresenter.getFormLayout().getContactPersonForm().setEmail(contactPerson.getEmail());
+        this.formPresenter.getFormLayout().getContactPersonForm().setPhoneNumber(contactPerson.getPhone());
+
+
+        applicants.forEach(applicant -> {
+            this.formPresenter.getFormLayout().getApplicantForm().addRow(applicant.getLastName(), applicant.getFirstName(), applicant.getInstitution(), applicant.getCity());
+        });
+        this.formPresenter.getFormLayout().getApplicantForm().addRow();
+
+        cooperationPartners.forEach(cooperationPartner -> {
+            this.formPresenter.getFormLayout().getCooperationPartners().addRow(cooperationPartner.getLastName(), cooperationPartner.getFirstName(), cooperationPartner.getInstitution(), cooperationPartner.getCity());
+        });
+        this.formPresenter.getFormLayout().getCooperationPartners().addRow();
+
+
+    }
 }

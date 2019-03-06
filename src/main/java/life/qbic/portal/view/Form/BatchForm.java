@@ -7,6 +7,11 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import life.qbic.portal.view.utils.CustomStyle;
+import org.apache.commons.lang3.time.DateUtils;
+
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author fhanssen
@@ -19,7 +24,7 @@ public class BatchForm extends Grid {
 
     public BatchForm() {
 
-        this.addColumn("Estimated Delivery Date", String.class);
+        this.addColumn("Estimated Delivery Date", Date.class);
         this.addColumn("Number of Samples", String.class);
         CustomStyle.addGridSettings(this);
 
@@ -28,13 +33,12 @@ public class BatchForm extends Grid {
 
         DateField dateField = new DateField();
         dateField.setResolution(Resolution.DAY);
+        dateField.setDateFormat("yyyy/MM/dd");
         dateField.setValidationVisible(true);
         dateField.addValidator(new NullValidator("Select date", false));
 
         this.getColumn("Estimated Delivery Date").setEditorField(dateField);
         this.getColumn("Number of Samples").setEditorField(numberOfSamplesBatches);
-
-        addEmptyBatchRow();
 
 
         //TODO: very irregular and should  be in presenter. Couldn't get it to work there though and due to deadline ahead, it will remain here for now
@@ -54,7 +58,13 @@ public class BatchForm extends Grid {
 
 
     public void addEmptyBatchRow() {// whenever a batch is successfully added to grid, then add new line
-        this.addRow("", "");
+
+        this.addRow(null, "");
+    }
+
+    public void addDataRow(Date date, String numSamples) {// whenever a batch is successfully added to grid, then add new line
+        DateUtils.truncate(date, java.util.Calendar.DAY_OF_MONTH);
+        this.addRow(date, numSamples);
     }
 
     public TextField getNumberOfSamplesBatches() {

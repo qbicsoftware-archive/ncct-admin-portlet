@@ -1,9 +1,10 @@
-package life.qbic.portal.model.db;
+package life.qbic.portal.model.db.elements;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -55,11 +56,11 @@ public class Project {
         this(-1, qbicID, dfgID, title, new BigDecimal(totalCost), description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
     }
 
-    public Project(String dfgID, String title, String totalCost,
-                   String description, File declarationOfIntent, String classification, String keywords,
-                   String sequencingAim, Person contactPerson, String topicalAssignment) {
-        this(-1, "", dfgID, title, new BigDecimal(totalCost), description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
-    }
+//    public Project(String dfgID, String title, String totalCost,
+//                   String description, File declarationOfIntent, String classification, String keywords,
+//                   String sequencingAim, Person contactPerson, String topicalAssignment) {
+//        this(-1, "", dfgID, title, new BigDecimal(totalCost), description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment);
+//    }
 
     public void addExperiment(Experiment experiment) {
         experiments.add(experiment);
@@ -197,5 +198,30 @@ public class Project {
         this.cooperationPartners = partners;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return id == project.id &&
+                Objects.equals(qbicID, project.qbicID) &&
+                Objects.equals(dfgID, project.dfgID) &&
+                Objects.equals(title, project.title) &&
+                Objects.equals(totalCost, project.totalCost) &&
+                Objects.equals(description, project.description) &&
+                Objects.equals(declarationOfIntent, project.declarationOfIntent) &&
+                Objects.equals(classification, project.classification) &&
+                Objects.equals(keywords, project.keywords) &&
+                Objects.equals(sequencingAim, project.sequencingAim) &&
+                Objects.equals(contactPerson, project.contactPerson) &&
+                Objects.equals(topicalAssignment, project.topicalAssignment) &&
+                Objects.equals(cooperationPartners, project.cooperationPartners) &&
+                Objects.equals(applicants, project.applicants) &&
+                Objects.equals(experiments, project.experiments);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, qbicID, dfgID, title, totalCost, description, declarationOfIntent, classification, keywords, sequencingAim, contactPerson, topicalAssignment, cooperationPartners, applicants, experiments);
+    }
 }

@@ -3,7 +3,7 @@ package life.qbic.portal.view.Overview;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.*;
-import life.qbic.portal.model.db.Project;
+import life.qbic.portal.model.db.elements.Project;
 
 public class InformationForm  extends Window {
 

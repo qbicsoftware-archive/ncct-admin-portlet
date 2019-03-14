@@ -1,8 +1,6 @@
 package life.qbic.portal.presenter;
 
-import com.vaadin.server.Page;
-import com.vaadin.ui.Notification;
-import life.qbic.portal.model.db.Vocabulary;
+import life.qbic.portal.model.db.elements.Vocabulary;
 
 /**
  * @author fhanssen
@@ -28,6 +26,8 @@ public class ProjectFormPresenter {
 
     public void setInformation(String title, String dfgID, String qbicID, String topicalAssignment, String description,
                                String classification, String keywords, String sequencingAim, String totalCost){
+
+
         this.formPresenter.getFormLayout().getProjectForm().setProjectTitle(title);
         this.formPresenter.getFormLayout().getProjectForm().setDfgID(dfgID);
         this.formPresenter.getFormLayout().getProjectForm().setQbicID(qbicID);

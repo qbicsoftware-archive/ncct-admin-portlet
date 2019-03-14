@@ -21,7 +21,7 @@ public class ProjectsLayout extends VerticalLayout {
         this.addNewProjectButton = new Button("Add New Project");
         this.addNewProjectButton.addStyleName("corners");
 
-        this.doubleClickExplanation = new Label("Double-click on project to display information.");
+        this.doubleClickExplanation = new Label("Double-click on project to display and edit information.");
 
         this.addComponents(projects, addNewProjectButton, doubleClickExplanation);
 

@@ -1,8 +1,9 @@
-package life.qbic.portal.model.db;
+package life.qbic.portal.model.db.elements;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -145,5 +146,27 @@ public class Experiment {
         this.batches = batches;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Experiment that = (Experiment) o;
+        return id == that.id &&
+                numOfSamples == that.numOfSamples &&
+                Objects.equals(coverage, that.coverage) &&
+                Objects.equals(costs, that.costs) &&
+                Objects.equals(genomeSize, that.genomeSize) &&
+                Objects.equals(material, that.material) &&
+                Objects.equals(species, that.species) &&
+                Objects.equals(technologyType, that.technologyType) &&
+                Objects.equals(application, that.application) &&
+                Objects.equals(nucleicAcid, that.nucleicAcid) &&
+                Objects.equals(library, that.library) &&
+                Objects.equals(batches, that.batches);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, numOfSamples, coverage, costs, genomeSize, material, species, technologyType, application, nucleicAcid, library, batches);
+    }
 }

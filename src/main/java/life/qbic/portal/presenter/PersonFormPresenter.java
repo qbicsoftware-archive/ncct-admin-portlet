@@ -2,8 +2,7 @@ package life.qbic.portal.presenter;
 
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import life.qbic.portal.model.db.Person;
-import life.qbic.portal.view.Form.ContactPersonForm;
+import life.qbic.portal.model.db.elements.Person;
 
 import java.util.List;
 
@@ -44,6 +43,37 @@ public class PersonFormPresenter {
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
                 formPresenter.getFormLayout().getCooperationPartners().addRow();
             }
+        });
+
+        this.formPresenter.getFormLayout().getApplicantForm().getPersons().addSelectionListener(selectionEvent -> {
+            if(selectionEvent.getSelected().size() > 0) {
+                this.formPresenter.getFormLayout().addDeleteApplicantButton();
+            }else{
+                this.formPresenter.getFormLayout().removeDeleteApplicantButton();
+            }
+        });
+
+        this.formPresenter.getFormLayout().getCooperationPartners().getPersons().addSelectionListener(selectionEvent -> {
+            if(selectionEvent.getSelected().size() > 0) {
+                this.formPresenter.getFormLayout().addDeleteCoopPartnerButton();
+            }else{
+                this.formPresenter.getFormLayout().removeDeleteCoopPartnerButton();
+
+            }
+        });
+
+        this.formPresenter.getFormLayout().getDeleteApplicant().addClickListener(clickEvent -> {
+            this.formPresenter.getFormLayout().getApplicantForm().getPersons().getSelectedRows().forEach( row -> {
+                this.formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().removeItem(row);
+            });
+            this.formPresenter.getFormLayout().getApplicantForm().getPersons().refreshAllRows();
+        });
+
+        this.formPresenter.getFormLayout().getDeleteCooperationPartners().addClickListener(clickEvent -> {
+            this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getSelectedRows().forEach( row -> {
+                this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().removeItem(row);
+            });
+            this.formPresenter.getFormLayout().getCooperationPartners().getPersons().refreshAllRows();
         });
     }
 

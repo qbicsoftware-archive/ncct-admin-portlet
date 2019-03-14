@@ -4,7 +4,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import life.qbic.portal.view.utils.CustomStyle;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 /**

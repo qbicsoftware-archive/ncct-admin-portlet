@@ -1,11 +1,9 @@
 package life.qbic.portal.view.Overview;
 
-import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
+
+
 
 /**
  * @author fhanssen
@@ -13,6 +11,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 
 public class Projects extends Grid {
+
 
 
     public Projects() {
@@ -23,7 +22,7 @@ public class Projects extends Grid {
 
         this.setEditorEnabled(false);
         this.setHeightMode(HeightMode.ROW);
-        this.setHeightByRows(10);
+        this.setHeightByRows(20);
         this.setSizeFull();
 
     }

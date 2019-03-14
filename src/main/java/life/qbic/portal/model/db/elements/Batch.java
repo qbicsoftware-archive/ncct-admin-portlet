@@ -1,9 +1,10 @@
-package life.qbic.portal.model.db;
+package life.qbic.portal.model.db.elements;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
+import java.util.Objects;
 
 /**
  * @author afriedrich
@@ -64,4 +65,19 @@ public class Batch {
         this.estimatedDelivery = parseDate(estimatedDelivery);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Batch batch = (Batch) o;
+        return id == batch.id &&
+                numOfSamples == batch.numOfSamples &&
+                Objects.equals(estimatedDelivery, batch.estimatedDelivery);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, estimatedDelivery, numOfSamples);
+    }
 }

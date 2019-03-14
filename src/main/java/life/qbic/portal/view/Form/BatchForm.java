@@ -9,8 +9,6 @@ import com.vaadin.ui.TextField;
 import life.qbic.portal.view.utils.CustomStyle;
 import org.apache.commons.lang3.time.DateUtils;
 
-import java.text.DateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**

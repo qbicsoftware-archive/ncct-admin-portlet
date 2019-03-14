@@ -1,8 +1,8 @@
 package life.qbic.portal.presenter;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
-import life.qbic.portal.model.db.Experiment;
-import life.qbic.portal.model.db.Vocabulary;
+import life.qbic.portal.model.db.elements.Experiment;
+import life.qbic.portal.model.db.elements.Vocabulary;
 import life.qbic.portal.view.Form.BatchForm;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package life.qbic.portal.model.db;
+package life.qbic.portal.model.db.elements;
 
 
 /**

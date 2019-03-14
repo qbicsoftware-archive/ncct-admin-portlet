@@ -1,22 +1,19 @@
 package life.qbic.portal.presenter;
 
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FileResource;
-import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.SelectionMode;
-import life.qbic.portal.model.db.DBConfig;
-import life.qbic.portal.model.db.DBManager;
-import life.qbic.portal.model.db.Project;
+import com.vaadin.ui.VerticalLayout;
+import life.qbic.portal.model.db.elements.Project;
+import life.qbic.portal.model.db.operations.DBConfig;
+import life.qbic.portal.model.db.operations.DBDataInsert;
+import life.qbic.portal.model.db.operations.DBDataRetrieval;
+import life.qbic.portal.model.db.operations.DBDataUpdate;
 import life.qbic.portal.utils.ConfigurationManager;
 import life.qbic.portal.utils.ConfigurationManagerFactory;
 import life.qbic.portal.utils.LiferayIndependentConfigurationManager;
 import life.qbic.portal.utils.PortalUtils;
-import life.qbic.portal.view.Overview.InformationForm;
 import life.qbic.portal.view.Overview.ProjectsLayout;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +29,10 @@ public class MainPresenter {
     private final VerticalLayout canvas;
     private final ProjectsLayout projectsLayout;
 
-    private final DBManager db;
+    private final DBDataRetrieval dbDataRetrieval;
+    private final DBDataInsert dbDataInsert;
+    private final DBConfig dbConfig;
+    private final DBDataUpdate dbDataUpdate;
 
     private final Map<Object, Project> idToProject = new HashMap<>();
 
@@ -50,18 +50,20 @@ public class MainPresenter {
             config = LiferayIndependentConfigurationManager.Instance;
         }
 
-        db = new DBManager(new DBConfig(config.getMysqlHost(), config.getMysqlPort(),
-                config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass()));
+        this.dbConfig = new DBConfig(config.getMysqlHost(), config.getMysqlPort(), config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass());
+        this.dbDataRetrieval = new DBDataRetrieval(this.dbConfig);
+        this.dbDataInsert = new DBDataInsert(this.dbConfig);
+        this.dbDataUpdate = new DBDataUpdate(this.dbConfig);
 
         initDB();
         addListeners();
 
         loadProjects();
-        this.canvas.addComponent(projectsLayout);
+        this.canvas.addComponent(this.projectsLayout);
     }
 
     private void initDB() {
-        db.initVocabularies();
+        this.dbDataRetrieval.initVocabularies();
     }
 
     private void addListeners() {
@@ -70,26 +72,16 @@ public class MainPresenter {
     }
 
     private void addProjectsListener() {
-        this.projectsLayout.getProjects().setSelectionMode(SelectionMode.NONE);// TODO if we need
-        // selection we can use
-        // doubleClickListener below, instead
+
+        this.projectsLayout.getProjects().setSelectionMode(SelectionMode.NONE);
+
         this.projectsLayout.getProjects().addItemClickListener((ItemClickListener) event -> {
             if (event.isDoubleClick()) {
-//                    InformationForm informationForm = new InformationForm(idToProject.get(event.getItemId()));
-//
-//                    if(idToProject.get(event.getItemId()).getDeclarationOfIntent().exists()) {
-//                        addDownloadOption(informationForm.getDownload(), idToProject.get(event.getItemId()).getDeclarationOfIntent());
-//                    }
-//                    // Center it in the browser window
-//                    informationForm.center();
-//                    // Open it in the UI
-//                    UI.getCurrent().addWindow(informationForm);
+
                 canvas.removeAllComponents();
                 FormPresenter formPresenter = new FormPresenter(this, true);
-                System.out.println("Id to project: " + idToProject.get(event.getItemId()).getApplicants().size());
                 formPresenter.setInformation(idToProject.get(event.getItemId()));
                 canvas.addComponent(formPresenter.getFormLayout());
-
             }
         });
     }
@@ -109,27 +101,29 @@ public class MainPresenter {
 
     void loadProjects() {
         this.projectsLayout.getProjects().getContainerDataSource().removeAllItems();
-        db.getProjects().forEach(project -> {
+        dbDataRetrieval.getProjects().forEach(project -> {
+
             Object id = this.projectsLayout.getProjects().addRow(
                     project.getDfgID(), project.getTitle(), project.getContactPerson().getFirstName()
                             .concat(" ").concat(project.getContactPerson().getLastName()),
                     project.getDescription());
-            System.out.println(project.getApplicants().size());
             idToProject.put(id, project);
         });
-    }
-
-    private void addDownloadOption(Button button, File tempFile) {
-
-        FileDownloader fileDownload = new FileDownloader(new FileResource(tempFile));
-        fileDownload.extend(button);
     }
 
     public VerticalLayout getCanvas() {
         return canvas;
     }
 
-    public DBManager getDb() {
-        return db;
+    public DBDataInsert getDbDataInsert() {
+        return dbDataInsert;
+    }
+
+    public DBDataUpdate getDbDataUpdate() {
+        return dbDataUpdate;
+    }
+
+    public DBDataRetrieval getDbDataRetrieval() {
+        return dbDataRetrieval;
     }
 }

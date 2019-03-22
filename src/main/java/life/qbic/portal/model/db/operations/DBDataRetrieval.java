@@ -8,9 +8,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DBDataRetrieval {
     private final Logger logger = LogManager.getLogger(DBDataRetrieval.class);
@@ -18,59 +16,6 @@ public class DBDataRetrieval {
     
     public DBDataRetrieval(DBConfig config){
         this.config = config;
-    }
-
-    /**
-     * Returns a Map of Vocabulary terms from a Table containing id and name field
-     *
-     * @param t The table name as enum
-     * @return a map of Vocabulary terms with names as keys and ids as values
-     */
-     Map<String, Integer> getVocabularyMapForTable(TableName t) {
-        String sql = "SELECT * from " + t.toString();
-        Map<String, Integer> res = new HashMap<>();
-        Connection conn = Utils.login(config);
-        try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                res.put(rs.getString("name"), rs.getInt("id"));
-            }
-            statement.close();
-        } catch (SQLException e) {
-            logger.error("SQL operation unsuccessful: " + e.getMessage());
-            e.printStackTrace();
-        } catch (NullPointerException n) {
-            logger.error("Could not reach SQL database.");
-        }
-        Utils.logout(conn);
-        return res;
-    }
-
-    /**
-     * this does not store the key id, thus see function @getTopicalAssignmentIDFromName
-     *
-     * @return
-     */
-    public Map<String, String> getTopicalAssignmentVocabularyMap() {
-        String sql = "SELECT * from topical_assignment";
-        Map<String, String> res = new HashMap<>();
-        Connection conn = Utils.login(config);
-        try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                res.put(rs.getString("name"), rs.getString("number"));
-            }
-            statement.close();
-        } catch (SQLException e) {
-            logger.error("SQL operation unsuccessful: " + e.getMessage());
-            e.printStackTrace();
-        } catch (NullPointerException n) {
-            logger.error("Could not reach SQL database.");
-        }
-        Utils.logout(conn);
-        return res;
     }
 
 
@@ -153,7 +98,7 @@ public class DBDataRetrieval {
                 String technology = Vocabulary.getTechnologyTypeName(techID);
                 String application = Vocabulary.getTechInstrumentName(application_id);
                 String nucleicAcid = Vocabulary.getNucleicAcidName(nucleicAcidID);
-                String library = Vocabulary.getMaterialName(libraryID);
+                String library = Vocabulary.getLibraryName(libraryID);
 
                 Experiment exp = new Experiment(id, numOfSamples, coverage, costs, genomeSize, material,
                         species, technology, application, nucleicAcid, library);
@@ -320,9 +265,14 @@ public class DBDataRetrieval {
         }
 
         if (res == null){
-            res = getPerson(firstName, lastName, institution, city);
-            res.setCity(city);
-            res.setInstitution(institution);
+            if(email.isEmpty() || phone.isEmpty()) {
+                res = getPerson(firstName, lastName, institution, city);
+                //TODO ??
+                res.setCity(city);
+                res.setInstitution(institution);
+            }else{
+                res = new Person(firstName, lastName, email, city, phone, institution);
+            }
         }
         return res;
     }
@@ -365,15 +315,7 @@ public class DBDataRetrieval {
         return res;
     }
 
-    public void initVocabularies() {
-        new Vocabulary(getTopicalAssignmentVocabularyMap(), getVocabularyMapForTable(TableName.library),
-                getVocabularyMapForTable(TableName.application),
-                getVocabularyMapForTable(TableName.species),
-                getVocabularyMapForTable(TableName.technology_type),
-                getVocabularyMapForTable(TableName.material),
-                getVocabularyMapForTable(TableName.nucleic_acid),
-                getVocabularyMapForTable(TableName.classification));
-    }
+
 
 
 }

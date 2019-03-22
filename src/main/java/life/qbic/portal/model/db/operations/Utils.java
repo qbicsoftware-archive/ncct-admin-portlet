@@ -5,7 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class Utils {
 
@@ -23,7 +25,7 @@ public final class Utils {
         }
     }
 
-    static Connection login(DBConfig config) {
+    public static Connection login(DBConfig config) {
         String DB_URL = "jdbc:mariadb://" + config.getHostname() + ":" + config.getPort() + "/"
                 + config.getSql_database();
 
@@ -68,7 +70,7 @@ public final class Utils {
     static int addPerson(Person person, Connection connection) throws SQLException {
         int res = -1;
         logger.info("Trying to add person " + person.getFirstName() + " " + person.getLastName()
-                + " to the DB");
+                + " to the DB " + person.getPhone() + " " +person.getEmail());
         String sql = "INSERT INTO person (lastname, firstname, institution, city, email, phonenumber) "
                 + "VALUES(?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -78,6 +80,7 @@ public final class Utils {
         statement.setString(4, person.getCity());
         statement.setString(5, person.getEmail());
         statement.setString(6, person.getPhone());
+        System.out.println(statement);
         statement.execute();
         ResultSet rs = statement.getGeneratedKeys();
         statement.close();
@@ -143,6 +146,7 @@ public final class Utils {
         statement.setInt(7, Vocabulary.getTechnologyTypeID(exp.getTechnologyType()));
         statement.setInt(8, Vocabulary.getTechInstrumentID(exp.getApplication()));
         statement.setInt(9, Vocabulary.getNucleicAcidID(exp.getNucleicAcid()));
+
         statement.setInt(10, Vocabulary.getLibraryID(exp.getLibrary()));
         statement.setInt(11, projectID);
         statement.execute();
@@ -150,6 +154,65 @@ public final class Utils {
         statement.close();
         if (rs.next()) {
             res = rs.getInt(1);
+        }
+        return res;
+    }
+
+    public static void initVocabularies(Connection connection) {
+        new Vocabulary(getTopicalAssignmentVocabularyMap(connection), getVocabularyMapForTable(TableName.library, connection),
+                getVocabularyMapForTable(TableName.application, connection),
+                getVocabularyMapForTable(TableName.species, connection),
+                getVocabularyMapForTable(TableName.technology_type, connection),
+                getVocabularyMapForTable(TableName.material, connection),
+                getVocabularyMapForTable(TableName.nucleic_acid, connection),
+                getVocabularyMapForTable(TableName.classification, connection));
+    }
+
+    /**
+     * this does not store the key id, thus see function @getTopicalAssignmentIDFromName
+     *
+     * @return
+     */
+    private static Map<String, String> getTopicalAssignmentVocabularyMap(Connection connection) {
+        String sql = "SELECT * from topical_assignment";
+        Map<String, String> res = new HashMap<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res.put(rs.getString("name"), rs.getString("number"));
+            }
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL operation unsuccessful: " + e.getMessage());
+            e.printStackTrace();
+        } catch (NullPointerException n) {
+            logger.error("Could not reach SQL database.");
+        }
+        return res;
+    }
+
+    /**
+     * Returns a Map of Vocabulary terms from a Table containing id and name field
+     *
+     * @param t The table name as enum
+     * @return a map of Vocabulary terms with names as keys and ids as values
+     */
+    private static Map<String, Integer> getVocabularyMapForTable(TableName t, Connection connection) {
+        String sql = "SELECT * from " + t.toString();
+        Map<String, Integer> res = new HashMap<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res.put(rs.getString("name"), rs.getInt("id"));
+            }
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL operation unsuccessful: " + e.getMessage());
+            e.printStackTrace();
+        } catch (NullPointerException n) {
+            logger.error("Could not reach SQL database.");
         }
         return res;
     }

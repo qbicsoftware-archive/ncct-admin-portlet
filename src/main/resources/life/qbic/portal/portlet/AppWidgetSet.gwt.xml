@@ -7,9 +7,7 @@
     -->
 
     <!-- Inherit DefaultWidgetSet -->
-    <inherits name="com.vaadin.DefaultWidgetSet" /> 
-
-
+    <inherits name="com.vaadin.DefaultWidgetSet" />
     
 
     
@@ -17,4 +15,8 @@
     
 
     
+
+    
+
+    <inherits name="org.vaadin.gridutil.WidgetSet" />
 </module>

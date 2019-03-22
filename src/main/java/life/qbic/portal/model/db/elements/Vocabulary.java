@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * @author afriedrich
  */
 
-public class Vocabulary {
+public final class Vocabulary {
 
     private static Map<String, String> topicalAssignmentToID;
     private static Map<String, Integer> libraryToID;
@@ -158,6 +158,10 @@ public class Vocabulary {
 
     public static List<String> getTopicalAssignmentNames() {
         return new ArrayList<>(topicalAssignmentToID.keySet());
+    }
+
+    public static Map<String, Integer> getLibraryToID() {
+        return libraryToID;
     }
 
 }

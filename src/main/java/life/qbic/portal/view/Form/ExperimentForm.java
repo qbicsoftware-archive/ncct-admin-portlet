@@ -26,6 +26,9 @@ public class ExperimentForm extends VerticalLayout {
     private final ComboBox library;
     private final ComboBox nucleicAcid;
 
+    private final Button deleteExperimentButton;
+
+
     private final TabSheet batches = new TabSheet();
     private int counter = 0;
 
@@ -87,11 +90,14 @@ public class ExperimentForm extends VerticalLayout {
         this.allExperiments.getColumn("Number of Samples").setEditorField(numberOfSamplesExperiment);
         this.allExperiments.getColumn("Cost(EUR)").setEditorField(costs);
 
+        this.deleteExperimentButton = new Button("Delete");
+        this.deleteExperimentButton.setVisible(false);
+        this.deleteExperimentButton.addStyleName("corners");
 
         this.setSpacing(true);
 
 
-        this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments,
+        this.addComponents(new Label("<b><u> Current Experiments: </u></b>", ContentMode.HTML), allExperiments, deleteExperimentButton,
                 new Label("<b><u>Batches:</u></b>", ContentMode.HTML), batches);
 
 
@@ -102,7 +108,6 @@ public class ExperimentForm extends VerticalLayout {
         BatchForm batchForm = new BatchForm();
         batchForm.addEmptyBatchRow();
         batches.addTab(batchForm, "Experiment " + (counter + 1));
-        batches.setSelectedTab(counter);
         counter++;
     }
 
@@ -164,8 +169,6 @@ public class ExperimentForm extends VerticalLayout {
         this.allExperiments.addRow(counter+1, type, species, material, instrument, library, genomeSize, nucleicAcid, coverage, numSamples, cost);
         BatchForm batchForm = new BatchForm();
         batches.addTab(batchForm, "Experiment " + (counter + 1));
-        batches.setSelectedTab(counter);
-
     }
 
     public void incrementCounter() {
@@ -173,11 +176,39 @@ public class ExperimentForm extends VerticalLayout {
     }
 
     public void addBatch(Date date, String numSamples){
-        System.out.println(date + " " + numSamples);
         ((BatchForm)this.batches.getTab(counter).getComponent()).addDataRow(date, numSamples);
     }
 
     public int getCounter() {
         return counter;
     }
+
+    public void addDeleteExperimentButton(){
+        deleteExperimentButton.setVisible(true);
+    }
+
+    public void removeDeleteExperimentButton(){
+        deleteExperimentButton.setVisible(false);
+    }
+
+    public Button getDeleteExperimentButton() {
+        return deleteExperimentButton;
+    }
+
+    public void deleteBatch(int counter){
+        batches.getUI().access(new Runnable() {
+            @Override
+            public void run() {
+                for(Component component : batches){
+                    TabSheet.Tab tab = batches.getTab(component);
+
+                    if ("Experiment ".concat(String.valueOf(counter)).equals(tab.getCaption())) {
+                        batches.removeTab(tab);
+                    }
+                }
+            }
+        });
+
+    }
+
 }

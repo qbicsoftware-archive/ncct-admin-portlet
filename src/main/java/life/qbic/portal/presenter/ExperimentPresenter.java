@@ -31,9 +31,38 @@ public class ExperimentPresenter {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
+                Object id = formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().lastItemId();
+                if (! formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id).getItemProperty("Species").getValue().equals("")) {
+                    formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
+                }
             }
         });
+
+        this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().addSelectionListener(selectionEvent -> {
+            if(selectionEvent.getSelected().size() > 0) {
+                this.formPresenter.getFormLayout().getExperimentForm().addDeleteExperimentButton();
+            }else{
+                this.formPresenter.getFormLayout().getExperimentForm().removeDeleteExperimentButton();
+            }
+        });
+
+        this.formPresenter.getFormLayout().getExperimentForm().getDeleteExperimentButton().addClickListener(clickEvent -> {
+            this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getSelectedRows().forEach( row -> {
+
+                this.formPresenter.getFormLayout().getExperimentForm().deleteBatch((int) this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().getItem(row).getItemProperty("ID").getValue());
+                this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().removeItem(row);
+
+            });
+
+            Object id = formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().lastItemId();
+            if(id == null || ! this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getContainerDataSource().getItem(id).getItemProperty("Species").getValue().equals("")){
+                this.formPresenter.getFormLayout().getExperimentForm().addEmptyExperimentRow();
+            }
+
+            this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().getSelectionModel().reset();
+            this.formPresenter.getFormLayout().getExperimentForm().getAllExperiments().refreshAllRows();
+        });
+
 
     }
 

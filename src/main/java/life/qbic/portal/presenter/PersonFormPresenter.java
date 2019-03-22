@@ -29,7 +29,10 @@ public class PersonFormPresenter {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                formPresenter.getFormLayout().getApplicantForm().addRow();
+                Object id = formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().lastItemId();
+                if (! formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().getItem(id).getItemProperty("Last Name").getValue().equals("")) {
+                    formPresenter.getFormLayout().getApplicantForm().addRow();
+                }
             }
         });
 
@@ -41,7 +44,10 @@ public class PersonFormPresenter {
 
             @Override
             public void postCommit(FieldGroup.CommitEvent commitEvent) throws FieldGroup.CommitException {
-                formPresenter.getFormLayout().getCooperationPartners().addRow();
+                Object id = formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().lastItemId();
+                if (! formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().getItem(id).getItemProperty("Last Name").getValue().equals("")) {
+                    formPresenter.getFormLayout().getCooperationPartners().addRow();
+                }
             }
         });
 
@@ -66,6 +72,14 @@ public class PersonFormPresenter {
             this.formPresenter.getFormLayout().getApplicantForm().getPersons().getSelectedRows().forEach( row -> {
                 this.formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().removeItem(row);
             });
+
+            Object id = formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().lastItemId();
+            if(id == null || ! this.formPresenter.getFormLayout().getApplicantForm().getPersons().getContainerDataSource().getItem(id).getItemProperty("Last Name").getValue().equals("")){
+                this.formPresenter.getFormLayout().getApplicantForm().addRow();
+            }
+
+
+            this.formPresenter.getFormLayout().getApplicantForm().getPersons().getSelectionModel().reset();
             this.formPresenter.getFormLayout().getApplicantForm().getPersons().refreshAllRows();
         });
 
@@ -73,6 +87,13 @@ public class PersonFormPresenter {
             this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getSelectedRows().forEach( row -> {
                 this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().removeItem(row);
             });
+
+            Object id = formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().lastItemId();
+            if(id == null || ! this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getContainerDataSource().getItem(id).getItemProperty("Last Name").getValue().equals("")){
+                this.formPresenter.getFormLayout().getCooperationPartners().addRow();
+            }
+
+            this.formPresenter.getFormLayout().getCooperationPartners().getPersons().getSelectionModel().reset();
             this.formPresenter.getFormLayout().getCooperationPartners().getPersons().refreshAllRows();
         });
     }

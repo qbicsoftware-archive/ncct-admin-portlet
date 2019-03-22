@@ -1,6 +1,5 @@
 package life.qbic.portal.view.Form;
 
-import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
@@ -70,6 +69,9 @@ public class FormLayout extends VerticalLayout {
 
         this.deleteApplicant = new Button("Delete");
         this.deleteCooperationPartners = new Button("Delete");
+
+        this.deleteApplicant.addStyleName("corners");
+        this.deleteCooperationPartners.addStyleName("corners");
 
         personLayout = new VerticalLayout(contactPersonForm, applicantForm, deleteApplicant, cooperationPartners, deleteCooperationPartners);
         personLayout.setSpacing(true);

@@ -4,10 +4,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.VerticalLayout;
 import life.qbic.portal.model.db.elements.Project;
-import life.qbic.portal.model.db.operations.DBConfig;
-import life.qbic.portal.model.db.operations.DBDataInsert;
-import life.qbic.portal.model.db.operations.DBDataRetrieval;
-import life.qbic.portal.model.db.operations.DBDataUpdate;
+import life.qbic.portal.model.db.operations.*;
 import life.qbic.portal.utils.ConfigurationManager;
 import life.qbic.portal.utils.ConfigurationManagerFactory;
 import life.qbic.portal.utils.LiferayIndependentConfigurationManager;
@@ -51,11 +48,14 @@ public class MainPresenter {
         }
 
         this.dbConfig = new DBConfig(config.getMysqlHost(), config.getMysqlPort(), config.getNCCTMysqlDB(), config.getMysqlUser(), config.getMysqlPass());
+
+        initDB();
+
         this.dbDataRetrieval = new DBDataRetrieval(this.dbConfig);
         this.dbDataInsert = new DBDataInsert(this.dbConfig);
         this.dbDataUpdate = new DBDataUpdate(this.dbConfig);
 
-        initDB();
+
         addListeners();
 
         loadProjects();
@@ -63,7 +63,8 @@ public class MainPresenter {
     }
 
     private void initDB() {
-        this.dbDataRetrieval.initVocabularies();
+        Utils.initVocabularies(Utils.login(dbConfig));
+
     }
 
     private void addListeners() {
@@ -101,6 +102,7 @@ public class MainPresenter {
 
     void loadProjects() {
         this.projectsLayout.getProjects().getContainerDataSource().removeAllItems();
+
         dbDataRetrieval.getProjects().forEach(project -> {
 
             Object id = this.projectsLayout.getProjects().addRow(

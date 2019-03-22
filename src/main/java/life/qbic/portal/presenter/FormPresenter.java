@@ -2,12 +2,12 @@ package life.qbic.portal.presenter;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.Page;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import life.qbic.portal.model.db.elements.Batch;
 import life.qbic.portal.model.db.elements.Experiment;
 import life.qbic.portal.model.db.elements.Person;
 import life.qbic.portal.model.db.elements.Project;
+import life.qbic.portal.view.Form.BatchForm;
 import life.qbic.portal.view.Form.FormLayout;
 
 import java.io.File;
@@ -44,17 +44,10 @@ public class FormPresenter {
     }
 
     private void addListener() {
-    //    addUploadListener();
         addSaveEntryListener();
         addCancelListener();
     }
 
-
-//    private void addUploadListener() {
-//        this.formLayout.getUploadAttachment().setReceiver(this);
-//        this.formLayout.getUploadAttachment().addSucceededListener(this);
-//
-//    }
 
     private void addSaveEntryListener() {
         this.formLayout.getSaveEntries().addClickListener(clickEvent -> {
@@ -67,6 +60,7 @@ public class FormPresenter {
                 }
                 this.mainPresenter.loadProjects();
                 this.mainPresenter.displayProjects();
+
             } catch (Exception e) {
                 Notification notification = new Notification("Couldn't store entry",
                         e.getMessage(),
@@ -91,27 +85,11 @@ public class FormPresenter {
         return this.formLayout;
     }
 
-//    @Override
-//    public OutputStream receiveUpload(String filename, String mimeType) {
-//        try {
-//            tempFile = File.createTempFile(filename, "pdf");
-//            tempFile.deleteOnExit();
-//            return new FileOutputStream(tempFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
-
-//    @Override
-//    public void uploadSucceeded(Upload.SucceededEvent event) {
-//        this.getFormLayout().getAddDoI().setCaption(tempFile.getName());
-//    }
 
     private Project setData() throws Exception {
 
-        Person contactPerson = mainPresenter.getDbDataRetrieval().getPerson(this.formLayout.getContactPersonForm().getFirstNameValue(),
+        Person contactPerson = mainPresenter.getDbDataRetrieval().getPerson(
+                this.formLayout.getContactPersonForm().getFirstNameValue(),
                 this.formLayout.getContactPersonForm().getLastNameValue(),
                 this.formLayout.getContactPersonForm().getInstitutionValue(),
                 this.formLayout.getContactPersonForm().getCityValue(),
@@ -153,12 +131,12 @@ public class FormPresenter {
             Item item = this.formLayout.getCooperationPartners().getPersons().getContainerDataSource().getItem(id);
 
             if (!((String) item.getItemProperty("Last Name").getValue()).isEmpty()) {
-                Person cooperationPartner = new Person((String) item.getItemProperty("First Name").getValue(),
+                Person cooperationPartner = mainPresenter.getDbDataRetrieval().getPerson((String) item.getItemProperty("First Name").getValue(),
                         (String) item.getItemProperty("Last Name").getValue(),
-                        "",
+                        (String) item.getItemProperty("Institution").getValue(),
                         (String) item.getItemProperty("City").getValue(),
                         "",
-                        (String) item.getItemProperty("Institution").getValue());
+                        "");
 
                 project.addCooperationPartner(cooperationPartner);
 
@@ -181,9 +159,9 @@ public class FormPresenter {
                         (String) item.getItemProperty("Nucleic Acid").getValue(),
                         (String) item.getItemProperty("Library").getValue());
 
-                for (Object batchId : ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItemIds()) {
+                for (Object batchId : ((BatchForm) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getBatchForm().getContainerDataSource().getItemIds()) {
 
-                    Item batchItem = ((Grid) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getContainerDataSource().getItem(batchId);
+                    Item batchItem = ((BatchForm) this.formLayout.getExperimentForm().getBatches().getTab(((int) id) - 1).getComponent()).getBatchForm().getContainerDataSource().getItem(batchId);
 
                     if (!((String) batchItem.getItemProperty("Number of Samples").getValue()).isEmpty()) {
                         Batch batch = new Batch(Integer.valueOf((String) batchItem.getItemProperty("Number of Samples").getValue()),
